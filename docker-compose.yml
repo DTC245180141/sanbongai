@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: pitchai_sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=PitchAI@Password2026!
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - pitchai_network
+
+  aiservice:
+    build:
+      context: ./src/AIService
+      dockerfile: Dockerfile
+    container_name: pitchai_aiservice
+    environment:
+      - LM_STUDIO_API_URL=http://host.docker.internal:1234/v1/chat/completions
+      - LM_STUDIO_MODEL=qwen2.5-coder-7b-instruct
+    ports:
+      - "5050:5050"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - pitchai_network
+
+  backend:
+    build:
+      context: ./src/Backend
+      dockerfile: Dockerfile
+    container_name: pitchai_backend
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=FootballBookingDB;User Id=sa;Password=PitchAI@Password2026!;TrustServerCertificate=True;MultipleActiveResultSets=true
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "5048:5048"
+    depends_on:
+      - sqlserver
+      - aiservice
+    networks:
+      - pitchai_network
+
+volumes:
+  sql_data:
+
+networks:
+  pitchai_network:
+    driver: bridge
