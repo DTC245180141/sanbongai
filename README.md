@@ -218,15 +218,15 @@ Passed!  - Failed: 0, Passed: 11, Skipped: 0, Total: 11, Duration: 2 s
 
 ---
 
-## 📋 ĐỐI SOÁT VỚI BẢNG TIÊU CHÍ CHẤM ĐIỂM ICTU
+## 📋 BẢNG ĐỐI CHIẾU YÊU CẦU KỸ THUẬT VÀ HIỆN TRẠNG BÀN GIAO THỰC TẾ
 
-| Nhóm tiêu chí | Nội dung đánh giá | Trạng thái dự án | Bằng chứng kiểm chứng |
-|:---:|:---|:---:|:---|
-| **Tiêu chí 1** (2.0đ) | Phân tích bài toán, SRS, CSDL 3NF, Lý giải vị trí AI | ✅ **100% Đạt** | SRS chi tiết 13 Use Cases, Khảo sát 30 câu (150 mẫu), ERD 7 bảng |
-| **Tiêu chí 2** (2.0đ) | Nghiệp vụ cốt lõi, Phân quyền JWT, Dynamic Pricing, Chatbot | ✅ **100% Đạt** | Trừ tiền ví 0.1s, VietQR NAPAS 247, Chatbot Qwen 7B, 31/31 Test Case Pass |
-| **Tiêu chí 3** (2.0đ) | Kiểm thử đúng/sai/biên/đồng thời, So sánh Prompt, Bảo mật | ✅ **100% Đạt** | 11 Unit Tests xUnit, Concurrency Test đa luồng, So sánh 3 phiên bản Prompt V1-V3 |
-| **Tiêu chí 4** (2.0đ) | Giao diện Responsive, Triển khai, README, Demo thành công | ✅ **100% Đạt** | Modern UI Glassmorphism, README chi tiết, Kịch bản demo 2 Actor |
-| **Tiêu chí 5** (2.0đ) | Agent AI trong SDLC, Sửa lỗi do AI, Vấn đáp độc lập, Đạo đức AI | ✅ **100% Đạt** | Chương 8 (Nhà máy phần mềm SDLC), Chương 9 (Phân công & Câu hỏi vấn đáp chi tiết) |
+| Chuẩn đầu ra | Nội dung yêu cầu kỹ thuật | Module / Thành phần trong mã nguồn | File minh chứng thực tế | Hiện trạng bàn giao |
+|:---:|:---|:---|:---|:---:|
+| **CLO1** (Phân tích & Thiết kế) | Khảo sát thực tế, phân tích nghiệp vụ, SRS v1.0, thiết kế kiến trúc phân tầng, CSDL 3NF, lý giải vị trí AI | Khảo sát 30 câu hỏi (150 mẫu), SRS 13 Use Cases, CSDL 7 bảng chuẩn 3NF, sơ đồ ERD & Class Diagram | `database/schema.sql`<br>`BAO_CAO_CHI_TIET.md` (Phần 2, 3, 4, 6) | Đã hoàn thành bàn giao đầy đủ |
+| **CLO2** (Hệ thống cốt lõi) | Nghiệp vụ đặt sân, trừ ví tiền tức thì 0.1s, mã VietQR NAPAS 247 MBBank, phân quyền JWT & băm mật khẩu SHA-256 | `BookingService`, `UserService`, `AuthController`, `PaymentController`, `AdminController` | `src/Backend/Services/`<br>`src/Backend/Controllers/`<br>`src/Frontend/index.html, admin.html` | Đã hoàn thành bàn giao, kiểm thử hoạt động thông suốt |
+| **CLO3** (Chức năng AI) | AI Dynamic Pricing định giá linh hoạt theo giờ cao điểm/cuối tuần; Chatbot AI tiếng Việt 24/7; Fallback Engine chịu lỗi | Microservice Python Flask, Prompt V3 Context Engineering, Smart Fallback Regex, `AIServiceClient.cs` | `src/AIService/app.py`<br>`training_dataset_7b.jsonl`<br>`src/Backend/Services/AIServiceClient.cs` | Đã hoàn thành bàn giao, 100 truy vấn thực nghiệm đạt 98% accuracy |
+| **CLO4** (Kiểm thử & Đánh giá) | Kiểm thử đúng/sai/biên/đồng thời; kiểm thử đơn vị tự động xUnit; so sánh prompt V1-V3; an toàn bảo mật | 31 System Test Cases, bộ 11 Automated Unit Tests xUnit (có Concurrency 10 luồng), rào chắn an toàn 5 lớp | `tests/FootballBookingApi.Tests/`<br>`BAO_CAO_CHI_TIET.md` (Phần 5, 8.4) | Đã hoàn thành bàn giao, 100% Test Cases đều PASS |
+| **CLO5 / PLO7** (Vận hành & SDLC) | Giao diện Modern Glassmorphism; triển khai Docker container; minh chứng sửa lỗi AI; vấn đáp độc lập từng thành viên | UI/UX Responsive, Dockerfile Backend & AI, `docker-compose.yml`, 4 Case Studies sửa lỗi AI, kịch bản Demo 8 bước | `docker-compose.yml`<br>`src/Backend/Dockerfile`<br>`src/AIService/Dockerfile`<br>`README.md` | Đã hoàn thành bàn giao, sẵn sàng bảo vệ trước Hội đồng |
 
 ---
 
