@@ -1,0 +1,25 @@
+# Visual Studio / .NET Core
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+venv/
+env/
+.venv/
+
+# Temporary / Office
+~$*
+*.tmp
+
+# Uploads
+src/Backend/wwwroot/uploads/*
+!src/Backend/wwwroot/uploads/.gitkeep

@@ -1,0 +1,7 @@
+flask>=2.3.0
+flask-cors>=4.0.0
+requests>=2.31.0
+python-dateutil>=2.8.2
+transformers>=4.38.0
+torch>=2.0.0
+accelerate>=0.26.0

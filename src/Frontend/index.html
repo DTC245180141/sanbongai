@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Đặt Sân Bóng Tự Động Tích Hợp AI</title>
+    <!-- TỐI ƯU HIỆU NĂNG: DNS Prefetch & Preconnect tăng tốc nạp tài nguyên CDN -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://img.vietqr.io">
+    <link rel="dns-prefetch" href="https://cdn-icons-png.flaticon.com">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-futbol"></i>
+                <span>Sân Bóng <span>ICTU</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="active">Trang Chủ Đặt Sân</a>
+                <a href="admin.html">Dashboard Quản Trị</a>
+            </div>
+        </div>
+
+        <div class="user-panel">
+            <button id="btn-topup-nav" class="btn" style="width: auto; padding: 0.4rem 0.85rem; font-size: 0.82rem; border-radius: 20px; display: none;" onclick="openTopupModal()">
+                <i class="fa-solid fa-plus"></i> Nạp Tiền
+            </button>
+
+            <div id="user-info-container" class="user-profile-badge" style="display: none;" onclick="openProfileModal()">
+                <img id="user-avatar-img" class="user-avatar-img" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+                <div class="user-info-text-group">
+                    <span id="user-info" class="user-name-text">Khách Hàng</span>
+                    <span id="user-wallet-balance" class="user-wallet-subtext">💳 3,000,000 VNĐ</span>
+                </div>
+            </div>
+            
+            <button id="btn-logout" class="btn-logout-mini" onclick="logout()" style="display: none;">Đăng Xuất</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Auth Section -->
+        <div id="auth-section" class="card" style="max-width: 420px; margin: 2rem auto; text-align: center;">
+            <h2 id="auth-title"><i class="fa-solid fa-user-lock"></i> Đăng Nhập Khách Hàng</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">Bạn cần đăng nhập để tiến hành đặt sân</p>
+            
+            <input type="text" id="auth-username" placeholder="Tên đăng nhập" style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 0.75rem;">
+            <input type="password" id="auth-pass" placeholder="Mật khẩu" style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 1rem;">
+
+            <div id="auth-reg-extra" style="display: none; text-align: left;">
+                <input type="text" id="auth-fullname" placeholder="Họ và Tên đầy đủ" style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 0.75rem;">
+                <input type="text" id="auth-phone" placeholder="Số điện thoại (dùng để khôi phục tài khoản)" style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 0.75rem;">
+                <input type="email" id="auth-email" placeholder="Email (dùng để khôi phục tài khoản)" style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 1rem;">
+            </div>
+
+            <div id="auth-error-msg" style="display: none; padding: 0.75rem; background: #fee2e2; color: var(--danger); border-radius: 8px; font-size: 0.85rem; font-weight: bold; margin-bottom: 1rem; text-align: left;"></div>
+
+            <button id="auth-btn-submit" class="btn" onclick="submitAuth()">Đăng Nhập</button>
+            <button class="btn" style="background: #0284c7; margin-top: 0.5rem; color: #ffffff;" onclick="loginAsDemo()">⚡ Vào Ngay Trải Nghiệm Demo (1-Click)</button>
+            
+            <div id="auth-recovery-links" style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.85rem;">
+                <a href="#" onclick="openForgotUsernameModal()" style="color: var(--text-muted); text-decoration: underline;">Quên tên đăng nhập?</a>
+                <a href="#" onclick="openForgotPasswordModal()" style="color: var(--danger); text-decoration: underline;">Quên mật khẩu?</a>
+            </div>
+
+            <p style="margin-top: 1.2rem; font-size: 0.85rem; color: var(--text-muted);">
+                <span id="auth-toggle-text">Chưa có tài khoản?</span> 
+                <a href="#" onclick="toggleAuthMode()" id="auth-toggle-btn" style="color: var(--primary); font-weight: bold;">Đăng ký ngay</a>
+            </p>
+
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--card-border); font-size: 0.85rem; color: var(--text-muted);">
+                <i class="fa-solid fa-headset" style="color: var(--primary);"></i> Hỗ trợ kỹ thuật: 
+                <a href="https://zalo.me/0364382164" target="_blank" style="color: #0284c7; font-weight: bold; text-decoration: none;">
+                    <i class="fa-solid fa-comment-dots"></i> Zalo 0364382164
+                </a>
+            </div>
+        </div>
+
+        <!-- App Section -->
+        <div id="app-section" style="display: none;">
+            <section class="hero">
+                <h1>Hệ Thống Đặt Sân Bóng Tự Động</h1>
+                <p>Tối ưu hóa thời gian, đặt lịch theo nhu cầu</p>
+            </section>
+
+            <!-- AI Chatbot Box -->
+            <div class="card" style="margin-bottom: 2rem;">
+                <h3><i class="fa-solid fa-robot" style="color: var(--primary);"></i> Trợ Lý Sân Bóng</h3>
+                <div id="chat-box" style="height: 120px; overflow-y: auto; padding: 1rem; border-radius: 12px; margin: 1rem 0; font-size: 0.9rem;">
+                    <p style="color: var(--accent-gold);">🤖 PitchAI Assistant: Chào bạn, mình là trợ lý AI sân bóng ICTU Thái Nguyên. Bạn cần mình hỗ trợ tìm sân hay xem giá lúc nào?</p>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="chat-input" placeholder="Hỏi AI: 'Giá sân cuối tuần thế nào?', 'Có sân 5 trống không?'..." style="flex: 1; padding: 0.8rem; border-radius: 10px;">
+                    <button class="btn" style="width: auto; padding: 0.8rem 1.5rem;" onclick="sendAiChat()">Gửi AI</button>
+                </div>
+            </div>
+
+            <section id="fields-section">
+                <h2 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-gold);"></i> Danh Sách Sân Bóng & Giá</h2>
+                <div id="fields-grid" class="grid"></div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Profile Settings Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content" style="max-width: 460px; text-align: left;">
+            <h3 style="text-align: center; margin-bottom: 1rem;"><i class="fa-solid fa-user-gear" style="color: var(--primary);"></i> Cài Đặt Thông Tin Cá Nhân</h3>
+            
+            <div style="text-align: center; margin-bottom: 1.25rem;">
+                <img id="profile-avatar-preview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); margin-bottom: 0.5rem;">
+                <div>
+                    <label for="avatar-file-input" style="font-size: 0.85rem; color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: bold;">
+                        <i class="fa-solid fa-camera"></i> Chọn Ảnh Đại Diện Mới
+                    </label>
+                    <input type="file" id="avatar-file-input" accept="image/*" style="display: none;" onchange="uploadAvatarFile()">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 0.8rem;">
+                <label style="font-size: 0.85rem; font-weight: bold;">Họ và Tên Hiển Thị:</label>
+                <input type="text" id="profile-fullname" style="width: 100%; padding: 0.75rem; border-radius: 8px; margin-top: 0.3rem;">
+            </div>
+            <div style="margin-bottom: 0.8rem;">
+                <label style="font-size: 0.85rem; font-weight: bold;">Số Điện Thoại Liên Kết (Username):</label>
+                <input type="text" id="profile-phone" style="width: 100%; padding: 0.75rem; border-radius: 8px; margin-top: 0.3rem;">
+            </div>
+            <div style="margin-bottom: 1.2rem;">
+                <label style="font-size: 0.85rem; font-weight: bold;">Email Khôi Phục Tài Khoản:</label>
+                <input type="email" id="profile-email" style="width: 100%; padding: 0.75rem; border-radius: 8px; margin-top: 0.3rem;">
+            </div>
+
+            <!-- Form Đổi Mật Khẩu -->
+            <div style="border-top: 1px dashed var(--card-border); padding-top: 1rem; margin-top: 1rem;">
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.8rem; color: var(--accent-gold);"><i class="fa-solid fa-lock"></i> Đổi Mật Khẩu</h4>
+                <div style="margin-bottom: 0.6rem;">
+                    <label style="font-size: 0.8rem;">Mật khẩu hiện tại (cũ):</label>
+                    <input type="password" id="change-old-pass" placeholder="Nhập mật khẩu cũ..." style="width: 100%; padding: 0.6rem; border-radius: 8px; margin-top: 0.2rem;">
+                </div>
+                <div style="margin-bottom: 0.6rem;">
+                    <label style="font-size: 0.8rem;">Mật khẩu mới:</label>
+                    <input type="password" id="change-new-pass" placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)..." style="width: 100%; padding: 0.6rem; border-radius: 8px; margin-top: 0.2rem;">
+                </div>
+                <div style="margin-bottom: 0.8rem;">
+                    <label style="font-size: 0.8rem;">Xác nhận mật khẩu mới:</label>
+                    <input type="password" id="change-confirm-pass" placeholder="Nhập lại mật khẩu mới..." style="width: 100%; padding: 0.6rem; border-radius: 8px; margin-top: 0.2rem;">
+                </div>
+                <button class="btn" style="background: var(--accent-gold); color: #000; font-weight: bold; margin-bottom: 0.8rem;" onclick="changePasswordInProfile()">⚡ Đổi Mật Khẩu</button>
+            </div>
+
+            <button class="btn" onclick="saveUserProfile()">Lưu Cập Nhật Thông Tin</button>
+            <button class="btn" style="background: transparent; border: 1px solid var(--card-border); margin-top: 0.5rem; margin-bottom: 0.75rem; color: var(--text-muted);" onclick="closeProfileModal()">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Forgot Username Modal -->
+    <div id="forgot-username-modal" class="modal">
+        <div class="modal-content" style="max-width: 420px; text-align: center;">
+            <h3><i class="fa-solid fa-id-card" style="color: var(--primary);"></i> Khôi Phục Tên Đăng Nhập</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0 1rem 0;">Nhập Email hoặc Số điện thoại đã đăng ký để tìm lại Tên đăng nhập</p>
+            
+            <input type="text" id="forgot-username-input" placeholder="Nhập Email hoặc SĐT liên kết..." style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 1rem;">
+            
+            <div id="forgot-username-result" style="display: none; padding: 0.8rem; background: #e0f2fe; color: #0369a1; border-radius: 8px; font-weight: bold; margin-bottom: 1rem;"></div>
+
+            <button class="btn" onclick="submitForgotUsername()">Tra Cứu Tên Đăng Nhập</button>
+            <button class="btn" style="background: transparent; border: 1px solid var(--card-border); margin-top: 0.5rem; color: var(--text-muted);" onclick="closeForgotUsernameModal()">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="modal">
+        <div class="modal-content" style="max-width: 420px; text-align: center;">
+            <h3><i class="fa-solid fa-key" style="color: var(--danger);"></i> Khôi Phục & Đổi Mật Khẩu</h3>
+            
+            <!-- Step 1: Request OTP -->
+            <div id="fp-step-1">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0 1rem 0;">Nhập Số điện thoại hoặc Email để đặt lại mật khẩu mới nhanh chóng</p>
+                <input type="text" id="fp-user-input" placeholder="Tên đăng nhập / Số điện thoại / Email" style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 0.75rem;">
+                <input type="password" id="fp-direct-pass" placeholder="Nhập mật khẩu mới muốn tạo" style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 1rem;">
+                <button class="btn" style="background: var(--primary);" onclick="submitDirectResetPassword()">⚡ Đặt Lại Mật Khẩu Trực Tiếp</button>
+                <div style="margin: 0.75rem 0; font-size: 0.8rem; color: var(--text-muted);">--- HOẶC XÁC THỰC MÃ OTP ---</div>
+                <button class="btn" style="background: #0284c7; font-size: 0.85rem;" onclick="submitRequestOTP()">📩 Nạp Qua Mã OTP</button>
+            </div>
+
+            <!-- Step 2: Input OTP & New Password -->
+            <div id="fp-step-2" style="display: none;">
+                <p id="fp-otp-hint" style="font-size: 0.85rem; color: var(--primary); font-weight: bold; margin-bottom: 0.8rem;"></p>
+                <input type="text" id="fp-otp-input" placeholder="Nhập mã OTP (6 chữ số)" style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 0.75rem;">
+                <input type="password" id="fp-new-pass" placeholder="Nhập mật khẩu mới" style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 1rem;">
+                <button class="btn" onclick="submitResetPassword()">Xác Nhận Đổi Mật Khẩu OTP</button>
+            </div>
+
+            <button class="btn" style="background: transparent; border: 1px solid var(--card-border); margin-top: 0.5rem; color: var(--text-muted);" onclick="closeForgotPasswordModal()">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Topup Modal VietQR -->
+    <div id="topup-modal" class="modal">
+        <div class="modal-content" style="max-width: 420px; text-align: center;">
+            <h3><i class="fa-solid fa-qrcode" style="color: var(--primary);"></i> Nạp Tiền Vào Ví Ảo VietQR</h3>
+            <div style="margin: 1rem 0;">
+                <input type="number" id="topup-amount" placeholder="Nhập số tiền (VD: 500000)" style="width: 100%; padding: 0.8rem; border-radius: 10px; margin-bottom: 1rem;">
+                <button class="btn" onclick="generateVietQR()">Tạo Mã QR VietQR</button>
+            </div>
+            
+            <div id="vietqr-box" style="display: none; margin-top: 1rem;">
+                <p style="font-size: 0.9rem; color: var(--accent-gold); margin-bottom: 0.5rem;">Quét mã QR dưới đây bằng app Ngân hàng (MBBank, MoMo...):</p>
+                <img id="vietqr-img" src="" style="width: 240px; height: 240px; border-radius: 12px; border: 2px solid var(--primary);" alt="VietQR Code">
+                <p id="topup-memo" style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0; font-weight: bold;"></p>
+                
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.8rem;">
+                    <button class="btn" style="background: #0284c7; color: #ffffff; font-size: 0.85rem;" onclick="generateVietQR()">🔄 Tạo Mã QR Mới</button>
+                    <button class="btn" style="background: var(--primary); color: #ffffff; font-size: 0.85rem;" onclick="confirmTopup()">Xác Nhận Đã Chuyển Tiền</button>
+                </div>
+            </div>
+            <button class="btn" style="background: transparent; border: 1px solid var(--card-border); margin-top: 0.5rem; color: var(--text-muted);" onclick="closeTopupModal()">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Modal Bảo Trì Toàn Hệ Thống (503 Service Unavailable) -->
+    <div id="system-maintenance-modal" class="modal" style="display: none; z-index: 10000; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px);">
+        <div class="modal-content" style="max-width: 480px; text-align: center; border: 2px solid var(--accent-gold); box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);">
+            <div style="font-size: 3.5rem; color: var(--accent-gold); margin-bottom: 0.5rem;">
+                <i class="fa-solid fa-screwdriver-wrench fa-bounce"></i>
+            </div>
+            <h2 style="color: var(--accent-gold); margin-bottom: 0.75rem;">HỆ THỐNG ĐANG BẢO TRÌ</h2>
+            <p style="color: var(--text-main); font-size: 1.05rem; line-height: 1.6; margin-bottom: 1.25rem;">
+                Hệ thống đang bảo trì để nâng cấp, vui lòng quay lại sau!
+            </p>
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 12px; font-size: 0.88rem; color: var(--text-muted); text-align: left; margin-bottom: 1.25rem;">
+                <i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> Chúng tôi đang tiến hành cập nhật hệ thống máy chủ và thuật toán AI để mang lại trải nghiệm tốt nhất. Xin lỗi vì sự bất tiện này!
+            </div>
+            <button class="btn" style="background: var(--accent-gold); color: #0f172a; font-weight: bold;" onclick="location.reload()">
+                <i class="fa-solid fa-rotate-right"></i> Tải Lại Trang
+            </button>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-field-name">Xác Nhận Đặt Sân</h3>
+            
+            <div style="margin: 1rem 0; text-align: left;">
+                <label for="booking-time" style="font-size: 0.9rem; color: var(--text-muted); display: block; margin-bottom: 0.4rem;">
+                    <i class="fa-regular fa-clock"></i> Chọn Ngày & Giờ Muốn Đặt (Từ 2 tiếng nữa - Tối đa 3 ngày):
+                </label>
+                <input type="datetime-local" id="booking-time" style="width: 100%; padding: 0.8rem; border-radius: 10px; font-size: 0.95rem;">
+            </div>
+
+            <div class="price-box">
+                <div>Tổng tiền thanh toán (Trừ trực tiếp vào ví):</div>
+                <div id="modal-price" class="price-ai">0 VNĐ</div>
+            </div>
+            <div id="qr-container" style="display:none;">
+                <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Thanh toán thành công qua Ví ảo:</p>
+                <img id="qr-code" class="qr-img" src="" alt="QR Payment">
+                <p id="payment-status-text" style="color: var(--primary); font-weight: 700; margin-top: 0.5rem;"><i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý giao dịch...</p>
+            </div>
+            <button id="btn-pay" class="btn" onclick="processPayment()">Xác Nhận Thanh Toán Ví</button>
+            <button class="btn" style="background: transparent; border: 1px solid var(--card-border); margin-top: 0.5rem; color: var(--text-muted);" onclick="closeModal()">Đóng</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5048/api';
+        let isRegister = false;
+        
+        const DEFAULT_DEMO_USER = {
+            id: '88888888-8888-8888-8888-888888888888',
+            fullName: 'Khách Hàng ICTU Demo',
+            phone: '0909123456',
+            email: 'khachhang@ictu.edu.vn',
+            walletBalance: 3000000,
+            avatarUrl: '',
+            role: 'Customer'
+        };
+
+        let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!currentUser && localStorage.getItem('user_logged_out') !== 'true') {
+            currentUser = DEFAULT_DEMO_USER;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+
+        function loginAsDemo() {
+            localStorage.removeItem('user_logged_out');
+            currentUser = DEFAULT_DEMO_USER;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            checkAuth();
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            localStorage.setItem('user_logged_out', 'true');
+            currentUser = null;
+            checkAuth();
+        }
+
+        let currentField = null;
+        let lastTopupAmount = 0;
+
+        function formatLocalISOString(date) {
+            const pad = (num) => num.toString().padStart(2, '0');
+            const year = date.getFullYear();
+            const month = pad(date.getMonth() + 1);
+            const day = pad(date.getDate());
+            const hours = pad(date.getHours());
+            const minutes = pad(date.getMinutes());
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        function initDateTimeLimits() {
+            const input = document.getElementById('booking-time');
+            if (!input) return;
+
+            const now = new Date();
+            const minDate = new Date(now.getTime() + (2 * 60 + 1) * 60 * 1000);
+            const maxDate = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+
+            input.min = formatLocalISOString(minDate);
+            input.max = formatLocalISOString(maxDate);
+            input.value = formatLocalISOString(minDate);
+        }
+
+        async function checkAuth() {
+            if (currentUser) {
+                // Tự động gọi API Backend đồng bộ thông tin mới nhất từ Database (tránh mất dữ liệu hoặc sai lệch khi F5)
+                try {
+                    const res = await fetch(`${API_BASE}/admin/users`);
+                    if (res.ok) {
+                        const users = await res.json();
+                        const updatedUser = users.find(u => u.id === currentUser.id);
+                        if (updatedUser) {
+                            currentUser.walletBalance = updatedUser.walletBalance;
+                            currentUser.fullName = updatedUser.fullName;
+                            currentUser.phone = updatedUser.phone;
+                            currentUser.email = updatedUser.email;
+                            if (updatedUser.avatarUrl) currentUser.avatarUrl = updatedUser.avatarUrl;
+                            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        }
+                    }
+                } catch (e) {
+                    console.log('Lưu ý: Không thể đồng bộ số dư tươi từ Backend:', e);
+                }
+
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('app-section').style.display = 'block';
+                document.getElementById('user-info-container').style.display = 'inline-flex';
+                document.getElementById('user-info').innerText = currentUser.fullName;
+                
+                const defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                if (currentUser.avatarUrl && currentUser.avatarUrl.trim() !== '') {
+                    const fullAvatarUrl = currentUser.avatarUrl.startsWith('http') ? currentUser.avatarUrl : `http://localhost:5048${currentUser.avatarUrl}`;
+                    document.getElementById('user-avatar-img').src = fullAvatarUrl;
+                } else {
+                    document.getElementById('user-avatar-img').src = defaultAvatar;
+                }
+
+                const walletBalance = document.getElementById('user-wallet-balance');
+                if (walletBalance) {
+                    const balance = currentUser.walletBalance !== undefined ? currentUser.walletBalance : 3000000;
+                    walletBalance.innerText = '💳 ' + balance.toLocaleString() + ' VNĐ';
+                }
+
+                const btnTopup = document.getElementById('btn-topup-nav');
+                if (btnTopup) btnTopup.style.display = 'inline-block';
+
+                document.getElementById('btn-logout').style.display = 'inline-block';
+                loadFields();
+            } else {
+                document.getElementById('auth-section').style.display = 'block';
+                document.getElementById('app-section').style.display = 'none';
+                document.getElementById('user-info-container').style.display = 'none';
+                document.getElementById('btn-logout').style.display = 'none';
+                const btnTopup = document.getElementById('btn-topup-nav');
+                if (btnTopup) btnTopup.style.display = 'none';
+            }
+        }
+
+        function openTopupModal() {
+            document.getElementById('topup-amount').value = '';
+            document.getElementById('vietqr-box').style.display = 'none';
+            document.getElementById('topup-modal').style.display = 'flex';
+        }
+
+        function closeTopupModal() {
+            document.getElementById('topup-modal').style.display = 'none';
+        }
+
+        async function generateVietQR() {
+            const amount = parseFloat(document.getElementById('topup-amount').value);
+            if (!amount || amount <= 0) return alert('Vui lòng nhập số tiền nạp hợp lệ!');
+
+            lastTopupAmount = amount;
+            const userId = currentUser ? currentUser.id : '88888888-8888-8888-8888-888888888888';
+
+            try {
+                const res = await fetch(`${API_BASE}/payment/generate-vietqr`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, amount })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    document.getElementById('vietqr-img').src = data.qr_url;
+                    document.getElementById('topup-memo').innerText = `Nội dung chuyển khoản: ${data.memo}`;
+                    document.getElementById('vietqr-box').style.display = 'block';
+                } else {
+                    alert('❌ ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Backend API VietQR!');
+            }
+        }
+
+        async function confirmTopup() {
+            if (!lastTopupAmount) return alert('Vui lòng tạo mã QR trước khi xác nhận!');
+
+            const userId = currentUser ? currentUser.id : '88888888-8888-8888-8888-888888888888';
+
+            try {
+                const res = await fetch(`${API_BASE}/payment/confirm-topup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, amount: lastTopupAmount })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    if (currentUser) {
+                        currentUser.walletBalance = data.newBalance;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    }
+                    alert(data.message);
+                    closeTopupModal();
+                    checkAuth(); // Cập nhật lại số dư trên thanh Navbar lập tức không cần F5
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server khi nạp tiền!');
+            }
+        }
+
+        // Profile Modal Logic
+        function openProfileModal() {
+            if (!currentUser) return;
+            document.getElementById('profile-fullname').value = currentUser.fullName || '';
+            document.getElementById('profile-phone').value = currentUser.phone || '';
+            document.getElementById('profile-email').value = currentUser.email || '';
+
+            document.getElementById('change-old-pass').value = '';
+            document.getElementById('change-new-pass').value = '';
+            document.getElementById('change-confirm-pass').value = '';
+
+            if (currentUser.avatarUrl) {
+                const fullAvatarUrl = currentUser.avatarUrl.startsWith('http') ? currentUser.avatarUrl : `http://localhost:5048${currentUser.avatarUrl}`;
+                document.getElementById('profile-avatar-preview').src = fullAvatarUrl;
+            } else {
+                document.getElementById('profile-avatar-preview').src = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+            }
+
+            document.getElementById('profile-modal').style.display = 'flex';
+        }
+
+        async function changePasswordInProfile() {
+            if (!currentUser) return;
+            const oldPassword = document.getElementById('change-old-pass').value;
+            const newPassword = document.getElementById('change-new-pass').value;
+            const confirmPassword = document.getElementById('change-confirm-pass').value;
+
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                return alert('Vui lòng nhập đủ 3 trường: Mật khẩu cũ, Mật khẩu mới và Xác nhận mật khẩu mới!');
+            }
+
+            if (newPassword !== confirmPassword) {
+                return alert('❌ Xác nhận mật khẩu mới không khớp với Mật khẩu mới!');
+            }
+
+            if (newPassword.length < 6) {
+                return alert('❌ Mật khẩu mới phải có ít nhất 6 ký tự!');
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/change-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: currentUser.id,
+                        oldPassword: oldPassword,
+                        newPassword: newPassword
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('🎉 ' + data.message);
+                    document.getElementById('change-old-pass').value = '';
+                    document.getElementById('change-new-pass').value = '';
+                    document.getElementById('change-confirm-pass').value = '';
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server khi đổi mật khẩu!');
+            }
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').style.display = 'none';
+        }
+
+        async function uploadAvatarFile() {
+            const fileInput = document.getElementById('avatar-file-input');
+            if (!fileInput.files || fileInput.files.length === 0) return;
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('avatar', file);
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/upload-avatar/${currentUser.id}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    currentUser.avatarUrl = data.avatarUrl;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    const fullAvatarUrl = `http://localhost:5048${data.avatarUrl}`;
+                    document.getElementById('profile-avatar-preview').src = fullAvatarUrl;
+                    document.getElementById('user-avatar-img').src = fullAvatarUrl;
+                    alert('🎉 ' + data.message);
+                } else {
+                    alert('❌ Lỗi tải ảnh: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Không thể tải ảnh đại diện lên server Backend!');
+            }
+        }
+
+        async function saveUserProfile() {
+            if (!currentUser) return;
+            const fullName = document.getElementById('profile-fullname').value;
+            const phone = document.getElementById('profile-phone').value;
+            const email = document.getElementById('profile-email').value;
+
+            if (!fullName || !phone || !email) {
+                return alert('Vui lòng điền đầy đủ thông tin!');
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/profile/${currentUser.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName, phone, email })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    currentUser = data.user;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    alert('🎉 ' + data.message);
+                    closeProfileModal();
+                    checkAuth();
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server khi lưu thông tin!');
+            }
+        }
+
+        // Forgot Username Logic
+        function openForgotUsernameModal() {
+            document.getElementById('forgot-username-input').value = '';
+            document.getElementById('forgot-username-result').style.display = 'none';
+            document.getElementById('forgot-username-modal').style.display = 'flex';
+        }
+
+        function closeForgotUsernameModal() {
+            document.getElementById('forgot-username-modal').style.display = 'none';
+        }
+
+        async function submitForgotUsername() {
+            const input = document.getElementById('forgot-username-input').value;
+            if (!input) return alert('Vui lòng nhập Email hoặc Số điện thoại!');
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/forgot-username`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneOrEmail: input })
+                });
+
+                const data = await res.json();
+                const resBox = document.getElementById('forgot-username-result');
+                if (res.ok) {
+                    resBox.innerText = data.message;
+                    resBox.style.display = 'block';
+                } else {
+                    alert('❌ ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server!');
+            }
+        }
+
+        // Forgot Password Logic
+        function openForgotPasswordModal() {
+            document.getElementById('fp-user-input').value = '';
+            document.getElementById('fp-otp-input').value = '';
+            document.getElementById('fp-new-pass').value = '';
+            document.getElementById('fp-step-1').style.display = 'block';
+            document.getElementById('fp-step-2').style.display = 'none';
+            document.getElementById('forgot-password-modal').style.display = 'flex';
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('forgot-password-modal').style.display = 'none';
+        }
+
+        async function submitDirectResetPassword() {
+            const usernameOrEmail = document.getElementById('fp-user-input').value;
+            const newPassword = document.getElementById('fp-direct-pass').value;
+
+            if (!usernameOrEmail || !newPassword) {
+                return alert('Vui lòng nhập đầy đủ Tên đăng nhập/SĐT/Email và Mật khẩu mới!');
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usernameOrEmail, newPassword })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('🎉 ' + data.message);
+                    closeForgotPasswordModal();
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server khi đặt lại mật khẩu!');
+            }
+        }
+
+        async function submitRequestOTP() {
+            const usernameOrEmail = document.getElementById('fp-user-input').value;
+            if (!usernameOrEmail) return alert('Vui lòng nhập Tên đăng nhập hoặc Email!');
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/forgot-password/request`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usernameOrEmail })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`📩 Mô phỏng gửi OTP thành công!\nMã OTP của bạn là: ${data.otp}`);
+                    document.getElementById('fp-otp-hint').innerText = `Mã OTP đã gửi đến tài khoản. (Mã mẫu: ${data.otp})`;
+                    document.getElementById('fp-step-1').style.display = 'none';
+                    document.getElementById('fp-step-2').style.display = 'block';
+                } else {
+                    alert('❌ ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server!');
+            }
+        }
+
+        async function submitResetPassword() {
+            const usernameOrEmail = document.getElementById('fp-user-input').value;
+            const otp = document.getElementById('fp-otp-input').value;
+            const newPassword = document.getElementById('fp-new-pass').value;
+
+            if (!otp || !newPassword) return alert('Vui lòng nhập mã OTP và mật khẩu mới!');
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/forgot-password/reset`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usernameOrEmail, otp, newPassword })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('🎉 ' + data.message);
+                    closeForgotPasswordModal();
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server!');
+            }
+        }
+
+        function showSystemMaintenanceModal() {
+            const modal = document.getElementById('system-maintenance-modal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        async function loadFields() {
+            const container = document.getElementById('fields-grid');
+            try {
+                const res = await fetch(`${API_BASE}/bookings/fields`);
+                
+                if (res.status === 503) {
+                    showSystemMaintenanceModal();
+                    container.innerHTML = '<p style="color: var(--accent-gold); text-align: center; font-weight: bold; font-size: 1.1rem;">⚠️ Hệ thống đang bảo trì để nâng cấp, vui lòng quay lại sau!</p>';
+                    return;
+                }
+
+                const fields = await res.json();
+
+                // TỐI ƯU HIỆU NĂNG: Tải đồng thời tất cả giá AI song song (Promise.all) thay vì tuần tự từng sân
+                const pricePromises = fields.map(async (field) => {
+                    const isFieldMaintenance = field.status === false || field.status === 0;
+                    let dynamicPrice = field.basePrice;
+
+                    if (!isFieldMaintenance) {
+                        try {
+                            const aiRes = await fetch(`${API_BASE}/bookings/fields/${field.fieldId}/ai-price`);
+                            if (aiRes.status === 503) {
+                                showSystemMaintenanceModal();
+                                return { field, isFieldMaintenance, dynamicPrice, isMaintenanceError: true };
+                            }
+                            const aiData = await aiRes.json();
+                            dynamicPrice = aiData.dynamic_price || aiData.optimal_price || field.basePrice;
+                        } catch (e) {}
+                    }
+                    return { field, isFieldMaintenance, dynamicPrice, isMaintenanceError: false };
+                });
+
+                const loadedFields = await Promise.all(pricePromises);
+                if (loadedFields.some(f => f.isMaintenanceError)) return;
+
+                // TỐI ƯU HIỆU NĂNG: Sử dụng DocumentFragment giảm số lần render lại DOM xuống 1 lần duy nhất
+                const fragment = document.createDocumentFragment();
+                loadedFields.forEach(({ field, isFieldMaintenance, dynamicPrice }, i) => {
+                    const index = i + 1;
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    
+                    if (isFieldMaintenance) {
+                        card.style.opacity = '0.75';
+                        card.style.border = '1px solid var(--danger)';
+                        card.innerHTML = `
+                            <div class="ai-badge" style="background: rgba(239, 68, 68, 0.2); color: var(--danger); border-color: var(--danger);"><i class="fa-solid fa-screwdriver-wrench"></i> Sân ${index} - Đang bảo trì</div>
+                            <div class="field-title" style="color: var(--text-muted);">${field.name}</div>
+                            <div class="field-meta"><i class="fa-solid fa-location-dot" style="color: var(--text-muted);"></i> ${field.location}</div>
+                            <div class="price-box" style="background: rgba(239, 68, 68, 0.1); border-radius: 8px; padding: 0.75rem; text-align: center; margin: 1rem 0;">
+                                <div style="color: var(--danger); font-weight: bold; font-size: 0.95rem;">🛠️ SÂN ĐANG BẢO TRÌ</div>
+                                <small style="color: var(--text-muted);">Tạm dừng tiếp nhận đặt lịch</small>
+                            </div>
+                            <button class="btn" disabled style="background: #475569; color: #94a3b8; cursor: not-allowed; opacity: 0.6;">
+                                <i class="fa-solid fa-lock"></i> Đang Bảo Trì
+                            </button>
+                        `;
+                    } else {
+                        card.innerHTML = `
+                            <div class="ai-badge" style="background: #e0f2fe; color: #0369a1; border-color: #7dd3fc;"><i class="fa-solid fa-futbol"></i> Sân ${index}</div>
+                            <div class="field-title">${field.name}</div>
+                            <div class="field-meta"><i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> ${field.location}</div>
+                            <div class="price-box">
+                                <div class="price-original">Gốc: ${field.basePrice.toLocaleString()} VNĐ</div>
+                                <div class="price-ai">${dynamicPrice.toLocaleString()} VNĐ</div>
+                            </div>
+                            <button class="btn" onclick="openBookingModal('${field.fieldId}', '${field.name}', ${dynamicPrice})">Đặt Sân Ngay</button>
+                        `;
+                    }
+                    fragment.appendChild(card);
+                });
+
+                container.innerHTML = '';
+                container.appendChild(fragment);
+            } catch (err) {
+                container.innerHTML = '<p style="color: var(--danger); text-align: center;">Không thể kết nối Backend API (Port 5048).</p>';
+            }
+        }
+
+        let chatHistory = [];
+
+        async function sendAiChat() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML += `<div style="margin-top: 8px; font-weight: 600;">👤 Bạn: ${msg}</div>`;
+            input.value = '';
+
+            chatHistory.push({ role: 'user', content: msg });
+
+            try {
+                const res = await fetch('http://localhost:5050/api/chat-assistant', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg, messages: chatHistory })
+                });
+
+                const data = await res.json();
+                const rawReply = data.response || data.reply || '';
+                
+                chatHistory.push({ role: 'assistant', content: rawReply });
+
+                const formattedHtml = typeof marked !== 'undefined' ? marked.parse(rawReply) : rawReply.replace(/\n/g, '<br>');
+                
+                chatBox.innerHTML += `<div style="color: var(--text-main); margin-top: 8px; border-left: 3px solid var(--primary); padding-left: 8px;"><strong>🤖 PitchAI Assistant:</strong><div style="margin-top: 4px; line-height: 1.5;">${formattedHtml}</div></div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } catch (err) {
+                chatBox.innerHTML += `<div style="color: var(--danger); margin-top: 8px;">🤖 PitchAI Assistant: Không kết nối được AI Service (Port 5050).</div>`;
+            }
+        }
+
+        function openBookingModal(id, name, price) {
+            currentField = { id, name, price };
+            document.getElementById('modal-field-name').innerText = name;
+            document.getElementById('modal-price').innerText = price.toLocaleString() + ' VNĐ';
+            document.getElementById('qr-container').style.display = 'none';
+            document.getElementById('btn-pay').style.display = 'block';
+            initDateTimeLimits();
+            document.getElementById('booking-modal').style.display = 'flex';
+        }
+
+        function closeModal() { 
+            document.getElementById('booking-modal').style.display = 'none'; 
+        }
+
+        async function processPayment() {
+            if (!currentField) return;
+
+            const selectedTimeVal = document.getElementById('booking-time').value;
+            if (!selectedTimeVal) return alert('Vui lòng chọn thời gian muốn đặt sân!');
+
+            const selectedTime = new Date(selectedTimeVal);
+            const now = new Date();
+            const minTime = new Date(now.getTime() + 2 * 60 * 60 * 1000 - 60000);
+            const maxTime = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000 + 60000);
+
+            if (selectedTime < minTime || selectedTime > maxTime) {
+                return alert('❌ Vui lòng chọn thời gian đặt từ 2 tiếng sau đến 3 ngày tới!');
+            }
+
+            const btnPay = document.getElementById('btn-pay');
+            const qrContainer = document.getElementById('qr-container');
+            const qrCode = document.getElementById('qr-code');
+            const statusText = document.getElementById('payment-status-text');
+
+            btnPay.style.display = 'none';
+            qrContainer.style.display = 'block';
+            qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=WALLET_PAYMENT_${currentField.id}`;
+            statusText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý giao dịch...';
+
+            try {
+                const userId = currentUser ? currentUser.id : '88888888-8888-8888-8888-888888888888';
+                const localISOString = formatLocalISOString(selectedTime) + ':00';
+
+                const res = await fetch(`${API_BASE}/bookings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: userId,
+                        fieldId: currentField.id,
+                        bookingTime: localISOString,
+                        startTime: localISOString,
+                        endTime: formatLocalISOString(new Date(selectedTime.getTime() + 3600000)) + ':00',
+                        totalPrice: currentField.price
+                    })
+                });
+
+                if (res.status === 503) {
+                    closeModal();
+                    showSystemMaintenanceModal();
+                    return;
+                }
+
+                const data = await res.json();
+                
+                if (res.ok) {
+                    if (currentUser && currentUser.walletBalance !== undefined) {
+                        currentUser.walletBalance -= currentField.price;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    }
+
+                    statusText.innerHTML = '✅ <span style="color: var(--primary);">Thanh toán & Đặt sân thành công!</span>';
+                    setTimeout(() => {
+                        alert('🎉 ĐẶT SÂN THÀNH CÔNG!\nThời gian đặt: ' + selectedTime.toLocaleString('vi-VN') + '\nĐã trừ ' + currentField.price.toLocaleString() + ' VNĐ từ ví ảo.');
+                        closeModal();
+                        checkAuth();
+                    }, 1200);
+                } else {
+                    const errorMsg = data.message || 'Thanh toán thất bại!';
+                    statusText.innerHTML = `❌ <span style="color: var(--danger); font-weight: bold;">${errorMsg}</span>`;
+                    setTimeout(() => {
+                        alert(`❌ CẢNH BÁO THANH TOÁN:\n${errorMsg}`);
+                        closeModal();
+                    }, 1500);
+                }
+            } catch (err) {
+                statusText.innerHTML = '❌ <span style="color: var(--danger);">Không thể kết nối Backend API!</span>';
+                setTimeout(() => {
+                    alert('❌ Lỗi kết nối Backend API Server!');
+                    closeModal();
+                }, 1500);
+            }
+        }
+
+        checkAuth();
+
+        function toggleAuthMode() {
+            isRegister = !isRegister;
+            const errorMsgBox = document.getElementById('auth-error-msg');
+            const regExtra = document.getElementById('auth-reg-extra');
+            if (errorMsgBox) errorMsgBox.style.display = 'none';
+
+            if (isRegister) {
+                document.getElementById('auth-title').innerHTML = '<i class="fa-solid fa-user-plus"></i> Đăng Ký Tài Khoản';
+                document.getElementById('auth-username').placeholder = 'Tên đăng nhập mới (VD: doanh, user123)';
+                if (regExtra) regExtra.style.display = 'block';
+                document.getElementById('auth-btn-submit').innerText = 'Đăng Ký Tài Khoản';
+                document.getElementById('auth-recovery-links').style.display = 'none';
+                document.getElementById('auth-toggle-text').innerText = 'Đã có tài khoản?';
+                document.getElementById('auth-toggle-btn').innerText = 'Đăng nhập ngay';
+            } else {
+                document.getElementById('auth-title').innerHTML = '<i class="fa-solid fa-user-lock"></i> Đăng Nhập Khách Hàng';
+                document.getElementById('auth-username').placeholder = 'Tên đăng nhập';
+                if (regExtra) regExtra.style.display = 'none';
+                document.getElementById('auth-btn-submit').innerText = 'Đăng Nhập';
+                document.getElementById('auth-recovery-links').style.display = 'flex';
+                document.getElementById('auth-toggle-text').innerText = 'Chưa có tài khoản?';
+                document.getElementById('auth-toggle-btn').innerText = 'Đăng ký ngay';
+            }
+        }
+
+        async function submitAuth() {
+            const errorMsgBox = document.getElementById('auth-error-msg');
+            if (errorMsgBox) errorMsgBox.style.display = 'none';
+
+            const username = document.getElementById('auth-username').value;
+            const pass = document.getElementById('auth-pass').value;
+
+            if (!isRegister && (!username || !pass)) {
+                loginAsDemo();
+                return;
+            }
+
+            if (isRegister) {
+                const fullName = document.getElementById('auth-fullname').value;
+                const phone = document.getElementById('auth-phone').value;
+                const email = document.getElementById('auth-email').value;
+
+                if (!username || !pass || !fullName || !phone || !email) {
+                    if (errorMsgBox) {
+                        errorMsgBox.innerText = 'Vui lòng điền đầy đủ Tên đăng nhập, Mật khẩu, Họ tên, SĐT và Email!';
+                        errorMsgBox.style.display = 'block';
+                    } else alert('Vui lòng điền đầy đủ thông tin đăng ký!');
+                    return;
+                }
+            }
+
+            const endpoint = isRegister ? `${API_BASE}/auth/register` : `${API_BASE}/auth/login`;
+            const payload = isRegister 
+                ? { 
+                    username: username, 
+                    fullName: document.getElementById('auth-fullname').value, 
+                    phone: document.getElementById('auth-phone').value, 
+                    email: document.getElementById('auth-email').value, 
+                    password: pass, 
+                    role: 0 
+                  } 
+                : { username: username, password: pass };
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('🎉 ' + data.message);
+                    if (!isRegister) {
+                        localStorage.removeItem('user_logged_out');
+                        currentUser = data.user;
+                        localStorage.setItem('currentUser', JSON.stringify(data.user));
+                        checkAuth();
+                    } else {
+                        toggleAuthMode();
+                    }
+                } else {
+                    const errText = data.message || 'Đăng nhập / Đăng ký không thành công!';
+                    if (errorMsgBox) {
+                        errorMsgBox.innerText = '❌ ' + errText;
+                        errorMsgBox.style.display = 'block';
+                    } else {
+                        alert('❌ Lỗi: ' + errText);
+                    }
+                }
+            } catch (err) {
+                const connErr = 'Không thể kết nối Server Backend (Port 5048). Vui lòng kiểm tra lại dịch vụ!';
+                if (errorMsgBox) {
+                    errorMsgBox.innerText = '❌ ' + connErr;
+                    errorMsgBox.style.display = 'block';
+                } else {
+                    alert('❌ Lỗi kết nối Server!');
+                }
+            }
+        }
+    </script>
+
+    <!-- Floating Zalo Button -->
+    <a href="https://zalo.me/0364382164" target="_blank" style="position: fixed; bottom: 20px; right: 20px; background: #0284c7; color: white; padding: 10px 18px; border-radius: 30px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4); display: flex; align-items: center; gap: 8px; z-index: 9999; font-size: 0.9rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <i class="fa-solid fa-headset" style="font-size: 1.2rem;"></i> Zalo 0364382164
+    </a>
+</body>
+</html>

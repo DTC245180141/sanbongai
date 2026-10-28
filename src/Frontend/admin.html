@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AI Football Manager</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Admin <span>Dashboard AI</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Trang Chủ Đặt Sân</a>
+                <a href="admin.html" class="active">Dashboard Quản Trị</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="hero" style="text-align: left; padding: 1.5rem 0;">
+            <h2>Báo Cáo Doanh Thu, Quản Lý Đơn Hàng & Quản Lý Tài Khoản</h2>
+            <p>Admin kiểm soát danh sách Booking, cấu hình giá và quản lý/khóa tài khoản khách hàng</p>
+        </div>
+
+        <!-- Quản Lý Bảo Trì Hệ Thống & Bảo Trì Sân Bóng -->
+        <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="card" style="border: 2px solid var(--accent-gold);">
+                <h3><i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-gold);"></i> Bảo Trì Toàn Hệ Thống</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.5rem 0 1rem 0;">
+                    Bật chế độ này sẽ chặn toàn bộ truy cập API của khách hàng (trả về HTTP 503).
+                </p>
+                <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.05); padding: 0.8rem; border-radius: 10px;">
+                    <span id="sys-maint-status-badge" style="font-weight: 700; color: var(--primary);">✅ Đang Hoạt Động Bình Thường</span>
+                    <button id="btn-toggle-sys-maint" class="btn" style="width: auto; padding: 0.5rem 1rem; background: var(--danger); color: white;" onclick="toggleSystemMaintenance()">
+                        <i class="fa-solid fa-power-off"></i> Bật Bảo Trì
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fa-solid fa-screwdriver-wrench" style="color: var(--primary);"></i> Quản Lý Trạng Thái Bảo Trì Từng Sân Bóng</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 0.75rem; color: var(--text-main);">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--card-border); text-align: left; font-size: 0.88rem;">
+                            <th style="padding: 0.6rem;">Tên Sân</th>
+                            <th style="padding: 0.6rem;">Loại Sân</th>
+                            <th style="padding: 0.6rem;">Trạng Thái</th>
+                            <th style="padding: 0.6rem; text-align: right;">Bảo Trì (Toggle)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-fields-list">
+                        <tr><td colspan="4" style="padding: 1rem; text-align: center;">Đang tải danh sách sân...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quản lý cấu hình giá niêm yết PricingConfig -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3><i class="fa-solid fa-sliders" style="color: var(--accent-gold);"></i> Cập Nhật Cấu Hình Giá Niêm Yết (Admin PricingConfig)</h3>
+            <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+                <select id="config-field-type" style="padding: 0.8rem; border-radius: 10px;">
+                    <option value="5">Sân 5 người</option>
+                    <option value="7">Sân 7 người VIP</option>
+                    <option value="11">Sân 11 người Quốc tế</option>
+                </select>
+                <input type="number" id="config-base-price" placeholder="Giá gốc mới (VNĐ)" style="padding: 0.8rem; border-radius: 10px; width: 220px;">
+                <button class="btn" style="width: auto; padding: 0.8rem 1.5rem;" onclick="updatePricingConfig()">Lưu Cấu Hình Giá</button>
+            </div>
+        </div>
+
+        <!-- Admin Panel - Quản lý tài khoản Người Dùng (Users Management) -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3><i class="fa-solid fa-users-gear" style="color: var(--primary);"></i> Admin Panel - Quản Lý Tài Khoản Người Dùng</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; color: var(--text-main);">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--card-border); text-align: left;">
+                        <th style="padding: 0.85rem;">Họ Tên</th>
+                        <th style="padding: 0.85rem;">Số Điện Thoại</th>
+                        <th style="padding: 0.85rem;">Vai Trò</th>
+                        <th style="padding: 0.85rem;">Số Dư Ví</th>
+                        <th style="padding: 0.85rem;">Trạng Thái</th>
+                        <th style="padding: 0.85rem;">Hành Động Admin</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-users-list">
+                    <tr><td colspan="6" style="padding: 1rem; text-align: center;">Đang tải danh sách người dùng...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Admin Panel - Quản Lý Yêu Cầu Nạp Tiền (Deposit Requests Approval) -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3><i class="fa-solid fa-wallet" style="color: var(--accent-gold);"></i> Quản Lý Nạp Tiền (Phê Duyệt Nạp Ví)</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; color: var(--text-main);">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--card-border); text-align: left;">
+                        <th style="padding: 0.85rem;">Người Nạp</th>
+                        <th style="padding: 0.85rem;">Số Điện Thoại</th>
+                        <th style="padding: 0.85rem;">Số Tiền</th>
+                        <th style="padding: 0.85rem;">Mã Giao Dịch / Nội Dung</th>
+                        <th style="padding: 0.85rem;">Thời Gian</th>
+                        <th style="padding: 0.85rem;">Trạng Thái</th>
+                        <th style="padding: 0.85rem;">Hành Động Duyệt</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-deposits-list">
+                    <tr><td colspan="7" style="padding: 1rem; text-align: center;">Đang tải danh sách yêu cầu nạp tiền...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 2rem;">
+            <div class="card">
+                <h3>Doanh Thu Dự Kiến Tháng</h3>
+                <div class="price-ai" style="margin-top: 0.5rem;">58,200,000 VNĐ</div>
+                <small style="color: var(--primary);">+22.4% nhờ thuật toán Dynamic Pricing</small>
+            </div>
+            <div class="card">
+                <h3>Tỷ Lệ Lấp Đầy Sân (Occupancy)</h3>
+                <div class="price-ai" style="color: var(--accent-gold); margin-top: 0.5rem;">86.5%</div>
+                <small style="color: var(--text-muted);">Tự động kích cầu vào giờ thấp điểm</small>
+            </div>
+            <div class="card">
+                <h3>Xung Đột Đặt Trùng Lịch</h3>
+                <div class="price-ai" style="color: #60a5fa; margin-top: 0.5rem;">0 Lỗi (0%)</div>
+                <small style="color: var(--primary);">Concurrency Lock hoạt động hoàn hảo</small>
+            </div>
+        </div>
+
+        <!-- Heatmap Section -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3><i class="fa-solid fa-fire" style="color: var(--danger);"></i> Heatmap Khung Giờ Đặt Sân (Tỷ Lệ Lấp Đầy)</h3>
+                <span class="ai-badge"><i class="fa-solid fa-robot"></i> AI Heatmap Engine</span>
+            </div>
+            <div class="heatmap-grid">
+                <div class="heatmap-cell cell-low">T2: 14h-17h (40%)</div>
+                <div class="heatmap-cell cell-high">T2: 17h-21h (95%)</div>
+                <div class="heatmap-cell cell-medium">T3: 17h-21h (75%)</div>
+                <div class="heatmap-cell cell-high">T4: 17h-21h (98%)</div>
+                <div class="heatmap-cell cell-medium">T5: 17h-21h (80%)</div>
+                <div class="heatmap-cell cell-high">T6: 17h-21h (100%)</div>
+                <div class="heatmap-cell cell-high">T7-CN: Full (100%)</div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard Bookings List -->
+        <div class="card">
+            <h3><i class="fa-solid fa-list"></i> Danh Sách Đơn Đặt Sân & Hoàn Tiền Ví (Admin Dashboard)</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; color: var(--text-main);">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--card-border); text-align: left;">
+                        <th style="padding: 0.85rem;">Mã Đơn</th>
+                        <th style="padding: 0.85rem;">Sân Bóng</th>
+                        <th style="padding: 0.85rem;">Khung Giờ Đặt</th>
+                        <th style="padding: 0.85rem;">Giá Tiền</th>
+                        <th style="padding: 0.85rem;">Trạng Thái</th>
+                        <th style="padding: 0.85rem;">Hành Động Admin</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-bookings-list">
+                    <tr><td colspan="6" style="padding: 1rem; text-align: center;">Đang kết nối tải dữ liệu C# Web API...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5048/api';
+
+        // TỐI ƯU HIỆU NĂNG: Tải đồng thời tất cả các phần dữ liệu của Dashboard quản trị qua Promise.all
+        async function loadAdminData() {
+            await Promise.all([
+                loadSystemMaintenanceStatus(),
+                loadAdminFields(),
+                loadUsers(),
+                loadDeposits(),
+                loadBookings()
+            ]);
+        }
+
+        let isSystemMaintenanceActive = false;
+
+        async function loadSystemMaintenanceStatus() {
+            const badge = document.getElementById('sys-maint-status-badge');
+            const btn = document.getElementById('btn-toggle-sys-maint');
+            try {
+                const res = await fetch(`${API_BASE}/admin/system-maintenance`);
+                const data = await res.json();
+                isSystemMaintenanceActive = data.isMaintenance;
+
+                if (isSystemMaintenanceActive) {
+                    badge.innerHTML = '🚨 <span style="color: var(--danger);">ĐANG BẢO TRÌ HỆ THỐNG</span>';
+                    btn.innerHTML = '<i class="fa-solid fa-power-off"></i> Tắt Bảo Trì';
+                    btn.style.background = '#10b981';
+                } else {
+                    badge.innerHTML = '✅ <span style="color: var(--primary);">Đang Hoạt Động Bình Thường</span>';
+                    btn.innerHTML = '<i class="fa-solid fa-power-off"></i> Bật Bảo Trì';
+                    btn.style.background = 'var(--danger)';
+                }
+            } catch (err) {
+                badge.innerText = '❌ Không kiểm tra được trạng thái';
+            }
+        }
+
+        async function toggleSystemMaintenance() {
+            const nextState = !isSystemMaintenanceActive;
+            const confirmMsg = nextState 
+                ? 'Bạn có chắc chắn muốn BẬT CHẾ ĐỘ BẢO TRÌ HỆ THỐNG?\nTất cả request từ Khách hàng sẽ bị chặn với mã 503.' 
+                : 'Bạn có chắc chắn muốn TẮT BẢO TRÌ HỆ THỐNG và mở lại dịch vụ cho khách hàng?';
+
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/system-maintenance`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isMaintenance: nextState })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('🎉 ' + data.message);
+                    loadSystemMaintenanceStatus();
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server!');
+            }
+        }
+
+        async function loadAdminFields() {
+            const tbody = document.getElementById('admin-fields-list');
+            try {
+                const res = await fetch(`${API_BASE}/bookings/fields`);
+                const fields = await res.json();
+
+                if (!fields || fields.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="padding: 0.8rem; text-align: center; color: var(--text-muted);">Không có sân bóng nào.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = fields.map(f => {
+                    const isActive = f.status === true || f.status === 1;
+                    return `
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.6rem; font-weight: 600;">${f.name}</td>
+                            <td style="padding: 0.6rem; color: var(--accent-gold);">Sân ${f.fieldType} người</td>
+                            <td style="padding: 0.6rem;">
+                                ${isActive 
+                                    ? '<span style="color: var(--primary); font-weight: 600;">🟢 Hoạt Động</span>' 
+                                    : '<span style="color: var(--danger); font-weight: 600;">🛠️ Đang Bảo Trì</span>'}
+                            </td>
+                            <td style="padding: 0.6rem; text-align: right;">
+                                <button onclick="toggleFieldMaintenance('${f.fieldId}', ${!isActive})" style="background: ${isActive ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)'}; color: ${isActive ? 'var(--danger)' : 'var(--primary)'}; border: 1px solid ${isActive ? 'var(--danger)' : 'var(--primary)'}; padding: 0.35rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 600;">
+                                    ${isActive ? '🛠️ Khóa Bảo Trì' : '🟢 Mở Hoạt Động'}
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="4" style="padding: 0.8rem; text-align: center; color: var(--danger);">Lỗi tải danh sách sân bóng!</td></tr>';
+            }
+        }
+
+        async function toggleFieldMaintenance(fieldId, status) {
+            try {
+                const res = await fetch(`${API_BASE}/admin/fields/${fieldId}/maintenance`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: status })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('✅ ' + data.message);
+                    loadAdminFields();
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server!');
+            }
+        }
+
+        async function loadDeposits() {
+            const tbody = document.getElementById('admin-deposits-list');
+            try {
+                const res = await fetch(`${API_BASE}/payment/deposit-requests`);
+                const deposits = await res.json();
+
+                if (!deposits || deposits.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="padding: 1rem; text-align: center; color: var(--text-muted);">Chưa có yêu cầu nạp tiền nào.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = deposits.map(d => {
+                    const isPending = d.status === 'Pending' || d.status === 0;
+                    const isSuccess = d.status === 'Success' || d.status === 1;
+                    const isRejected = d.status === 'Rejected' || d.status === 2;
+
+                    let statusBadge = '<span style="color: var(--accent-gold); font-weight: 600;">⏳ Chờ Duyệt (Pending)</span>';
+                    if (isSuccess) statusBadge = '<span style="color: var(--primary); font-weight: 600;">✅ Thắng (Success)</span>';
+                    if (isRejected) statusBadge = '<span style="color: var(--danger); font-weight: 600;">❌ Từ Chối (Rejected)</span>';
+
+                    return `
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.85rem; font-weight: 600;">${d.userName}</td>
+                            <td style="padding: 0.85rem;">${d.userPhone}</td>
+                            <td style="padding: 0.85rem; font-weight: 700; color: var(--primary);">${d.amount.toLocaleString()} VNĐ</td>
+                            <td style="padding: 0.85rem; font-family: monospace;">${d.transactionCode}<br><small style="color: var(--text-muted);">${d.memo || ''}</small></td>
+                            <td style="padding: 0.85rem;">${new Date(d.createdAt).toLocaleString('vi-VN')}</td>
+                            <td style="padding: 0.85rem;">${statusBadge}</td>
+                            <td style="padding: 0.85rem;">
+                                ${isPending ? `
+                                    <div style="display: flex; gap: 0.4rem;">
+                                        <button onclick="approveDeposit('${d.id}')" style="background: rgba(16, 185, 129, 0.2); color: var(--primary); border: 1px solid var(--primary); padding: 0.35rem 0.7rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                                            <i class="fa-solid fa-check"></i> Duyệt
+                                        </button>
+                                        <button onclick="rejectDeposit('${d.id}')" style="background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); padding: 0.35rem 0.7rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                                            <i class="fa-solid fa-xmark"></i> Từ Chối
+                                        </button>
+                                    </div>
+                                ` : '<span style="color: var(--text-muted); font-size: 0.85rem;">Đã Xử Lý</span>'}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="7" style="padding: 1rem; text-align: center; color: var(--danger);">Không kết nối được API Deposit Requests.</td></tr>';
+            }
+        }
+
+        async function approveDeposit(depositId) {
+            if (!confirm('Bạn có chắc chắn muốn DUYỆT yêu cầu nạp tiền này và cộng tiền vào ví người dùng?')) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/payment/deposit-requests/${depositId}/approve`, {
+                    method: 'POST'
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('🎉 ' + data.message);
+                    loadAdminData();
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server!');
+            }
+        }
+
+        async function rejectDeposit(depositId) {
+            if (!confirm('Bạn có chắc chắn muốn TỪ CHỐI yêu cầu nạp tiền này?')) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/payment/deposit-requests/${depositId}/reject`, {
+                    method: 'POST'
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('✅ ' + data.message);
+                    loadAdminData();
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server!');
+            }
+        }
+
+        async function loadUsers() {
+            const tbody = document.getElementById('admin-users-list');
+            try {
+                const res = await fetch(`${API_BASE}/admin/users`);
+                const users = await res.json();
+
+                tbody.innerHTML = users.map(u => `
+                    <tr style="border-bottom: 1px solid var(--card-border);">
+                        <td style="padding: 0.85rem; font-weight: 600;">${u.fullName}</td>
+                        <td style="padding: 0.85rem;">${u.phone}</td>
+                        <td style="padding: 0.85rem; color: var(--accent-gold); font-weight: 700;">${u.role}</td>
+                        <td style="padding: 0.85rem; font-weight: 700; color: var(--primary);">${u.walletBalance.toLocaleString()} VNĐ</td>
+                        <td style="padding: 0.85rem;">
+                            ${u.isLocked 
+                                ? '<span style="color: var(--danger); font-weight: 600;">🔒 Đã Khóa</span>' 
+                                : '<span style="color: var(--primary); font-weight: 600;">✅ Hoạt Động</span>'}
+                        </td>
+                        <td style="padding: 0.85rem; display: flex; gap: 0.5rem;">
+                            <button onclick="toggleUserStatus('${u.id}', ${!u.isLocked})" style="background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); padding: 0.35rem 0.7rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                                ${u.isLocked ? '🔓 Mở Khóa' : '🔒 Khóa TK'}
+                            </button>
+                            <button onclick="adjustUserBalance('${u.id}')" style="background: rgba(16, 185, 129, 0.15); color: var(--primary); border: 1px solid var(--primary); padding: 0.35rem 0.7rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                                💵 Cấp Tiền Ví
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding: 1rem; text-align: center; color: var(--danger);">Không kết nối được API Users.</td></tr>';
+            }
+        }
+
+        async function toggleUserStatus(userId, lockStatus) {
+            try {
+                const res = await fetch(`${API_BASE}/admin/users/${userId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isLocked: lockStatus })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('✅ ' + data.message);
+                    loadUsers();
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server!');
+            }
+        }
+
+        async function adjustUserBalance(userId) {
+            const amountStr = prompt('Nhập số tiền Admin muốn cấp/điều chỉnh cho Ví người dùng (VD: 500000 hoặc -100000):', '500000');
+            if (!amountStr) return;
+
+            const amount = parseFloat(amountStr);
+            if (isNaN(amount)) return alert('Số tiền nhập không hợp lệ!');
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/users/${userId}/balance`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('🎉 ' + data.message);
+                    loadUsers();
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Server!');
+            }
+        }
+
+        async function loadBookings() {
+            const tbody = document.getElementById('admin-bookings-list');
+            try {
+                const res = await fetch(`${API_BASE}/bookings`);
+                const bookings = await res.json();
+
+                if (bookings.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="padding: 1rem; text-align: center; color: var(--text-muted);">Chưa có giao dịch đặt sân nào phát sinh.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = bookings.map(b => {
+                    const isCancelled = b.status === 2 || b.status === 'Cancelled';
+                    return `
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.85rem; font-family: monospace;">${b.bookingId.substring(0, 8)}...</td>
+                            <td style="padding: 0.85rem;">${b.fieldId.substring(0, 8)}...</td>
+                            <td style="padding: 0.85rem;">${new Date(b.bookingTime || b.startTime).toLocaleString('vi-VN')}</td>
+                            <td style="padding: 0.85rem; font-weight: 700; color: var(--primary);">${b.totalPrice.toLocaleString()} VNĐ</td>
+                            <td style="padding: 0.85rem;">
+                                ${isCancelled 
+                                    ? '<span style="color: var(--danger); font-weight: 600;">Đã Hủy & Hoàn Tiền</span>' 
+                                    : '<span style="color: var(--primary); font-weight: 600;">Đã Xác Nhận</span>'}
+                            </td>
+                            <td style="padding: 0.85rem;">
+                                ${!isCancelled ? `
+                                    <button onclick="cancelAndRefundBooking('${b.bookingId}')" style="background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                                        <i class="fa-solid fa-trash-can"></i> Xóa & Hoàn Tiền
+                                    </button>
+                                ` : '<span style="color: var(--text-muted); font-size: 0.85rem;">-</span>'}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding: 1rem; text-align: center; color: var(--danger);">Không kết nối được Backend C# API (Port 5048).</td></tr>';
+            }
+        }
+
+        async function updatePricingConfig() {
+            const fieldType = parseInt(document.getElementById('config-field-type').value);
+            const basePrice = parseFloat(document.getElementById('config-base-price').value);
+
+            if (!basePrice || basePrice <= 0) {
+                return alert('Vui lòng nhập mức giá niêm yết hợp lệ!');
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/update-price`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fieldType, basePrice })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('✅ ' + data.message);
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối API Server!');
+            }
+        }
+
+        async function cancelAndRefundBooking(bookingId) {
+            if (!confirm(`Bạn có chắc chắn muốn XÓA và HOÀN TIỀN đơn đặt sân ${bookingId.substring(0, 8)}... vào Ví của khách hàng?`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/bookings/${bookingId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('🎉 HOÀN TIỀN THÀNH CÔNG!\n' + data.message);
+                    loadBookings();
+                } else {
+                    alert('❌ LỖI HOÀN TIỀN: ' + data.message);
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối Backend API Server!');
+            }
+        }
+
+        window.onload = loadAdminData;
+    </script>
+</body>
+</html>
