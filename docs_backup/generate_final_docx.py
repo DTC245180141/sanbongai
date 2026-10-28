@@ -223,7 +223,7 @@ add_sec5(create_heading('5.6 Bảo mật dữ liệu & Quản lý API Key (Tiêu
 add_sec5(create_body('An toàn thông tin và bảo mật dữ liệu khách hàng được đặt làm ưu tiên hàng đầu trong thiết kế hệ thống:'))
 add_sec5(create_bullet('Thay vì sử dụng OpenAI API hay Cloud LLM công cộng có nguy cơ rò rỉ thông tin cá nhân và lịch trình sinh hoạt của sinh viên/khách hàng lên máy chủ nước ngoài, toàn bộ mô hình ngôn ngữ lớn Qwen 7B được triển khai nội bộ trên máy trạm thông qua LM Studio (http://127.0.0.1:1234). Dữ liệu trò chuyện không bao giờ rời khỏi mạng nội bộ.', '1. Kiến trúc Local LLM độc lập (Zero Cloud Data Leakage): '))
 add_sec5(create_bullet('Hệ thống không lưu trữ API Key dạng hardcode trong mã nguồn công khai; các tham số kết nối ngân hàng VietQR MBBank và JWT Secret Key được quản lý tập trung và bảo mật qua biến môi trường hoặc appsettings.', '2. Bảo vệ khóa bí mật & API Keys: '))
-add_sec5(create_bullet('Mật khẩu người dùng được băm an toàn qua thuật toán SHA-256 trước khi lưu trữ vào bảng Users. Quản trị viên và kỹ thuật viên hệ thống hoàn toàn không thể xem được mật khẩu gốc của khách hàng.', '3. Mã hóa một chiều mật khẩu (SHA-256 + Salt): '))
+add_sec5(create_bullet('Hiện tại, hệ thống sử dụng thuật toán băm mật khẩu một chiều SHA-256 (System.Security.Cryptography.SHA256 trong UserService.cs) trước khi lưu trữ vào trường PasswordHash trong CSDL. Thuật toán này bảo đảm mật khẩu không bị lưu dạng văn bản rõ (plaintext) và quản trị viên không thể xem được mật khẩu gốc.\n• Nhận diện hạn chế kỹ thuật: Việc sử dụng SHA-256 thuần chưa kết hợp chuỗi muối ngẫu nhiên (Salt riêng cho từng user) và SHA-256 là hàm băm tốc độ cao (Fast Hash), nên về mặt lý thuyết an toàn thông tin vẫn tiềm ẩn rủi ro nếu CSDL bị rò rỉ, kẻ tấn công có thể tra cứu ngược qua bảng cầu vồng (Rainbow Table Attack) hoặc vét cạn bằng GPU đối với mật khẩu ngắn.\n• Hướng nâng cấp đề xuất: Trong phiên bản tiếp theo, nhóm định hướng nâng cấp sang các thuật toán băm chậm chuyên dụng cho xác thực (Key Derivation Functions) như BCrypt (BCrypt.Net-Next với work factor >= 12) hoặc PBKDF2 / Argon2id kết hợp Salt ngẫu nhiên tối thiểu 128-bit cho từng tài khoản, loại bỏ hoàn toàn nguy cơ Rainbow Table và Brute-force.', '3. Mã hóa một chiều mật khẩu bằng SHA-256 (Hiện trạng, Hạn chế & Hướng nâng cấp): '))
 add_sec5(create_bullet('Token được ký số bằng thuật toán mã hóa đối xứng HmacSha256 với thời hạn hết hạn xác định, mang theo thông tin định danh và vai trò (UserRole.Customer hoặc UserRole.Admin), bảo vệ chống giả mạo quyền truy cập.', '4. Bảo mật phiên đăng nhập bằng JSON Web Token (JWT): '))
 add_sec5(create_bullet('Toàn bộ truy vấn dữ liệu trong tầng Backend được thực hiện thông qua Entity Framework Core (ORM) với kỹ thuật Parameterized Queries, vô hiệu hóa mọi nỗ lực chèn mã SQL độc hại qua các trường nhập liệu.', '5. Chống tấn công SQL Injection: '))
 add_sec5(create_bullet('Cấu hình chính sách CORS nghiêm ngặt tại Backend ASP.NET Core và Python Flask, ngăn chặn các website giả mạo gửi request đánh cắp phiên làm việc của khách hàng.', '6. Kiểm soát tài nguyên chéo CORS (Cross-Origin Resource Sharing): '))
@@ -478,6 +478,21 @@ matrix_rows = [
     ['CLO5 / PLO7 (Vận hành & SDLC)', 'Giao diện Modern Glassmorphism; triển khai Docker container; minh chứng sửa lỗi AI; vấn đáp độc lập từng thành viên', 'UI/UX Responsive, Dockerfile Backend & AI, docker-compose.yml, 4 Case Studies sửa lỗi AI, kịch bản Demo 8 bước', 'docker-compose.yml\nsrc/Backend/Dockerfile\nsrc/AIService/Dockerfile\nREADME.md', 'Đã hoàn thành bàn giao, sẵn sàng bảo vệ trước Hội đồng']
 ]
 create_table(matrix_headers, matrix_rows)
+
+# ==============================================================================
+# 4. CẬP NHẬT HẠN CHẾ & HƯỚNG PHÁT TRIỂN VỀ BĂM MẬT KHẨU SHA-256 / BCRYPT
+# ==============================================================================
+for p in doc.paragraphs:
+    if "Mô hình Chatbot LLM chạy Local" in p.text:
+        p_lim = doc.add_paragraph('Cơ chế lưu trữ mật khẩu hiện tại áp dụng thuật toán băm SHA-256 thuần (chưa tích hợp chuỗi Salt ngẫu nhiên riêng cho từng tài khoản), dù đảm bảo không lưu trữ plaintext nhưng chưa đạt chuẩn kháng Rainbow Table so với các thuật toán chuyên dụng như BCrypt hay PBKDF2.', style='List Bullet')
+        p._element.addnext(p_lim._element)
+        break
+
+for p in doc.paragraphs:
+    if "1. Tự động hóa hoàn toàn cổng nạp tiền" in p.text:
+        p_fut = doc.add_paragraph('Nâng cấp chuẩn bảo mật băm mật khẩu từ SHA-256 thuần lên BCrypt / PBKDF2: Thay thế hàm băm SHA-256 bằng thuật toán BCrypt hoặc PBKDF2 kèm chuỗi Salt ngẫu nhiên (tối thiểu 128-bit) sinh riêng cho từng người dùng và hệ số độ khó (Cost Factor >= 12) có thể điều chỉnh linh hoạt, bảo vệ tuyệt đối thông tin xác thực của khách hàng trước các nguy cơ tấn công từ điển và Rainbow Table.', style='List Bullet')
+        p._element.addprevious(p_fut._element)
+        break
 
 print("Đang lưu tài liệu vào target_path_1...")
 doc.save(target_path_1)

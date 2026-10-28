@@ -3761,7 +3761,10 @@ deactivate Backend
 An toàn thông tin và bảo mật dữ liệu khách hàng được đặt làm ưu tiên hàng đầu trong thiết kế hệ thống:
 1. **Kiến trúc Local LLM độc lập (Zero Cloud Data Leakage):** Thay vì sử dụng OpenAI API hay Cloud LLM công cộng có nguy cơ rò rỉ thông tin cá nhân và lịch trình sinh hoạt của sinh viên/khách hàng lên máy chủ nước ngoài, toàn bộ mô hình ngôn ngữ lớn Qwen 7B được triển khai nội bộ trên máy trạm thông qua LM Studio (`http://127.0.0.1:1234`). Dữ liệu trò chuyện không bao giờ rời khỏi mạng nội bộ.
 2. **Bảo vệ khóa bí mật & API Keys:** Hệ thống không lưu trữ API Key dạng hardcode trong mã nguồn công khai; các tham số kết nối ngân hàng VietQR MBBank và JWT Secret Key được quản lý tập trung và bảo mật.
-3. **Mã hóa một chiều mật khẩu (SHA-256):** Mật khẩu người dùng được băm an toàn qua thuật toán SHA-256 trước khi lưu trữ vào bảng `Users`. Quản trị viên và kỹ thuật viên hệ thống hoàn toàn không thể xem được mật khẩu gốc của khách hàng.
+3. **Mã hóa một chiều mật khẩu bằng SHA-256 (Phân tích hiện trạng & Hướng nâng cấp):**
+   * *Hiện trạng triển khai:* Mật khẩu người dùng được băm một chiều bằng hàm băm mật mã chuẩn SHA-256 (`System.Security.Cryptography.SHA256`) trước khi lưu trữ vào trường `PasswordHash` trong bảng `Users`. Cơ chế này bảo đảm mật khẩu không bị lưu dưới dạng văn bản rõ (plaintext), ngăn chặn nhân viên quản trị hoặc kỹ thuật viên đọc trộm mật khẩu của người dùng.
+   * *Nhận diện hạn chế kỹ thuật:* Nhóm nghiên cứu thẳng thắn nhìn nhận hạn chế trong phiên bản hiện tại: việc sử dụng SHA-256 thuần chưa kết hợp chuỗi muối ngẫu nhiên (Salt riêng cho từng tài khoản) và SHA-256 vốn là hàm băm tốc độ cao (Fast Hash), nên về mặt lý thuyết bảo mật chuyên sâu vẫn tiềm ẩn nguy cơ nếu kẻ tấn công chiếm được toàn bộ cơ sở dữ liệu và sử dụng kỹ thuật tra cứu bảng cầu vồng (Rainbow Table Attack) hoặc vét cạn bằng dàn GPU đối với các mật khẩu ngắn.
+   * *Giải pháp & Kế hoạch nâng cấp chuẩn hóa:* Trong lộ trình phát triển phiên bản tiếp theo, nhóm đã hoạch định việc chuyển đổi sang các thuật toán băm chuyên dụng cho xác thực danh tính (Slow Hash / Key Derivation Functions) như **BCrypt** (`BCrypt.Net-Next` với work factor $\ge 12$) hoặc **PBKDF2** / **Argon2id** (kết hợp Salt ngẫu nhiên 128-bit sinh độc lập cho từng người dùng). Cơ chế này sẽ vô hiệu hóa hoàn toàn các nguy cơ tấn công dò quét Rainbow Table và Brute-force bằng phần cứng chuyên dụng.
 4. **Bảo mật phiên đăng nhập bằng JSON Web Token (JWT):** Token được ký số bằng thuật toán mã hóa đối xứng `HmacSha256` với thời hạn hết hạn xác định, mang theo thông tin định danh và vai trò (`UserRole.Customer` hoặc `UserRole.Admin`), bảo vệ chống giả mạo quyền truy cập.
 5. **Chống tấn công SQL Injection:** Toàn bộ truy vấn dữ liệu trong tầng Backend được thực hiện thông qua Entity Framework Core (ORM) với kỹ thuật **Parameterized Queries**, vô hiệu hóa mọi nỗ lực chèn mã SQL độc hại qua các trường nhập liệu.
 6. **Kiểm soát tài nguyên chéo CORS (Cross-Origin Resource Sharing):** Cấu hình chính sách CORS nghiêm ngặt tại Backend ASP.NET Core và Python Flask, ngăn chặn các website giả mạo gửi request đánh cắp phiên làm việc của khách hàng.
@@ -4460,16 +4463,19 @@ Qua 9 tuần nỗ lực nghiên cứu, phân tích và phát triển chuyên sâ
 ### Hạn chế còn tồn tại:
 * Việc phê duyệt nạp tiền ví hiện tại vẫn cần một bước bấm "Xác nhận" thủ công từ Quản trị viên trên trang Admin (chưa tích hợp Webhook tự động lắng nghe biến động số dư ngân hàng qua Open Banking).
 * Mô hình Chatbot LLM chạy Local trên máy tính cá nhân nên phụ thuộc vào cấu hình phần cứng (RAM, GPU) của máy chủ triển khai.
+* Cơ chế lưu trữ mật khẩu hiện tại áp dụng thuật toán băm SHA-256 thuần (chưa tích hợp chuỗi Salt ngẫu nhiên riêng cho từng tài khoản), dù đảm bảo không lưu trữ plaintext nhưng chưa đạt chuẩn kháng Rainbow Table so với các thuật toán chuyên dụng như BCrypt hay PBKDF2.
 
 ## 3. Hướng phát triển và mở rộng trong tương lai
 Để phát triển hệ thống thành một nền tảng thương mại toàn diện cung cấp cho các chuỗi thể thao chuyên nghiệp, nhóm đề xuất các hướng nâng cấp tiếp theo:
-1. **Tự động hóa hoàn toàn cổng nạp tiền qua Webhook ngân hàng:**
+1. **Nâng cấp cơ chế băm mật khẩu từ SHA-256 thuần lên BCrypt / PBKDF2:**
+   * Thay thế hàm băm SHA-256 bằng thuật toán **BCrypt** hoặc **PBKDF2** kèm chuỗi Salt ngẫu nhiên (tối thiểu 128-bit) sinh riêng cho từng người dùng và hệ số độ khó (Cost Factor >= 12) có thể điều chỉnh linh hoạt, bảo vệ tuyệt đối thông tin xác thực của khách hàng trước các nguy cơ tấn công từ điển và Rainbow Table.
+2. **Tự động hóa hoàn toàn cổng nạp tiền qua Webhook ngân hàng:**
    * Tích hợp các cổng thanh toán Open Banking (như Casso hoặc SePAY) để tự động lắng nghe biến động tài khoản ngân hàng và cộng tiền ví cho khách ngay trong **3 giây** mà không cần Admin bấm duyệt thủ công.
-2. **Tích hợp phần cứng IoT thông minh tại sân:**
+3. **Tích hợp phần cứng IoT thông minh tại sân:**
    * Kết nối hệ thống phần mềm với các rơ-le thông minh (Smart Relays): Khi đến giờ đặt sân của khách, hệ thống tự động bật dàn đèn chiếu sáng sân bóng và tự động ngắt điện khi hết giờ thi đấu.
-3. **Nhận diện khuôn mặt và Biển số xe bằng AI Camera:**
+4. **Nhận diện khuôn mặt và Biển số xe bằng AI Camera:**
    * Triển khai Camera AI tại cổng ra vào cụm sân để nhận diện cầu thủ đã đặt chỗ và tự động mở barie cho xe vào bãi đỗ.
-4. **Tính năng Ghép đội thi đấu & Bắt đối (Matchmaking AI):**
+5. **Tính năng Ghép đội thi đấu & Bắt đối (Matchmaking AI):**
    * Phát triển tính năng mạng xã hội thể thao: AI tự động phân tích trình độ, vị trí địa lý và độ tuổi của các đội bóng để gợi ý bắt đối, ghép kèo giao hữu đá bóng cuối tuần.
 
 ---
