@@ -1,5 +1,13 @@
-﻿import os
+import os
 import re
+import sys
+import shutil
+
+if sys.stdout.encoding != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -506,3 +514,6 @@ if __name__ == '__main__':
     md_file = r"C:\Users\klqdo\Downloads\1websanbongai\BAO_CAO_CHI_TIET_DO_AN_TOT_NGHIEP.md"
     docx_file = r"C:\Users\klqdo\Downloads\1websanbongai\BAO_CAO_DO_AN_TOT_NGHIEP_SAN_BONG_AI.docx"
     build_docx_from_markdown(md_file, docx_file)
+    backup_docx = r"C:\Users\klqdo\Downloads\1websanbongai\docs_backup\BAO_CAO_DO_AN_TOT_NGHIEP_SAN_BONG_AI.docx"
+    shutil.copyfile(docx_file, backup_docx)
+    print(f"Successfully synced backup DOCX to: {backup_docx}")
