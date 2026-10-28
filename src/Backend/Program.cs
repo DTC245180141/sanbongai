@@ -124,10 +124,23 @@ app.Use(async (context, next) =>
 app.UseAuthorization();
 app.MapControllers();
 
+// Health Check Endpoint phục vụ Giám sát & Vận hành (Observability & Health Monitoring)
+app.MapGet("/health", () => Results.Ok(new
+{
+    status = "healthy",
+    timestamp = DateTime.UtcNow,
+    service = "Football Booking Backend API (.NET 10)",
+    port = 5048
+}));
+
 Console.WriteLine("=================================================");
 Console.WriteLine("🚀 Football Booking Backend API Server Loaded");
 Console.WriteLine("🌐 Listening Port: http://localhost:5048");
 Console.WriteLine("📚 Swagger Docs:   http://localhost:5048/swagger");
+Console.WriteLine("💓 Health Check:   http://localhost:5048/health");
 Console.WriteLine("=================================================");
 
 app.Run("http://localhost:5048");
+
+// Cho phép WebApplicationFactory trong Integration Tests truy cập Program
+public partial class Program { }

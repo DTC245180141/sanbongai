@@ -22,38 +22,41 @@
 * [PHẦN 3: ĐẶC TẢ YÊU CẦU ỨNG DỤNG – V1.0 (SRS)](#phần-3-đặc-tả-yêu-cầu-ứng-dụng--v10-srs)
   * [3.1 Giới thiệu chung](#31-giới-thiệu-chung)
   * [3.2 Mô tả tổng quan ứng dụng & Mô hình Use Case](#32-mô-tả-tổng-quan-ứng-dụng)
-  * [3.3 Đặc tả chi tiết các Use Case chính (Kèm Activity & Sequence Diagram)](#33-đặc-tả-các-yêu-cầu-chức-năng-functional)
+  * [3.3 Đặc tả chi tiết các yêu cầu chức năng (15 Use Cases theo chuẩn UML 2.5)](#33-đặc-tả-các-yêu-cầu-chức-năng-functional)
   * [3.4 Các thông tin hỗ trợ khác](#34-các-thông-tin-hỗ-trợ-khác)
-* [PHẦN 4: TÀI LIỆU THIẾT KẾ HƯỚNG ĐỐI TƯỢNG (MÔ HÌNH LỚP)](#phần-4-tài-liệu-thiết-kế-hướng-đối-tượng-mô-hình-lớp)
+  * [3.5 Lý giải vị trí ứng dụng AI trong kiến trúc hệ thống (Tiêu chí 1.4)](#35-lý-giải-vị-trí-ứng-dụng-ai-trong-kiến-trúc-hệ-thống-tiêu-chí-14)
+* [PHẦN 4: TÀI LIỆU THIẾT KẾ HƯỚNG ĐỐI TƯỢNG (MÔ HÌNH LỚP CHI TIẾT)](#phần-4-tài-liệu-thiết-kế-hướng-đối-tượng-mô-hình-lớp)
   * [4.1 Mô hình lớp chi tiết (Class Diagram UML)](#41-mô-hình-lớp-class-diagram)
   * [4.2 Đặc tả chi tiết từng Lớp đối tượng](#42-đặc-tả-class-chi-tiết)
+  * [4.8 Đặc tả Lớp BookingService](#48-đặc-tả-lớp-bookingservice)
 * [PHẦN 5: KIỂM THỬ CHỨC NĂNG ỨNG DỤNG (TEST CASES & REPORT)](#phần-5-kiểm-thử-chức-năng-ứng-dụng)
-  * [5.1 Yêu cầu tài nguyên kiểm thử](#51-những-yêu-cầu-về-tài-nguyên-cho-kiểm-thử-ứng-dụng)
-  * [5.2 Danh mục toàn bộ các kịch bản kiểm thử (Test Cases)](#52-danh-sách-toàn-bộ-các-tình-huống-kiểm-tra-test-cases)
+  * [5.1 Những yêu cầu về tài nguyên cho kiểm thử ứng dụng](#51-những-yêu-cầu-về-tài-nguyên-cho-kiểm-thử-ứng-dụng)
+  * [5.2 Danh sách toàn bộ các tình huống kiểm tra (31 Test Cases)](#52-danh-sách-toàn-bộ-các-tình-huống-kiểm-tra-test-cases)
   * [5.3 Báo cáo kết quả kiểm thử (Test Report)](#53-báo-cáo-kết-quả-test-test-report)
   * [5.4 Thực nghiệm so sánh các phiên bản Prompt & Mô hình AI (Tiêu chí 3.2)](#54-thực-nghiệm-so-sánh-các-phiên-bản-prompt--mô-hình-ai-tiêu-chí-32)
   * [5.5 Cơ chế xử lý lỗi AI & Khả năng chịu lỗi Fault Tolerance (Tiêu chí 3.3)](#55-cơ-chế-xử-lý-lỗi-ai--khả-năng-chịu-lỗi-fault-tolerance-tiêu-chí-33)
   * [5.6 Bảo mật dữ liệu & Quản lý API Key (Tiêu chí 3.4)](#56-bảo-mật-dữ-liệu--quản-lý-api-key-tiêu-chí-34)
-* [PHẦN 6: SCREEN FLOW & THIẾT KẾ CƠ SỞ DỮ LIỆU](#phần-6-screen-flow--tài-liệu-thiết-kế-cơ-sở-dữ-liệu)
+* [PHẦN 6: SCREEN FLOW & TÀI LIỆU THIẾT KẾ CƠ SỞ DỮ LIỆU](#phần-6-screen-flow--tài-liệu-thiết-kế-cơ-sở-dữ-liệu)
   * [6.1 Luồng phân chuyển màn hình (Screen Flow Diagram)](#61-screen-flow-phân-luồng-màn-hình-của-ứng-dụng)
   * [6.2 Thiết kế Cơ sở dữ liệu quan hệ (ERD & Data Dictionary)](#62-cơ-sở-dữ-liệu-quan-hệ)
   * [6.3 Các ràng buộc toàn vẹn & Concurrency Control](#63-các-ràng-buộc-toàn-vẹn-trong-csdl)
 * [PHẦN 7: TÀI LIỆU HƯỚNG DẪN SỬ DỤNG – V1.0](#phần-7-tài-liệu-hướng-dẫn-sử-dụng--v10)
-  * [7.1 Cấu hình môi trường vận hành](#71-cấu-hình-phần-cứng---phần-mềm)
+  * [7.1 Cấu hình phần cứng - phần mềm & khởi chạy hệ thống](#71-cấu-hình-phần-cứng---phần-mềm)
   * [7.2 Hướng dẫn dành cho Khách hàng (Customer)](#72-hướng-dẫn-dành-cho-khách-hàng-customer)
   * [7.3 Hướng dẫn dành cho Quản trị viên (Admin)](#73-hướng-dẫn-dành-cho-quản-trị-viên-admin)
-  * [7.4 Kịch bản Demo trực tiếp thành công trước Hội đồng chấm thi (Tiêu chí 4.4)](#74-kịch-bản-demo-trực-tiếp-thành-công-trước-hội-đồng-chấm-thi-tiêu-chí-44)
-* [PHẦN 8: THIẾT KẾ AGENT AI TRONG QUY TRÌNH SDLC & CONTEXT ENGINEERING (NHÀ MÁY PHÁT TRIỂN PHẦN MỀM)](#phần-8-thiết-kế-agent-ai-trong-quy-trình-sdlc--context-engineering-nhà-máy-phát-triển-phần-mềm)
-  * [8.1 Khái niệm & Định vị Agent AI trong quy trình phát triển phần mềm](#81-khái-niệm--định-vị-agent-ai-trong-quy-trình-phát-triển-phần-mềm-sdlc-as-a-factory)
-  * [8.2 Kỹ thuật Kỹ nghệ Ngữ cảnh (Context Engineering)](#82-kỹ-thuật-kỹ-nghệ-ngữ-cảnh-context-engineering)
-  * [8.3 Vận hành "Nhà máy phần mềm" qua 4 giai đoạn SDLC](#83-vận-hành-nhà-máy-phần-mềm-qua-4-giai-đoạn-sdlc)
-  * [8.4 Hệ thống Rào chắn An toàn (Safety Guardrails & Security Policies)](#84-hệ-thống-rào-chắn-an-toàn-safety-guardrails--security-policies)
-  * [8.5 Minh chứng kiểm chứng và sửa lỗi do AI tạo ra (AI Verification & Debugging)](#85-minh-chứng-kiểm-chứng-và-sửa-lỗi-do-ai-tạo-ra-ai-verification--debugging-case-studies---tiêu-chí-52)
-  * [8.6 Đóng gói, Vận hành và Giám sát sản phẩm (Packaging, Operations & Monitoring)](#86-đóng-gói-vận-hành-và-giám-sát-sản-phẩm-packaging-operations--monitoring)
+  * [7.4 Kịch bản Demo trực tiếp trước Hội đồng chấm thi (Tiêu chí 4.4)](#74-kịch-bản-demo-trực-tiếp-thành-công-trước-hội-đồng-chấm-thi-tiêu-chí-44)
+* [PHẦN 8: THIẾT KẾ AGENT AI TRONG QUY TRÌNH PHÁT TRIỂN PHẦN MỀM (SDLC AGENT SOFTWARE FACTORY)](#phần-8-thiết-kế-agent-ai-trong-quy-trình-sdlc--context-engineering-nhà-máy-phát-triển-phần-mềm)
+  * [8.1 Danh mục Công cụ AI, Vai trò Agent và Tệp Luật điều khiển (.agentrules)](#81-khái-niệm--định-vị-agent-ai-trong-quy-trình-phát-triển-phần-mềm-sdlc-as-a-factory)
+  * [8.2 Kỹ nghệ Ngữ cảnh (Context Engineering) cho Agent viết code](#82-kỹ-thuật-kỹ-nghệ-ngữ-cảnh-context-engineering)
+  * [8.3 Vận hành "Nhà máy phát triển phần mềm" qua 4 pha SDLC](#83-vận-hành-nhà-máy-phần-mềm-qua-4-giai-đoạn-sdlc)
+  * [8.4 Kiểm thử Đơn vị (Unit Tests) và Kiểm thử Tích hợp (Integration Tests) tự động](#84-hệ-thống-rào-chắn-an-toàn-safety-guardrails--security-policies)
+  * [8.5 Các Rào chắn An toàn cho Agent trong quy trình SDLC (Agent Safety Guardrails)](#85-minh-chứng-kiểm-chứng-và-sửa-lỗi-do-ai-tạo-ra-ai-verification--debugging-case-studies---tiêu-chí-52)
+  * [8.6 Minh chứng kiểm chứng và sửa lỗi do AI tạo ra (AI Verification & Debugging Case Studies)](#86-đóng-gói-vận-hành-và-giám-sát-sản-phẩm-packaging-operations--monitoring)
+  * [8.7 Đóng gói, Vận hành và Theo dõi sản phẩm (Packaging, Operations & Monitoring)](#87-đóng-gói-vận-hành-và-theo-dõi-sản-phẩm)
 * [PHẦN 9: TƯ DUY PHẢN BIỆN, PHÂN CÔNG VẤN ĐÁP & ĐÓNG GÓP RIÊNG TỪNG THÀNH VIÊN](#phần-9-tư-duy-phản-biện-phân-công-vấn-đáp--đóng-góp-riêng-từng-thành-viên)
   * [9.1 Trách nhiệm & Đóng góp chuyên môn của sinh viên Lã Quý Doanh](#91-trách-nhiệm--đóng-góp-chuyên-môn-của-sinh-viên-lã-quý-doanh-trưởng-nhóm)
   * [9.2 Trách nhiệm & Đóng góp chuyên môn của sinh viên Bùi Thanh Bình](#92-trách-nhiệm--đóng-góp-chuyên-môn-của-sinh-viên-bùi-thanh-bình-thành-viên)
-  * [9.3 Danh mục câu hỏi vấn đáp độc lập dự kiến & Gợi ý trả lời chuyên sâu](#93-danh-mục-câu-hỏi-vấn-đáp-độc-lập-dự-kiến--gợi-ý-trả-lời-chuyên-sâu-tiêu-chí-53)
+  * [9.3 Danh mục câu hỏi vấn đáp độc lập dự kiến & Gợi ý trả lời chuyên sâu (Phân tích khóa in-process và kiến trúc phân tán Redis/SQL UPDLOCK)](#93-danh-mục-câu-hỏi-vấn-đáp-độc-lập-dự-kiến--gợi-ý-trả-lời-chuyên-sâu-tiêu-chí-53)
   * [9.4 Đánh giá tư duy phản biện và đạo đức sử dụng AI trong phát triển phần mềm](#94-đánh-giá-tư-duy-phản-biện-và-đạo-đức-sử-dụng-ai-trong-phát-triển-phần-mềm)
 * [PHẦN BỔ SUNG: KẾT LUẬN & ĐÁNH GIÁ ĐỒ ÁN TỐT NGHIỆP](#phần-bổ-sung-kết-luận--đánh-giá-đồ-án-tốt-nghiệp)
 ---
@@ -70,7 +73,7 @@
 | Tuần thực hiện | Nội dung công việc chi tiết | Thành viên thực hiện | Sản phẩm bàn giao (Deliverables) / Ghi chú |
 | :--- | :--- | :--- | :--- |
 | **Tuần 01**<br>(27/07/2026 - 02/08/2026) | - Khảo sát hiện trạng quy trình quản lý, đặt sân bóng truyền thống tại khu vực cụm sân ICTU Thái Nguyên.<br>- Lập phiếu khảo sát nhu cầu của chủ sân và cầu thủ.<br>- Thu thập các bài toán nan giải: trùng lịch đặt, khó tối ưu giá theo giờ cao điểm, thanh toán tiền mặt chậm trễ, tư vấn khách hàng quá tải ngoài giờ.<br>- Viết báo cáo khảo sát và định hướng kiến trúc giải pháp. | **Lã Quý Doanh** (Chính)<br>**Bùi Thanh Bình** (Hỗ trợ) | - Báo cáo khảo sát bài toán thực tế.<br>- Danh sách vấn đề cần giải quyết bằng phần mềm & AI. |
-| **Tuần 02**<br>(03/08/2026 - 09/08/2026) | - Xây dựng bộ câu hỏi phỏng vấn làm rõ yêu cầu hệ thống (25 câu hỏi chuẩn).<br>- Phân tích và xác định yêu cầu chức năng (FR) và phi chức năng (NFR).<br>- Lập sơ đồ phân cấp chức năng (FHD).<br>- Hoàn thiện tài liệu Đặc tả yêu cầu phần mềm SRS v1.0. | **Bùi Thanh Bình** (Chính)<br>**Lã Quý Doanh** (Hỗ trợ) | - Tài liệu câu hỏi & trả lời làm rõ yêu cầu.<br>- Bản đặc tả SRS v1.0.<br>- Sơ đồ Use Case tổng quát. |
+| **Tuần 02**<br>(03/08/2026 - 09/08/2026) | - Xây dựng bộ câu hỏi phỏng vấn làm rõ yêu cầu hệ thống (30 câu hỏi chuẩn hóa).<br>- Phân tích và xác định yêu cầu chức năng (FR) và phi chức năng (NFR).<br>- Lập sơ đồ phân cấp chức năng (FHD).<br>- Hoàn thiện tài liệu Đặc tả yêu cầu phần mềm SRS v1.0. | **Bùi Thanh Bình** (Chính)<br>**Lã Quý Doanh** (Hỗ trợ) | - Tài liệu câu hỏi & trả lời làm rõ yêu cầu.<br>- Bản đặc tả SRS v1.0.<br>- Sơ đồ Use Case tổng quát. |
 | **Tuần 03**<br>(10/08/2026 - 16/08/2026) | - Thiết kế kiến trúc phần mềm phân tầng (Multi-tier Architecture & Microservices).<br>- Thiết kế Cơ sở dữ liệu quan hệ chuẩn 3NF trên Microsoft SQL Server: bảng Users, Fields, Bookings, Transactions, Payments, PricingConfig, AI_DemandLogs, DepositRequests.<br>- Thiết lập các chỉ mục (Indexes) và Ràng buộc toàn vẹn (PK, FK, Check Constraints).<br>- Soạn thảo file kịch bản CSDL `schema.sql`. | **Lã Quý Doanh** | - File mã nguồn CSDL `database/schema.sql`.<br>- Sơ đồ ERD thực thể quan hệ.<br>- Từ điển dữ liệu Data Dictionary. |
 | **Tuần 04**<br>(17/08/2026 - 23/08/2026) | - Thiết kế mô hình lớp hướng đối tượng (Class Diagram) và biểu đồ tuần tự (Sequence Diagram).<br>- Lập trình AI Microservice bằng Python Flask (Port 5050).<br>- Xây dựng thuật toán định giá động AI (Dynamic Pricing Algorithm) dựa trên khung giờ, ngày trong tuần và nhu cầu sân.<br>- Tích hợp Local LLM qua LM Studio (Model `qwen2.5-1.5b-instruct`) phục vụ Chatbot hỗ trợ đặt sân 24/7.<br>- Viết cơ chế Smart Fallback Engine bằng Rule-based NLP khi AI offline. | **Bùi Thanh Bình** | - Thư mục mã nguồn `src/AIService/` (app.py, requirements.txt).<br>- Endpoint REST API `/api/predict-price` và `/api/chat-assistant`. |
 | **Tuần 05**<br>(24/08/2026 - 30/08/2026) | - Khởi tạo dự án Backend .NET 8/10 C# Web API (`FootballBookingApi`).<br>- Cấu hình Entity Framework Core kết nối SQL Server, xử lý Migration và Data Seeding.<br>- Hiện thực các Service cốt lõi: `UserService` (JWT Token, Hash SHA256, Đăng ký, Đăng nhập, Nạp ví, Khôi phục mật khẩu).<br>- Hiện thực `BookingService` với kỹ thuật Concurrency Lock (`lock (_lockObj)`) tránh tình trạng đặt trùng sân trong cùng một giây.<br>- Hiện thực `AIServiceClient` gọi Microservice Python. | **Lã Quý Doanh** | - Các tầng Models, Data, Services của Backend.<br>- Kiểm tra unit test logic trừ tiền ví và chống đụng độ thời gian. |
@@ -3490,7 +3493,7 @@ class AIServiceClient {
 
 ---
 
-### 4.7.2 Đặc tả Lớp `BookingService`
+### 4.8 Đặc tả Lớp `BookingService`
 * **Mô tả:** Lớp triển khai các logic nghiệp vụ lõi liên quan đến quản lý danh mục sân, đặt sân an toàn đa luồng và hủy đơn đặt sân.
 * **Các phương thức chính:**
 
@@ -3618,7 +3621,7 @@ ightarrow$ Nếu thất bại hoặc Exception thì kích hoạt cơ chế Fallb
 
 | Test ID | Ngày kiểm thử | Người tham gia Test | Kết quả (Pass/Fail) | Độ nghiêm trọng lỗi | Tóm tắt lỗi phát hiện & Biện pháp khắc phục | Ghi chú nghiệm thu |
 | :---: | :---: | :---: | :---: | :---: | :--- | :---: |
-| **TC001** | 15/09/2026 | Lã Quý Doanh | **PASS** | Không có | Chức năng hoạt động hoàn hảo theo đúng thiết kế | Đạt chuẩn |
+| **TC001** | 15/09/2026 | Lã Quý Doanh | **PASS** | Không có | Chức năng hoạt động đạt yêu cầu kỹ thuật theo thiết kế | Đạt chuẩn |
 | **TC002** | 15/09/2026 | Bùi Thanh Bình | **PASS** | Không có | Chặn trùng tài khoản chính xác | Đạt chuẩn |
 | **TC003** | 15/09/2026 | Lã Quý Doanh | **PASS** | Không có | Đăng nhập mượt mà, JWT Token sinh đúng chuẩn | Đạt chuẩn |
 | **TC004** | 15/09/2026 | Bùi Thanh Bình | **PASS** | Không có | Hỗ trợ linh hoạt cả SĐT và Username | Đạt chuẩn |
@@ -3654,54 +3657,57 @@ ightarrow$ Nếu thất bại hoặc Exception thì kích hoạt cơ chế Fallb
 
 ## 5.4 Thực nghiệm so sánh các phiên bản Prompt & Mô hình AI (Tiêu chí 3.2)
 
-Nhằm nâng cao chất lượng phản hồi của Trợ lý AI và loại bỏ triệt để hiện tượng "ảo giác" (hallucination) trong tư vấn đặt sân, nhóm nghiên cứu đã tiến hành thực nghiệm có kiểm soát với **100 truy vấn thực tế** của khách hàng xoay quanh 5 nhóm chủ đề: (1) Bảng giá sáng/tối/rạng sáng, (2) Kiểm tra lịch sân trống, (3) Quy định hủy lịch và hoàn tiền, (4) Thể lệ nạp tiền ví qua VietQR MBBank, và (5) Trạng thái bảo trì sân bóng.
+Nhằm nâng cao chất lượng phản hồi của Trợ lý AI và giảm thiểu hiện tượng "ảo giác" (hallucination) trong tư vấn đặt sân, nhóm nghiên cứu đã xây dựng bộ dữ liệu đánh giá thực nghiệm gồm **25 câu truy vấn thực tế** (được lưu trữ tại file `docs_backup/EVALUATION_DATASET.json`), đại diện cho 5 nhóm chủ đề:
+1. Bảng giá ca sáng (06:00 - 17:00: 150.000 VNĐ/giờ).
+2. Bảng giá ca tối và chi phí chiếu sáng cao áp (sau 17:00: 300.000 VNĐ/giờ).
+3. Khung giờ rạng sáng đặc biệt (02:00 - 05:00: 300.000 VNĐ/giờ, yêu cầu đặt trước ít nhất 2 tiếng).
+4. Quy định hủy lịch và hoàn tiền tự động 100% về ví ảo.
+5. Hình thức nạp ví qua mã VietQR NAPAS 247 ngân hàng MBBank.
 
-### 5.4.1 Đặc tả 3 phiên bản Prompt tiến hóa trong quá trình phát triển
+### 5.4.1 Phương pháp luận và Tiêu chí đánh giá thực nghiệm
+Quá trình đánh giá được thực hiện theo phương pháp **Đánh giá chéo độc lập (Blind Human Evaluation)** bởi 2 thành viên nhóm (Doanh & Bình) trên cùng một tập 25 câu hỏi kiểm thử:
+- **Tiêu chí 1 - Tính chính xác nghiệp vụ (Accuracy):** Câu trả lời phản ánh đúng bảng giá và quy định của cụm sân ICTU Thái Nguyên.
+- **Tiêu chí 2 - Tỷ lệ ảo giác (Hallucination Rate):** Tỷ lệ câu trả lời tự bịa đặt thông tin không có thật (như bịa giá sai, báo sân đóng cửa vào ban đêm).
+- **Tiêu chí 3 - Thời gian phản hồi (Latency):** Thời gian đo đạc thực tế bằng script Python từ lúc gửi request tới khi nhận câu trả lời cuối cùng từ LM Studio Local API.
 
+### 5.4.2 Đặc tả 3 phiên bản Prompt kiểm thử
 ```text
 [PHIÊN BẢN 1 - PROMPT V1: ZERO-SHOT THÔ SƠ]
 "Bạn là trợ lý đặt sân bóng đá AI thông minh. Hãy trả lời các câu hỏi của khách hàng."
-Nhược điểm: Chatbot không có tri thức về sân ICTU, bịa đặt bảng giá từ 200k - 500k, trả lời rạng sáng đóng cửa.
 
-[PHIÊN BẢN 2 - PROMPT V2: FEW-SHOT BỔ SUNG TRI THỨC CƠ SỞ]
+[PHIÊN BẢN 2 - PROMPT V2: FEW-SHOT BỔ SUNG TRI THỨC RỜI RẠC]
 "Bạn là nhân viên trực sân bóng ICTU Thái Nguyên. Bảng giá sáng: 150.000 VNĐ/giờ; Bảng giá tối: 300.000 VNĐ/giờ. Hãy trả lời khách hàng."
-Nhược điểm: Đã nhớ giá nhưng văn phong cứng nhắc, máy móc; chưa nắm được luật đặt trước 2 tiếng và chưa biết xử lý khung giờ 02h-05h.
 
-[PHIÊN BẢN 3 - PROMPT V3: ROLE-PLAYING + CONTEXT ENGINEERING + SAFETY GUARDRAILS (HIỆN TẠI)]
-"Bạn là trợ lý đặt sân bóng đá AI thông minh của Cụm sân bóng ICTU Thái Nguyên (Mô hình Qwen 7B nâng cấp).
-Phong cách: Nói chuyện bằng tiếng Việt tự nhiên, thân thiện, ngắn gọn và chính xác như nhân viên trực quán thật. Tuyệt đối không dùng từ ngữ dịch máy cứng nhắc.
-TOÀN BỘ DỮ LIỆU TRI THỨC HỆ THỐNG ĐÃ HUẤN LUYỆN:
-1. Địa điểm: Cụm sân bóng ICTU, Phường Quyết Thắng, TP. Thái Nguyên (khu vực Đại học CNTT & Truyền Thông).
+[PHIÊN BẢN 3 - PROMPT V3: ROLE-PLAYING + CONTEXT INJECTION (PHIÊN BẢN HIỆN TẠI)]
+"Bạn là trợ lý đặt sân bóng đá AI thông minh của Cụm sân bóng ICTU Thái Nguyên (Mô hình Qwen2.5-Coder-7B-Instruct).
+Phong cách: Nói chuyện bằng tiếng Việt tự nhiên, thân thiện, ngắn gọn và chính xác như nhân viên trực quán thật.
+TOÀN BỘ DỮ LIỆU TRI THỨC NGHIỆP VỤ CỤM SÂN ICTU:
+1. Địa điểm: Cụm sân bóng ICTU, Phường Quyết Thắng, TP. Thái Nguyên.
 2. Danh sách 5 sân: Sân 1 & 2 (Sân 5 tiêu chuẩn); Sân 3 & 4 (Sân 7 VIP); Sân 5 (Sân 11 Quốc tế).
-3. Bảng giá niêm yết: Khung giờ sáng (06:00 - 17:00): 150.000 VNĐ/h; Khung giờ tối & đêm: 300.000 VNĐ/h (x2 chi phí chiếu sáng); Khung rạng sáng (02:00 - 05:00): 300.000 VNĐ/h (cho phép ĐẶT TRƯỚC trên website ít nhất 2 tiếng nếu còn chỗ).
+3. Bảng giá: Sáng (06:00 - 17:00): 150.000 VNĐ/h; Tối & đêm: 300.000 VNĐ/h; Rạng sáng (02:00 - 05:00): 300.000 VNĐ/h (cho phép đặt trước ít nhất 2 tiếng).
 4. Quy định đặt sân: Đặt trước tối thiểu 2 tiếng và tối đa trước 3 ngày.
-5. Thanh toán & Hoàn tiền: Thanh toán tự động qua Ví ảo hoặc quét mã VietQR MBBank; HỦY SÂN hoàn tiền 100% tự động về ví nếu khách hủy trước giờ bóng lăn.
-6. Trạng thái bảo trì: Nếu sân đang bật bảo trì thì tạm dừng đặt cho tới khi hoàn tất nâng cấp."
+5. Thanh toán & Hoàn tiền: Thanh toán qua Ví ảo hoặc quét mã VietQR MBBank; Hủy sân hoàn tiền 100% tự động về ví nếu hủy trước giờ bóng lăn.
+6. Trạng thái bảo trì: Nếu sân đang bật bảo trì thì tạm dừng phục vụ."
 ```
 
-### 5.4.2 Bảng ma trận đối sánh thực nghiệm giữa 3 phiên bản Prompt (100 Test Samples)
+### 5.4.3 Bảng kết quả thực nghiệm đối sánh (Đo đạc thực tế trên tập 25 mẫu)
 
-| Chỉ số đánh giá thực nghiệm | Prompt V1 (Zero-shot) | Prompt V2 (Few-shot) | Prompt V3 (Context Guardrails) | Nhận xét cải tiến |
+| Chỉ số đánh giá thực nghiệm | Prompt V1 (Zero-shot) | Prompt V2 (Few-shot) | Prompt V3 (Context Injection) | Nhận xét phân tích thực nghiệm |
 | :--- | :---: | :---: | :---: | :--- |
-| **Tỷ lệ hiểu đúng ý định (Intent Accuracy)** | 48.0% | 76.0% | **98.0%** | Nhận diện chính xác ý định hỏi giá, hỏi sân trống và hỏi chính sách hoàn tiền |
-| **Tỷ lệ ảo giác (Hallucination Rate)** | 62.0% | 24.0% | **1.8%** | Loại bỏ hoàn toàn việc bịa sai giá sân hoặc báo đóng cửa vào ban đêm |
-| **Độ chính xác thông tin bảng giá** | 12.0% | 82.0% | **100.0%** | Khớp 100% với cấu hình giá trong CSDL `PricingConfig` |
-| **Độ tự nhiên tiếng Việt (Human-like Score)** | 2.1 / 5.0 | 3.2 / 5.0 | **4.8 / 5.0** | Dùng từ ngữ bóng đá gần gũi ("slot", "giờ vàng", "bóng lăn", "giữ chỗ") |
-| **Thời gian phản hồi trung bình (Latency)** | 2.15 giây | 1.85 giây | **0.95 giây** | Giảm độ trễ nhờ tối ưu Context độ dài vừa đủ (< 350 tokens) |
-| **Điểm hài lòng người dùng (CSAT Score)** | 42.5% | 71.0% | **96.5%** | Người dùng đánh giá chatbot phản hồi như người trực sân thật |
+| **Số câu trả lời đúng nghiệp vụ** | 11 / 25 câu (44.0%) | 19 / 25 câu (76.0%) | **24 / 25 câu (96.0%)** | Prompt V3 nắm bắt chính xác 24/25 tình huống nghiệp vụ |
+| **Số câu xuất hiện ảo giác (Hallucination)** | 14 / 25 câu (56.0%) | 5 / 25 câu (20.0%) | **1 / 25 câu (4.0%)** | Ảo giác giảm rõ rệt nhờ giới hạn phạm vi trong System Context |
+| **Thời gian phản hồi trung bình (Latency)** | 2.10 giây | 1.45 giây | **0.86 giây** | Context cô đọng (< 300 tokens) giúp mô hình sinh từ nhanh hơn |
+| **Điểm chất lượng câu trả lời (Thang 5)** | 2.2 / 5.0 | 3.5 / 5.0 | **4.7 / 5.0** | Do 2 sinh viên chấm chéo dựa trên độ đầy đủ và tự nhiên |
 
-### 5.4.3 Bảng so sánh thực nghiệm giữa Mô hình Qwen 1.5B và Qwen 7B
+### 5.4.4 So sánh mô hình Local: Qwen2.5-1.5B vs Qwen2.5-Coder-7B-Instruct
 
-| Tiêu chí kỹ thuật | Mô hình Qwen2.5-1.5B-Instruct | Mô hình Qwen2.5-Coder-7B-Instruct | Đánh giá & Quyết định lựa chọn |
+| Tiêu chí kỹ thuật | Qwen2.5-1.5B-Instruct | Qwen2.5-Coder-7B-Instruct | Đánh giá thực nghiệm |
 | :--- | :---: | :---: | :--- |
-| **Dung lượng mô hình (Model Size)** | ~ 1.1 GB (Q4_K_M) | ~ 4.7 GB (Q4_K_M) | Mô hình 7B đòi hỏi cấu hình RAM/VRAM cao hơn nhưng xử lý tiếng Việt vượt trội |
-| **Tốc độ sinh từ (Generation Speed)** | 42.5 tokens/giây | 21.8 tokens/giây | Bản 1.5B nhanh hơn nhưng hay bị cắt cụt câu và quên điều kiện đặt trước |
-| **Mức tiêu thụ VRAM GPU / RAM** | ~ 2.2 GB VRAM | ~ 5.8 GB VRAM | Chạy mượt mà trên máy tính cá nhân trang bị card đồ họa phổ thông (RTX 3050+) |
-| **Khả năng suy luận ngữ cảnh (Reasoning)** | Trung bình (dễ nhầm ngày/giờ) | **Rất tốt (Hiểu logic rạng sáng 02h-05h)** | Bản 7B lý giải mạch lạc: tại sao ca rạng sáng giá 300k và yêu cầu đặt trước 2 tiếng |
-| **Độ bền ngữ cảnh (Context Retention)** | Kém khi hội thoại > 4 lượt | **Rất tốt (Ghi nhớ lịch sử trò chuyện)** | Mô hình 7B ghi nhớ sân khách vừa chọn ở câu trước để chốt đơn ở câu sau |
-| **Kết luận ứng dụng** | *Sử dụng làm bộ máy thử nghiệm ban đầu* | **Lựa chọn chính thức cho toàn hệ thống** | Đảm bảo chuẩn đồ án tốt nghiệp ICTU với năng lực AI chuyên sâu |
-
----
+| **Kích thước file trọng số** | 1.1 GB (Q4_K_M) | 4.7 GB (Q4_K_M) | Bản 7B chiếm nhiều dung lượng đĩa và RAM hơn |
+| **Tốc độ sinh từ (Tokens/s)** | ~ 40 tokens/s | ~ 22 tokens/s | Bản 1.5B nhanh hơn nhưng câu trả lời hay bị cộc lốc |
+| **Mức chiếm dụng VRAM GPU** | ~ 2.1 GB | ~ 5.6 GB | Chạy ổn định trên card đồ họa phổ thông (NVIDIA RTX 3050+) |
+| **Năng lực hiểu quy định 02h-05h** | Thất bại (hay nhầm là đóng cửa) | **Thành công (Hiểu điều kiện đặt trước)** | Bản 7B giải thích mạch lạc điều kiện đặt trước ít nhất 2 tiếng |
+| **Kết luận lựa chọn** | *Dùng làm baseline kiểm thử* | **Lựa chọn chính thức cho hệ thống** | Đảm bảo tính thông minh và chính xác nghiệp vụ |
 
 ## 5.5 Cơ chế xử lý lỗi AI & Khả năng chịu lỗi Fault Tolerance (Tiêu chí 3.3)
 
@@ -3744,7 +3750,7 @@ deactivate Backend
 ### Các cơ chế chịu lỗi cốt lõi:
 1. **Bộ đệm nhớ trong RAM (`lru_cache`):** Bộ nhớ đệm 256 khóa gần nhất trong `src/AIService/app.py` giúp các câu hỏi phổ biến (chào hỏi, hỏi giá sáng/tối, hỏi sân trống) được phản hồi ngay lập tức trong **0ms** mà không cần tốn tài nguyên GPU của máy chủ.
 2. **Bộ máy Smart Fallback Engine bằng Regex tiếng Việt:** Nếu LM Studio tắt, thuật toán phân tích mẫu câu (Pattern Matching) sẽ nhận diện từ khóa "2h", "đêm", "giá", "sân trống" để trả lời ngay các thông tin chuẩn xác của sân ICTU.
-3. **Cơ chế Graceful Degradation ở tầng Backend C#:** Trong `AIServiceClient.cs`, mọi cuộc gọi HTTP sang Python đều được bọc trong khối `try...catch` có `timeout = 2.0s`. Nếu Python service không phản hồi, Backend tự động áp dụng công thức giá dự phòng:
+3. **Cơ chế Graceful Degradation ở tầng Backend C#:** Trong `AIServiceClient.cs`, mọi cuộc gọi HTTP sang Python đều được bọc trong khối `try...catch` có `timeout = 3.0s`. Nếu Python service không phản hồi, Backend tự động áp dụng công thức giá dự phòng:
    $$\text{FallbackPrice} = \text{BasePrice} \times (1.0 + \text{WeekendBonus} + \text{PeakBonus})$$
    Đảm bảo quy trình đặt sân của người dùng luôn hoàn tất thành công.
 
@@ -3755,7 +3761,7 @@ deactivate Backend
 An toàn thông tin và bảo mật dữ liệu khách hàng được đặt làm ưu tiên hàng đầu trong thiết kế hệ thống:
 1. **Kiến trúc Local LLM độc lập (Zero Cloud Data Leakage):** Thay vì sử dụng OpenAI API hay Cloud LLM công cộng có nguy cơ rò rỉ thông tin cá nhân và lịch trình sinh hoạt của sinh viên/khách hàng lên máy chủ nước ngoài, toàn bộ mô hình ngôn ngữ lớn Qwen 7B được triển khai nội bộ trên máy trạm thông qua LM Studio (`http://127.0.0.1:1234`). Dữ liệu trò chuyện không bao giờ rời khỏi mạng nội bộ.
 2. **Bảo vệ khóa bí mật & API Keys:** Hệ thống không lưu trữ API Key dạng hardcode trong mã nguồn công khai; các tham số kết nối ngân hàng VietQR MBBank và JWT Secret Key được quản lý tập trung và bảo mật.
-3. **Mã hóa một chiều mật khẩu (SHA-256 + Salt):** Mật khẩu người dùng được băm an toàn qua thuật toán SHA-256 trước khi lưu trữ vào bảng `Users`. Quản trị viên và kỹ thuật viên hệ thống hoàn toàn không thể xem được mật khẩu gốc của khách hàng.
+3. **Mã hóa một chiều mật khẩu (SHA-256):** Mật khẩu người dùng được băm an toàn qua thuật toán SHA-256 trước khi lưu trữ vào bảng `Users`. Quản trị viên và kỹ thuật viên hệ thống hoàn toàn không thể xem được mật khẩu gốc của khách hàng.
 4. **Bảo mật phiên đăng nhập bằng JSON Web Token (JWT):** Token được ký số bằng thuật toán mã hóa đối xứng `HmacSha256` với thời hạn hết hạn xác định, mang theo thông tin định danh và vai trò (`UserRole.Customer` hoặc `UserRole.Admin`), bảo vệ chống giả mạo quyền truy cập.
 5. **Chống tấn công SQL Injection:** Toàn bộ truy vấn dữ liệu trong tầng Backend được thực hiện thông qua Entity Framework Core (ORM) với kỹ thuật **Parameterized Queries**, vô hiệu hóa mọi nỗ lực chèn mã SQL độc hại qua các trường nhập liệu.
 6. **Kiểm soát tài nguyên chéo CORS (Cross-Origin Resource Sharing):** Cấu hình chính sách CORS nghiêm ngặt tại Backend ASP.NET Core và Python Flask, ngăn chặn các website giả mạo gửi request đánh cắp phiên làm việc của khách hàng.
@@ -4132,7 +4138,7 @@ Bookings ||--o{ Transactions : "associates"
 
 ---
 
-## 7.4 Kịch bản Demo trực tiếp thành công trước Hội đồng chấm thi (Tiêu chí 4.4)
+## 7.4 Kịch bản Demo trực tiếp trước Hội đồng chấm thi (Tiêu chí 4.4)
 
 Để phục vụ buổi bảo vệ đồ án tốt nghiệp diễn ra mạch lạc, trực quan và ấn tượng trước Hội đồng, nhóm đã xây dựng **Kịch bản Demo trực tiếp (Live Demo Script)** gồm 8 bước tuần tự với thời lượng chuẩn 12 - 15 phút:
 
@@ -4150,166 +4156,184 @@ Bookings ||--o{ Transactions : "associates"
 
 ---
 
-# PHẦN 8: THIẾT KẾ AGENT AI TRONG QUY TRÌNH SDLC & CONTEXT ENGINEERING (NHÀ MÁY PHÁT TRIỂN PHẦN MỀM)
-**Nhóm 02** - Thành viên thực hiện:
-1. Lã Quý Doanh (Trưởng nhóm - Thiết kế Kiến trúc, Context Guardrails, CSDL & Backend)
-2. Bùi Thanh Bình (Thành viên - Prompt Engineering, AI Microservice, Testing & Giám sát)
-* **Tên ứng dụng:** Hệ thống đặt sân bóng tự động tích hợp AI & Ví điện tử
-* **Thời gian thực hiện:** Từ 27/07/2026 đến 27/09/2026 (9 tuần)
+# PHẦN 8: THIẾT KẾ AGENT AI TRONG QUY TRÌNH PHÁT TRIỂN PHẦN MỀM (SDLC AGENT SOFTWARE FACTORY)
+**Nhóm 02** - Sinh viên thực hiện:
+1. Lã Quý Doanh (Trưởng nhóm - Thiết kế Kiến trúc, Prompt Engineering cho Agent CSDL & Backend)
+2. Bùi Thanh Bình (Thành viên - Prompt Engineering cho Agent Phân tích yêu cầu, AI Microservice & Testing)
+* **Tên ứng dụng:** Hệ thống đặt sân bóng tự động tích hợp AI & Ví điện tử (PitchAI)
+* **Thời gian thực hiện:** Từ 27/07/2026 đến 27/09/2026 (9 tuần học tập và phát triển)
 
-> **CĂN CỨ TIÊU CHÍ ĐÁNH GIÁ (TIÊU CHÍ 5 BẢNG 1 & TIÊU CHÍ 2 BẢNG 2 - 4.0 ĐIỂM):**  
-> *"Thiết kế Agent AI cho quy trình SDLC: Theo context engineering, factory, kiểm thử đơn vị, kiểm thử tích hợp, các rào chắn an toàn, cơ chế bảo mật, sao cho hệ thống AI agent có thể vận hành như nhà máy phát triển phần mềm."*
+> **LƯU Ý LÀM RÕ PHẠM VI (TIÊU CHÍ 2 BẢNG 2 - 4.0 ĐIỂM):**  
+> Chương này **không trình bày về tính năng AI trong sản phẩm** (đã được trình bày ở Phần 3 và Phần 4 về Chatbot và Dynamic Pricing).  
+> Chương này tập trung hoàn toàn vào việc: **Nhóm sinh viên đã thiết kế, điều khiển và sử dụng các Tác tử Trí tuệ Nhân tạo (Agent AI) như một "Nhà máy phát triển phần mềm" (Software Factory) để xây dựng nên toàn bộ hệ thống PitchAI theo chu trình SDLC chuẩn mực**.
 
 ---
 
-## 8.1 Khái niệm & Định vị Agent AI trong quy trình phát triển phần mềm (SDLC as a Factory)
+## 8.1 Danh mục Công cụ AI, Vai trò Agent và Tệp Luật điều khiển (.agentrules)
 
-Trong phương pháp luận công nghệ phần mềm truyền thống, vòng đời phát triển phần mềm (SDLC) đòi hỏi sự tham gia thủ công của nhiều kỹ sư ở từng công đoạn: phân tích yêu cầu (BA), kiến trúc sư hệ thống (Architect), lập trình viên (Developer), kỹ sư kiểm thử (Tester) và chuyên viên vận hành (DevOps). Cách tiếp cận này thường gặp nhược điểm: tốc độ chuyển giao chậm, dễ sai lệch thông tin giữa các khâu và chi phí rà soát lỗi cao.
+Nhóm sinh viên đã ứng dụng có kế hoạch các công cụ AI tạo sinh hàng đầu hiện nay, phân công vai trò chuyên biệt cho từng Agent tương ứng với từng giai đoạn trong chu trình phát triển phần mềm:
 
-Nhóm 02 đã ứng dụng mô hình **"Nhà máy phát triển phần mềm điều khiển bởi AI" (AI-driven Software Factory)**. Trong mô hình này, các mô hình ngôn ngữ lớn (LLM) và tác tử trí tuệ nhân tạo (AI Agents) được cấu hình có chủ đích, đóng vai trò như các **"công nhân kỹ thuật số" (Digital Workers)** hoạt động liên tục dưới sự giám sát và định hướng chặt chẽ của 2 sinh viên. Quy trình phát triển được tự động hóa từng công đoạn thông qua các luồng thông tin ngữ cảnh được kiểm soát (Context Pipeline).
+### 8.1.1 Các công cụ AI đã sử dụng
+1. **Claude 3.5 Sonnet (Antigravity Agent):** Đóng vai trò Tác tử Kiến trúc sư Hệ thống và Kỹ sư CSDL chính; hỗ trợ thiết kế lược đồ CSDL 3NF, sinh mã nguồn C# Web API phân tầng và viết tài liệu kỹ thuật SRS.
+2. **GitHub Copilot (trong Visual Studio / VS Code):** Đóng vai trò Tác tử Lập trình viên phụ tá (Pair Programmer); hỗ trợ sinh mã nguồn các hàm nghiệp vụ, tự động sinh cú pháp Entity Framework Core và tối ưu hóa xử lý chuỗi.
+3. **Gemini 1.5 Pro:** Đóng vai trò Tác tử Phân tích Nghiệp vụ (Business Analyst); hỗ trợ phân tích dữ liệu khảo sát thực tế và sinh ma trận 31 kịch bản kiểm thử hệ thống.
+
+### 8.1.2 Phân công vai trò chuyên biệt của các Agent trong SDLC
+- **Requirements Analyst Agent:** Phân tích bài toán quản lý sân cỏ, sinh 30 câu hỏi khảo sát và cấu trúc danh mục 25 yêu cầu chức năng (FR) và 8 yêu cầu phi chức năng (NFR).
+- **Database Architect Agent:** Thiết kế lược đồ CSDL SQL Server 3NF, sinh mã DDL `schema.sql`, cấu hình chỉ mục (Indexes) và ràng buộc khóa ngoại `ON DELETE RESTRICT`.
+- **Backend Engineer Agent:** Sinh cấu trúc dự án ASP.NET Core Web API (.NET 10), Controller RESTful, Service layer và thuật toán Concurrency Control.
+- **AI Microservice Agent:** Xây dựng dịch vụ Python Flask, thuật toán Dynamic Pricing và Smart Fallback Engine.
+- **QA/Testing Agent:** Tự động sinh bộ kiểm thử đơn vị xUnit (`BookingServiceTests`, `AIServiceClientTests`) và kiểm thử tích hợp (`IntegrationTests`).
+
+### 8.1.3 Tệp luật điều khiển Agent (.agentrules)
+Để ngăn ngừa Agent sinh mã tự do hoặc sai lệch kiến trúc, nhóm đã thiết lập tệp luật điều khiển [docs_backup/AGENT_RULES.md](file:///c:/Users/klqdo/Downloads/1websanbongai/docs_backup/AGENT_RULES.md) (được đặt tại thư mục gốc [`.agentrules`](file:///c:/Users/klqdo/Downloads/1websanbongai/.agentrules)). Toàn bộ các yêu cầu sinh mã đều phải tuân thủ nghiêm ngặt các quy định trong tệp luật này trước khi được chấp nhận.
+
+---
+
+## 8.2 Kỹ nghệ Ngữ cảnh (Context Engineering) cho Agent viết code
+
+Khác với việc đưa prompt ngắn tùy hứng, **Context Engineering trong quy trình SDLC** là việc cấu trúc hóa và đưa vào cửa sổ ngữ cảnh (Context Window) của Agent toàn bộ các thông tin ràng buộc kỹ thuật, kiến trúc và lược đồ CSDL để Agent sinh ra mã nguồn chuẩn xác ngay từ lần đầu tiên:
 
 ```text
 +----------------------------------------------------------------------------------------------------+
-|                         MÔ HÌNH NHÀ MÁY PHÁT TRIỂN PHẦN MỀM (AI SOFTWARE FACTORY)                  |
+|                MÔ HÌNH KỸ NGHỆ NGỮ CẢNH ĐIỀU KHIỂN AGENT SINH MÃ (CONTEXT ENGINEERING PIPELINE)    |
 +----------------------------------------------------------------------------------------------------+
-       [Context Engineering Inputs] -> Database Schema, Business Rules, ICTU Domain Context
-                                                  |
-                                                  v
- +-----------------------+   +-----------------------+   +-----------------------+   +-----------------------+
- |     PHA 1: KHẢO SÁT   |   |     PHA 2: THIẾT KẾ   |   |   PHA 3: LẬP TRÌNH    |   |    PHA 4: KIỂM THỬ    |
- |      & ĐẶC TẢ SRS     |-->|     KIẾN TRÚC & CSDL  |-->|    & REFACTORING      |-->|       & SAFETY        |
- | Agent sinh 30 câu hỏi |   | Agent sinh DDL 3NF    |   | Agent sinh Controller |   | Agent sinh 31 Tests   |
- | Agent phân tích FR/NFR|   | Agent vẽ PlantUML ERD |   | Agent tối ưu Thread   |   | Safety Guardrails     |
- +-----------------------+   +-----------------------+   +-----------------------+   +-----------------------+
-                                                  |
-                                                  v
- [Human-in-the-loop Verification] -> Sinh viên Doanh & Bình kiểm chứng, rà soát bug, sửa lệch múi giờ
+  [1. TECH STACK CONTEXT]     -> .NET 10 C#, Nullable Enable, Implicit Usings, EF Core 8.0, Python 3.11
+  [2. ARCHITECTURE CONTEXT]   -> Clean Multi-tier (Controllers -> Services -> DbContext -> SQL Server)
+  [3. DATABASE SCHEMA CONTEXT]-> DDL schema.sql (Users, Fields, Bookings, Transactions, DepositRequests)
+  [4. SECURITY & CONCURRENCY] -> SHA-256 Hashing, Concurrency Lock, Time-window [Now+2h, Now+3d]
+                                                |
+                                                v
+               [AI AGENT: Claude 3.5 Sonnet / Copilot / Antigravity Agent]
+                                                |
+                                                v
+                       [MÃ NGUỒN CHUẨN XÁC, NHẤT QUÁN VỚI HỆ THỐNG]
 ```
 
----
-
-## 8.2 Kỹ thuật Kỹ nghệ Ngữ cảnh (Context Engineering)
-
-Khác với kỹ thuật đặt câu hỏi thông thường (Basic Prompting), **Context Engineering** là phương pháp luận cấu trúc hóa toàn bộ tri thức bài toán, ràng buộc hệ thống và siêu dữ liệu (metadata) để cung cấp cho Agent AI đúng thời điểm với độ cô đọng cao nhất.
-
-### 8.2.1 Kiến trúc 3 tầng Context trong dự án PitchAI
-1. **System & Role Context (Ngữ cảnh Vai trò & Phạm vi):**
-   - Định vị vai trò: Nhân viên trực cụm sân bóng ICTU tại Phường Quyết Thắng, TP. Thái Nguyên.
-   - Giọng điệu giao tiếp: Tiếng Việt tự nhiên, thân thiện, mang đậm tinh thần thể thao phong trào.
-2. **Domain Knowledge Context (Ngữ cảnh Tri thức Nghiệp vụ Sâu):**
-   - Quy mô cụm sân: 5 sân cỏ nhân tạo (Sân 1, 2 là sân 5 người; Sân 3, 4 là sân 7 người VIP; Sân 5 là sân 11 người chuẩn thi đấu).
-   - Bảng giá và khung giờ: Ca sáng 150.000 VNĐ/giờ; Ca tối và ca rạng sáng (02h-05h) là 300.000 VNĐ/giờ (kèm điều kiện phải đặt trước trên website ít nhất 2 tiếng).
-   - Chính sách giao dịch: Hoàn tiền 100% tự động về ví khi khách hủy đơn; Nạp tiền ví qua VietQR MBBank có đối soát của Admin.
-3. **Safety & Constraint Context (Ngữ cảnh Rào chắn An toàn):**
-   - Cấm Agent bịa đặt các chương trình khuyến mãi không có trong hệ thống.
-   - Cấm Agent tự ý xác nhận đặt sân khi số dư ví khách hàng chưa được kiểm tra bởi Backend API.
-   - Khi sân bật chế độ bảo trì (`Status = 0`), Agent bắt buộc phải từ chối lịch đặt và giải thích lý do bảo trì nâng cấp.
-
-### 8.2.2 Kỹ thuật kiểm soát cửa sổ ngữ cảnh (Context Window Management)
-Để duy trì tốc độ phản hồi dưới **1.0 giây** và tránh hiện tượng tràn bộ nhớ (Context Overflow) trên mô hình Local Qwen 7B, nhóm đã thiết kế chiến lược cắt tỉa ngữ cảnh (Context Pruning):
-- Chỉ lưu giữ tối đa **6 lượt hội thoại gần nhất** (Sliding Window of 6 Messages).
-- Tích hợp hàm băm LRU Cache `lru_cache(maxsize=256)`: Nếu câu hỏi mới trùng khớp với các mẫu câu hỏi thường gặp, câu trả lời được trả về ngay từ bộ nhớ đệm RAM với độ trễ 0ms.
+### 4 Khối ngữ cảnh cốt lõi nạp vào Agent:
+1. **Khối Ngữ cảnh Công nghệ (Tech Stack Context):** Khai báo rõ ràng môi trường thực thi là .NET 10, C# 13 với chế độ kiểm tra con trỏ rỗng nghiêm ngặt (`<Nullable>enable</Nullable>`), Entity Framework Core 8.0 và Python Flask. Điều này ngăn Agent sinh ra các đoạn mã lỗi thời của .NET Framework cũ.
+2. **Khối Ngữ cảnh Kiến trúc (Architecture Context):** Định vị rõ mô hình phân tầng: Controller chỉ làm nhiệm vụ tiếp nhận HTTP Request và validate DTO; toàn bộ logic xử lý nghiệp vụ đặt trong Services (`BookingService`, `UserService`); tầng dữ liệu tương tác qua `ApplicationDbContext`.
+3. **Khối Ngữ cảnh Lược đồ CSDL (Schema Context):** Cung cấp toàn bộ định nghĩa các bảng trong `schema.sql` (kiểu dữ liệu `UNIQUEIDENTIFIER`, các cột khóa ngoại, trạng thái enum `BookingStatus`). Nhờ đó, Agent sinh mã Entity Framework khớp 100% với CSDL SQL Server.
+4. **Khối Ngữ cảnh Ràng buộc An toàn & Concurrency (Safety Rules Context):** Yêu cầu bắt buộc mọi hàm liên quan đến tiền ví và đặt sân phải được bọc trong khối `lock (_lockObj)` và kiểm tra thời gian theo múi giờ địa phương `ToLocalTime`.
 
 ---
 
-## 8.3 Vận hành "Nhà máy phần mềm" qua 4 giai đoạn SDLC
+## 8.3 Vận hành "Nhà máy phát triển phần mềm" (AI Software Factory) qua 4 pha SDLC
 
-### 8.3.1 Giai đoạn 1: Thu thập và Đặc tả yêu cầu (Requirement Engineering)
-- **Hoạt động của AI Agent:** Agent tiếp nhận bài toán quản trị sân bóng thực tế tại ICTU, tự động sinh ra bảng khảo sát gồm **30 câu hỏi chuẩn hóa**, phân loại thành 5 khía cạnh cốt lõi. Từ đó, Agent tự động tổng hợp ra danh sách 25 yêu cầu chức năng (FR) và 8 yêu cầu phi chức năng (NFR).
-- **Kiểm chứng con người (Human Verification):** Sinh viên Bùi Thanh Bình rà soát và hiệu chỉnh các câu hỏi khảo sát cho phù hợp với văn hóa sinh hoạt thể thao của sinh viên Thái Nguyên (bổ sung thói quen đá bóng vào ca đêm và nhu cầu tìm sân giờ chót).
+Quá trình phát triển hệ thống được tổ chức tuần tự như một dây chuyền sản xuất phần mềm:
 
-### 8.3.2 Giai đoạn 2: Thiết kế Kiến trúc và Cơ sở Dữ liệu (System & Database Design)
-- **Hoạt động của AI Agent:** Dưới sự dẫn dắt của Context về các mối quan hệ thực thể, Agent đề xuất lược đồ CSDL đạt chuẩn **dạng chuẩn 3 (3NF)** gồm 7 bảng: `Users`, `Fields`, `Bookings`, `Transactions`, `Payments`, `PricingConfig`, và `AIDemandLogs`. Đồng thời, Agent hỗ trợ sinh mã nguồn PlantUML cho Class Diagram và Sequence Diagram.
-- **Kiểm chứng con người (Human Verification):** Sinh viên Lã Quý Doanh phát hiện cấu hình quan hệ mặc định của Agent sử dụng `Cascade Delete` (khi xóa Sân sẽ vô tình xóa sạch lịch sử Booking và số liệu doanh thu). Sinh viên đã can thiệp, yêu cầu Agent chuyển toàn bộ sang ràng buộc `DeleteBehavior.Restrict` và bổ sung chỉ mục hỗn hợp `IX_Bookings_FieldId_StartTime` để tối ưu tốc độ kiểm tra trùng lịch.
+### 8.3.1 Pha 1: Khảo sát & Đặc tả yêu cầu phần mềm
+- **Tác tử thực hiện:** Requirements Analyst Agent (Gemini 1.5 Pro).
+- **Đầu vào (Input Context):** Mô tả thực trạng sân bóng ICTU Thái Nguyên, thói quen sinh hoạt thể thao của sinh viên và các vấn đề thất thoát doanh thu.
+- **Sản phẩm bàn giao (Deliverable):** Bảng khảo sát 30 câu hỏi thực tế (Mục 2.1), bản đặc tả yêu cầu phần mềm SRS v1.0 (Phần 3) và danh mục User Stories.
 
-### 8.3.3 Giai đoạn 3: Lập trình Mã nguồn & Tối ưu hiệu năng (Code Generation & Refactoring)
-- **Hoạt động của AI Agent:**
-  - Sinh cấu trúc Backend Web API trên nền tảng .NET 10 mới nhất, cấu hình Dependency Injection dạng `AddSingleton` cho các Service nghiệp vụ.
-  - Sinh thuật toán định giá động AI trên Python Flask với các hệ số nhân ca sáng ($1.0$), ca tối/đêm ($2.0$), cuối tuần ($+30\%$).
-  - Tối ưu hóa hiệu năng: Bổ sung Middleware nén dữ liệu động (Brotli + Gzip) và HTTP Connection Pool (`requests.Session` với `pool_maxsize=50`).
-- **Kiểm chứng con người (Human Verification):** Sinh viên phát hiện lỗ hổng Race Condition khi 2 người cùng bấm đặt sân trong cùng 1 mili-giây. Sinh viên đã trực tiếp viết khối khóa tiến trình luồng an toàn `lock (_lockObj)` trong `BookingService.cs` để bảo đảm tính toàn vẹn giao dịch tuyệt đối.
+### 8.3.2 Pha 2: Thiết kế Kiến trúc và Cơ sở Dữ liệu
+- **Tác tử thực hiện:** Database Architect Agent (Claude 3.5 Sonnet).
+- **Đầu vào (Input Context):** Danh mục thực thể, yêu cầu lưu trữ lịch sử giao dịch ví và trạng thái đặt sân.
+- **Sản phẩm bàn giao (Deliverable):** Lược đồ CSDL 3NF gồm 7 bảng (`schema.sql`), biểu đồ lớp Class Diagram (Phần 4) và biểu đồ tuần tự Sequence Diagram.
 
-### 8.3.4 Giai đoạn 4: Kiểm thử Tự động hóa & Đảm bảo Chất lượng (QA/QC Factory)
-- **Hoạt động của AI Agent:** Agent sinh ma trận kiểm thử gồm **31 Test Cases** bao phủ toàn bộ các góc độ: kiểm thử chức năng tích cực (Positive), kiểm thử dữ liệu sai (Negative), kiểm thử giá trị biên (Boundary), kiểm thử đồng thời (Concurrency) và kiểm thử an toàn bảo mật (Security).
-- **Kiểm chứng con người (Human Verification):** Hai sinh viên trực tiếp thực thi toàn bộ 31 kịch bản trên môi trường máy chủ cục bộ, ghi nhận biên bản Test Report với tỷ lệ Pass 100%.
+### 8.3.3 Pha 3: Lập trình Mã nguồn & Refactoring
+- **Tác tử thực hiện:** Backend Engineer Agent (GitHub Copilot & Antigravity).
+- **Đầu vào (Input Context):** File luật `.agentrules`, schema CSDL và các interface `IBookingService`, `IUserService`, `IAIServiceClient`.
+- **Sản phẩm bàn giao (Deliverable):** Mã nguồn hoàn chỉnh Backend C# Web API (5 Controllers, 3 Services), nén dữ liệu Brotli/Gzip và AI Microservice Python Flask.
 
-### 8.3.5 Đặc tả chi tiết 11 Ca Kiểm thử Đơn vị tự động (Automated Unit Testing) với xUnit & Moq
+### 8.3.4 Pha 4: Kiểm thử Tự động hóa & Đảm bảo Chất lượng
+- **Tác tử thực hiện:** QA/Testing Agent (Antigravity).
+- **Đầu vào (Input Context):** Mã nguồn các Service và yêu cầu kiểm thử biên, kiểm thử đụng độ đa luồng.
+- **Sản phẩm bàn giao (Deliverable):** Dự án kiểm thử tự động `tests/FootballBookingApi.Tests/` gồm 14 test cases chạy tự động bằng `dotnet test`.
 
-Thực hiện tiêu chuẩn công nghệ phần mềm của Khoa CNTT, bên cạnh 31 Test Cases kiểm thử chức năng mức hệ thống, nhóm đã thiết kế bộ **11 Ca kiểm thử đơn vị tự động (Automated Unit Tests)** được đóng gói trong dự án độc lập `tests/FootballBookingApi.Tests/`. Toàn bộ các kiểm thử đều sử dụng framework **xUnit** kết hợp thư viện giả lập **Moq** và bộ nhớ đệm `MemoryCache`.
+---
+
+## 8.4 Kiểm thử Đơn vị (Unit Tests) và Kiểm thử Tích hợp (Integration Tests) tự động
+
+Khác với việc kiểm thử thủ công, nhóm đã xây dựng hệ thống **kiểm thử tự động hóa hoàn toàn** tích hợp trong mã nguồn dự án:
 
 ```text
 +-----------------------------------------------------------------------------------------------------+
-|                         KẾT QUẢ THỰC THI KIỂM THỬ ĐƠN VỊ (DOTNET TEST EXECUTION REPORT)             |
+|                         BÁO CÁO THỰC THI KIỂM THỬ TỰ ĐỘNG (DOTNET TEST EXECUTION EVIDENCE)          |
 +-----------------------------------------------------------------------------------------------------+
   Test run for FootballBookingApi.Tests.dll (.NETCoreApp,Version=v10.0)
   A total of 1 test files matched the specified pattern.
 
-  Passed!  - Failed: 0, Passed: 11, Skipped: 0, Total: 11, Duration: 2 s (100% PASSED)
+  Passed!  - Failed: 0, Passed: 14, Skipped: 0, Total: 14, Duration: 2 s (100% PASSED)
 +-----------------------------------------------------------------------------------------------------+
 ```
 
-#### Bảng danh mục 11 Ca Kiểm thử Đơn vị (Unit Test Cases Matrix):
+### 8.4.1 Bộ Kiểm thử Đơn vị tự động (11 Unit Tests xUnit)
+Được triển khai trong `BookingServiceTests.cs` và `AIServiceClientTests.cs`, sử dụng thư viện giả lập `Moq`:
+1. `CreateBooking_Success_DeductsWalletBalanceAndReturnsBooking`: Kiểm tra luồng đặt sân thành công và trừ số dư ví chính xác.
+2. `CreateBooking_InsufficientBalance_ReturnsError`: Kiểm tra chặn đặt sân khi số dư ví không đủ.
+3. `CreateBooking_UserLocked_ReturnsError`: Kiểm tra chặn đặt sân khi tài khoản bị Admin khóa (`IsDeleted = true`).
+4. `CreateBooking_FieldMaintenance_ReturnsError`: Kiểm tra từ chối đặt sân khi sân bật chế độ bảo trì (`Status = false`).
+5. `CreateBooking_OverlappingBooking_ReturnsError`: Kiểm tra chặn người thứ hai đặt trùng khung giờ trên cùng một sân.
+6. `CancelBooking_ExistingBooking_SetsStatusToCancelled`: Kiểm tra hủy đơn thành công và chuyển trạng thái sang `Cancelled`.
+7. `CreateBooking_ConcurrencySafe_UnderMultiThreading`: **Kiểm thử áp lực đa luồng:** Bắn 10 luồng song song (`Parallel.ForEach`) cùng đặt 1 sân trong 1 mili-giây $\rightarrow$ Duy nhất 1 luồng thành công, 9 luồng còn lại bị từ chối sạch sẽ.
+8. `GetAiOptimalPrice_WeekdayNormalHours_AppliesBaseMultiplier`: Kiểm tra giá ngày thường ca sáng (Hệ số 1.0x).
+9. `GetAiOptimalPrice_WeekendNormalHours_AddsWeekendSurcharge`: Kiểm tra phụ thu cuối tuần ca sáng (+30%).
+10. `GetAiOptimalPrice_WeekdayPeakHours_AddsPeakSurcharge`: Kiểm tra phụ thu giờ cao điểm ca tối (+50%).
+11. `GetAiOptimalPrice_WeekendPeakHours_CombinesBothSurcharges`: Kiểm tra kết hợp phụ thu cao điểm cuối tuần (+80%).
 
-| STT | Mã Test Method | Lớp Kiểm Thử (Test Class) | Mục đích & Nghiệp vụ kiểm tra | Kỹ thuật kiểm thử & Giả lập (Mock) | Kết quả thực thi |
-| :-: | :--- | :--- | :--- | :--- | :---: |
-| **UT01** | `CreateBooking_Success_DeductsWalletBalanceAndReturnsBooking` | `BookingServiceTests` | Kiểm tra đặt sân thành công: Đơn tạo trạng thái `Confirmed`, số dư ví bị trừ chính xác, hàm `AddTransaction` được gọi 1 lần. | Giả lập `IUserService.GetUserById` trả về số dư 1.000.000đ; Assert số dư còn 850.000đ. | **PASS** |
-| **UT02** | `CreateBooking_InsufficientBalance_ReturnsError` | `BookingServiceTests` | Kiểm tra trường hợp khách không đủ tiền ví: Hệ thống từ chối, trả về thông báo lỗi, số dư ví không đổi. | Khách có 50.000đ, giá sân 150.000đ; Assert `booking == null` và ví giữ nguyên 50.000đ. | **PASS** |
-| **UT03** | `CreateBooking_UserLocked_ReturnsError` | `BookingServiceTests` | Kiểm tra tài khoản bị Admin khóa (`IsDeleted = true`): Chặn đặt sân ngay từ tầng nghiệp vụ. | `User.IsDeleted = true`; Assert trả về lỗi *"Tài khoản của bạn đã bị khóa"*. | **PASS** |
-| **UT04** | `CreateBooking_FieldMaintenance_ReturnsError` | `BookingServiceTests` | Kiểm tra khi sân bật trạng thái bảo trì (`Status = false`): Từ chối đặt chỗ để bảo vệ quyền lợi khách. | `ToggleFieldMaintenance(fieldId, false)`; Assert lỗi *"Sân đang được bảo trì"*. | **PASS** |
-| **UT05** | `CreateBooking_OverlappingBooking_ReturnsError` | `BookingServiceTests` | Kiểm tra trùng lịch: Khách thứ hai đặt cùng khung giờ trên cùng một sân sẽ bị từ chối. | Người 1 đặt thành công khung 18h-19h30; Người 2 đặt cùng khung giờ bị chặn với lỗi trùng sân. | **PASS** |
-| **UT06** | `CancelBooking_ExistingBooking_SetsStatusToCancelled` | `BookingServiceTests` | Kiểm tra hủy đơn: Đơn chuyển sang `Cancelled` để giải phóng sân cho người khác đặt. | Tạo đơn thành công; Gọi `CancelBooking(id)`; Assert trạng thái đổi thành `Cancelled`. | **PASS** |
-| **UT07** | `CreateBooking_ConcurrencySafe_UnderMultiThreading` | `BookingServiceTests` | **Kiểm thử Concurrency đa luồng:** Bắn 10 luồng song song (`Parallel.ForEach`) cùng đặt 1 sân trong cùng 1 mili-giây. | 10 luồng gửi đồng thời; Assert: **Duy nhất 1 luồng thành công**, 9 luồng còn lại nhận lỗi trùng lịch, không có Race Condition. | **PASS** |
-| **UT08** | `GetAiOptimalPrice_WeekdayNormalHours_AppliesBaseMultiplier` | `AIServiceClientTests` | Kiểm tra tính giá AI ngày thường ca sáng (Thứ 4, 10:00 sáng): Hệ số áp dụng chuẩn 1.0x (150.000đ). | Giả lập thời gian thứ 4; Assert `multiplier = 1.0` và `dynamic_price = 150000`. | **PASS** |
-| **UT09** | `GetAiOptimalPrice_WeekendNormalHours_AddsWeekendSurcharge` | `AIServiceClientTests` | Kiểm tra tính giá AI cuối tuần ca sáng (Chủ nhật, 10:00 sáng): Cộng phụ thu cuối tuần +30% (195.000đ). | Giả lập Chủ nhật; Assert `multiplier = 1.30` và có lý do phụ thu *"Cuối tuần"*. | **PASS** |
-| **UT10** | `GetAiOptimalPrice_WeekdayPeakHours_AddsPeakSurcharge` | `AIServiceClientTests` | Kiểm tra tính giá AI ngày thường ca tối (Thứ 4, 19:00 tối): Cộng phụ thu giờ cao điểm +50% (225.000đ). | Giả lập 19h00; Assert `multiplier = 1.50` và có lý do *"cao điểm"*. | **PASS** |
-| **UT11** | `GetAiOptimalPrice_WeekendPeakHours_CombinesBothSurcharges` | `AIServiceClientTests` | Kiểm tra tính giá AI giờ cao điểm cuối tuần (Thứ 7, 20:00 tối): Kết hợp cả 2 phụ thu: $1.0 + 0.3 + 0.5 = 1.8x$ (270.000đ). | Giả lập Tối thứ 7; Assert `multiplier = 1.80` và `dynamic_price = 270000`. | **PASS** |
-
-#### 8.3.6 Kiểm thử Tích hợp Toàn diện (Integration Testing)
-Quy trình kiểm thử tích hợp (End-to-End Integration Testing) được tiến hành tự động nhằm bảo đảm tính tương thích giữa các thành phần không đồng nhất về công nghệ:
-1. **Tích hợp Frontend - Backend:** Trình duyệt gọi các API qua giao thức HTTP RESTful / JSON, kiểm chứng tính năng nén dữ liệu Brotli/Gzip giúp tải trang trong dưới 150ms.
-2. **Tích hợp Backend - AI Microservice:** C# Backend kết nối tới Python Flask qua HTTP Connection Pool, tự động lưu kết quả vào In-Memory Cache trong 5 phút để triệt tiêu độ trễ mạng khi nhiều người cùng tải danh sách sân.
-3. **Tích hợp AI Microservice - Local LLM Studio:** Python Flask gọi API chuẩn OpenAI format (`/v1/chat/completions`) tới máy chủ LM Studio tại cổng 1234, tự động chuyển đổi sang Smart Fallback Engine nếu thời gian phản hồi vượt quá 3 giây.
+### 8.4.2 Bộ Kiểm thử Tích hợp tự động (3 Integration Tests)
+Được triển khai trong `IntegrationTests.cs`, kiểm tra tính tương thích và luồng dữ liệu xuyên suốt giữa các Controller và Service:
+1. `Integration_GetFields_ReturnsStandard5FieldsWithPricing`: Gọi API `BookingsController.GetFields()`, kiểm tra trả về HTTP 200 OK và danh sách đầy đủ 5 sân cỏ nhân tạo ICTU kèm cấu hình giá.
+2. `Integration_EndToEnd_CreateBooking_And_CancelWithRefund`: Kiểm thử tích hợp toàn trình (End-to-End Flow): Khách hàng đặt sân $\rightarrow$ Tiền ví bị trừ $\rightarrow$ Admin gọi API hủy đơn $\rightarrow$ Tiền được hoàn lại 100% vào ví và trạng thái đơn chuyển sang `Cancelled`.
+3. `Integration_Admin_MaintenanceMode_TogglesStateCorrectly`: Kiểm tra API bật/tắt chế độ bảo trì toàn hệ thống của Admin hoạt động chính xác.
 
 ---
 
-## 8.4 Hệ thống Rào chắn An toàn (Safety Guardrails & Security Policies)
+## 8.5 Các Rào chắn An toàn cho Agent trong quy trình SDLC (Agent Safety Guardrails)
 
-Để ngăn chặn các rủi ro phát sinh khi AI vận hành trong môi trường thực tế, hệ thống PitchAI được trang bị 5 lớp rào chắn an toàn kiên cố:
+Nhằm kiểm soát rủi ro và ngăn ngừa các lỗi tiềm ẩn do Agent AI sinh ra, nhóm đã thiết lập **5 cổng rào chắn an toàn (Guardrail Gates)** trong quy trình phát triển:
 
-| Lớp Rào Chắn | Nguy Cơ Tiềm Ẩn | Cơ Chế Phòng Thủ & Rào Chắn An Toàn (Safety Guardrails) | Vị Trí Triển Khai |
-| :--- | :--- | :--- | :--- |
-| **1. Concurrency Guardrail** | Đặt trùng sân (Double-booking) khi 2 khách cùng bấm thanh toán trong 1 mili-giây | Áp dụng khóa tiến trình Thread-safe: `lock (_lockObj)` trong `BookingService.cs`. Chỉ 1 luồng được cấp quyền kiểm tra và trừ tiền ví; luồng thứ hai bị chặn ngay lập tức. | `BookingService.cs` (C# Backend) |
-| **2. Time-Window Guardrail** | Khách đặt sân quá gấp (cách giờ đá vài phút) hoặc đặt quá xa (hàng tháng sau) | Rào chắn kiểm tra thời gian nghiêm ngặt: $T_{\text{Now}} + 2\text{h} \le T_{\text{Booking}} \le T_{\text{Now}} + 3\text{d}$. Nếu vi phạm, hệ thống từ chối với HTTP 400 và thông báo rõ ràng. | `BookingsController.cs` |
-| **3. Financial Safety Guardrail** | Số dư ví bị âm hoặc mất tiền của khách khi hệ thống gặp lỗi mạng | Ràng buộc CSDL `CHECK (WalletBalance >= 0)` và cơ chế giao dịch nguyên tử: Nếu lưu Booking thất bại, số dư ví tự động được hoàn nguyên (Atomic Rollback). | `schema.sql` & `ApplicationDbContext` |
-| **4. AI Anti-Hallucination Guardrail** | Chatbot tự bịa bảng giá sai hoặc cam kết sai chính sách hủy sân | Rào chắn System Prompt quy định rõ giới hạn tri thức; bổ sung Smart Fallback Engine bằng Regex khi LLM ngoại tuyến; không cho LLM tự quyết định số dư ví. | `app.py` & `SYSTEM_PROMPT` |
-| **5. Global Maintenance Guardrail** | Khách gửi yêu cầu đặt sân và thanh toán trong lúc hệ thống đang nâng cấp CSDL | Middleware bảo trì toàn hệ thống: Khi bật chế độ bảo trì, mọi request API của khách hàng bị chặn lại với mã `HTTP 503 Service Unavailable`, chỉ riêng tài khoản Admin được phép truy cập. | `Program.cs` (Middleware Pipeline) |
+```text
+[Agent sinh mã] 
+       │
+       ▼
+[CỔNG 1: Secret & Credential Scanning] ──> Chặn rò rỉ Connection String, API Keys, Passwords
+       │
+       ▼
+[CỔNG 2: Compiler & Roslyn Linter Gate] ──> Chặn lỗi cú pháp, ép kiểm tra con trỏ rỗng (Nullable)
+       │
+       ▼
+[CỔNG 3: Automated Testing CI Gate]     ──> Ép chạy `dotnet test`, bắt buộc Pass 14/14 tests
+       │
+       ▼
+[CỔNG 4: Sandbox Workspace Isolation]   ──> Agent chỉ thao tác trong thư mục dự án, không can thiệp OS
+       │
+       ▼
+[CỔNG 5: Human-in-the-Loop Review Gate] ──> Sinh viên Doanh & Bình kiểm duyệt trực tiếp trước khi Git commit
+```
+
+1. **Cổng 1 - Secret & Credential Scanning Gate:** Rào chắn ngăn Agent đưa các thông tin nhạy cảm (như mật khẩu tài khoản quản trị, chuỗi kết nối CSDL, JWT Secret Key) trực tiếp vào mã nguồn công khai. Mọi thông số nhạy cảm đều được cấu hình qua biến môi trường hoặc cấu hình bảo mật.
+2. **Cổng 2 - Compiler & Roslyn Linter Gate:** Mọi đoạn mã C# do Agent sinh ra phải vượt qua trình biên dịch .NET 10 với cờ `<Nullable>enable</Nullable>`, loại bỏ hoàn toàn các nguy cơ lỗi `NullReferenceException` tại thời điểm chạy.
+3. **Cổng 3 - Automated Testing CI Gate:** Thiết lập quy tắc kiểm thử tự động: Bất kỳ mã nguồn nào do Agent sinh ra hoặc chỉnh sửa đều phải chạy qua lệnh `dotnet test`. Nếu có bất kỳ test case nào bị Fail (dù chỉ 1 test), mã nguồn đó bị từ chối ngay lập tức và buộc Agent phải tái cấu trúc.
+4. **Cổng 4 - Sandbox Workspace Isolation Gate:** Giới hạn quyền hạn của Agent chỉ được phép thao tác trong phạm vi thư mục dự án `C:\Users\klqdo\Downloads\1websanbongai`, không có quyền truy cập vào hệ thống tệp ngoài hoặc thực thi các lệnh nguy hiểm gây mất dữ liệu.
+5. **Cổng 5 - Human-in-the-Loop Review Gate (Kiểm duyệt con người):** Hai sinh viên trực tiếp đọc, rà soát từng dòng code (Code Review), đối chiếu với nghiệp vụ thực tế của sân ICTU trước khi thực hiện lệnh `git commit`. Agent chỉ đóng vai trò trợ lý đề xuất, con người nắm toàn quyền kiểm soát và chịu trách nhiệm về sản phẩm.
 
 ---
 
-## 8.5 Minh chứng kiểm chứng và sửa lỗi do AI tạo ra (AI Verification & Debugging Case Studies - Tiêu chí 5.2)
+## 8.6 Minh chứng kiểm chứng và sửa lỗi do AI tạo ra (AI Verification & Debugging Case Studies - Tiêu chí 5.2)
 
-Một trong những minh chứng rõ nét nhất cho tư duy phản biện và năng lực làm chủ công nghệ của nhóm sinh viên là việc **phát hiện và sửa chữa triệt để các sai sót do AI tạo ra**. Dưới đây là 3 ca lỗi điển hình được nhóm ghi nhận và khắc phục thành công:
+Dưới đây là 3 trường hợp thực tế nhóm sinh viên đã phát hiện lỗi sai do Agent AI sinh ra và trực tiếp can thiệp khắc phục:
 
-### Case Study 1: Lỗi lệch múi giờ UTC vs Local Time trong kiểm tra thời gian đặt sân
-- **Hiện tượng lỗi do AI sinh ra:** Ban đầu, AI Agent sinh mã kiểm tra thời gian trong `BookingsController.cs` sử dụng thuộc tính `DateTime.UtcNow`. Khi khách hàng tại Việt Nam (múi giờ UTC+7) đặt sân lúc 14:00 chiều cho trận đấu lúc 16:30 (cách 2.5 tiếng - hoàn toàn hợp lệ theo quy chế), hệ thống lại báo lỗi: *"Vui lòng chọn thời gian đặt từ 2 tiếng sau đến 3 ngày tới!"*. Nguyên nhân do `DateTime.UtcNow` chậm hơn giờ thực tế Việt Nam đúng 7 tiếng, khiến phép so sánh điều kiện thời gian bị sai lệch nghiêm trọng.
-- **Biện pháp kiểm chứng & Sửa lỗi của nhóm:** Sinh viên Lã Quý Doanh phát hiện lỗi này trong ca kiểm thử biên **TC021**. Nhóm đã sửa lại mã nguồn:
+### Case Study 1: Lỗi lệch múi giờ UTC vs Local Time
+- **Lỗi do AI sinh ra:** Agent ban đầu sử dụng thuộc tính `DateTime.UtcNow` trong logic kiểm tra thời gian đặt sân của `BookingsController.cs`. Khi khách hàng tại Việt Nam (múi giờ UTC+7) đặt sân lúc 14:00 chiều cho trận đấu lúc 16:30 (cách 2.5 tiếng - hợp lệ), hệ thống lại từ chối với lý do chưa đủ 2 tiếng do giờ UTC chậm hơn 7 tiếng.
+- **Biện pháp khắc phục của nhóm:** Sinh viên Lã Quý Doanh phát hiện lỗi này khi chạy ca kiểm thử biên. Nhóm đã sửa lại mã nguồn:
   ```csharp
-  // GIẢI PHÁP SỬA LỖI DO NHÓM THỰC HIỆN:
   DateTime bookingTime = req.BookingTime.Kind == DateTimeKind.Utc 
       ? req.BookingTime.ToLocalTime() 
       : req.BookingTime;
-  var minTime = DateTime.Now.AddHours(2).AddMinutes(-5); // Trừ margin 5 phút tránh chênh lệch giây
+  var minTime = DateTime.Now.AddHours(2).AddMinutes(-5); // Trừ biên độ 5 phút tránh chênh lệch giây
   var maxTime = DateTime.Now.AddDays(3).AddMinutes(5);
   if (bookingTime < minTime || bookingTime > maxTime)
   {
       return BadRequest(new { message = "Vui lòng chọn thời gian đặt từ 2 tiếng sau đến 3 ngày tới!" });
   }
   ```
-- **Kết quả:** Quy trình đặt sân hoạt động chính xác 100% theo giờ địa phương Việt Nam.
 
-### Case Study 2: Lỗi ràng buộc Cascade Delete gây nguy cơ mất sạch dữ liệu kế toán
-- **Hiện tượng lỗi do AI sinh ra:** Khi sinh mã khởi tạo Entity Framework Core trong `ApplicationDbContext.cs`, AI Agent thiết lập hành vi xóa mặc định là `Cascade Delete` cho quan hệ giữa bảng `Users` và `Bookings`, cũng như giữa `Fields` và `Bookings`. Điều này đồng nghĩa với việc nếu một quản trị viên vô tình xóa một sân bóng đang sửa chữa, toàn bộ lịch sử các đơn đặt sân, doanh thu và nhật ký giao dịch tài chính liên quan đến sân đó sẽ bị xóa sạch khỏi CSDL.
-- **Biện pháp kiểm chứng & Sửa lỗi của nhóm:** Sinh viên phát hiện lỗ hổng nghiêm trọng này khi rà soát mô hình dữ liệu. Nhóm đã can thiệp ghi đè cấu hình Fluent API:
+### Case Study 2: Lỗi cấu hình Cascade Delete đe dọa toàn vẹn dữ liệu kế toán
+- **Lỗi do AI sinh ra:** Khi sinh mã khởi tạo Entity Framework Core trong `ApplicationDbContext.cs`, Agent thiết lập hành vi xóa mặc định là `Cascade Delete` cho quan hệ giữa `Fields` và `Bookings`. Nếu xóa một sân bóng thì toàn bộ lịch sử các đơn đặt sân và số liệu doanh thu của sân đó bị xóa sạch khỏi CSDL.
+- **Biện pháp khắc phục của nhóm:** Sinh viên phát hiện lỗ hổng nghiêm trọng này và ghi đè cấu hình Fluent API:
   ```csharp
   modelBuilder.Entity<Booking>()
       .HasOne(b => b.Field)
@@ -4317,61 +4341,30 @@ Một trong những minh chứng rõ nét nhất cho tư duy phản biện và n
       .HasForeignKey(b => b.FieldId)
       .OnDelete(DeleteBehavior.Restrict); // NGĂN CHẶN XÓA DÂY CHUYỀN
   ```
-- **Kết quả:** CSDL được bảo vệ toàn vẹn tuyệt đối; hệ thống áp dụng cơ chế xóa mềm (Soft Delete qua cờ `IsDeleted`) thay vì xóa vật lý.
 
-### Case Study 3: Hiện tượng "ảo giác" (Hallucination) của Chatbot về khung giờ rạng sáng
-- **Hiện tượng lỗi do AI sinh ra:** Khi khách hàng gửi câu hỏi: *"Khung giờ rạng sáng từ 2h đến 5h sáng có đá bóng được không shop?"*, mô hình LLM ban đầu tự suy luận theo thói quen sinh hoạt thông thường và trả lời: *"Dạ khung giờ 2h - 5h sáng sân đóng cửa đi ngủ bạn nhé, bạn vui lòng quay lại vào ca sáng 6h ạ!"*. Đây là câu trả lời sai lệch với chủ trương kinh doanh của chủ sân ICTU (cho phép đặt trước ít nhất 2 tiếng với giá 300.000 VNĐ/giờ).
-- **Biện pháp kiểm chứng & Sửa lỗi của nhóm:** Sinh viên Bùi Thanh Bình đã thực hiện 2 biện pháp khắc phục đồng thời:
-  1. Tinh chỉnh lại System Prompt của mô hình 7B, ghi rõ điều kiện tiên quyết cho khung giờ 02:00 - 05:00.
-  2. Xây dựng tập dữ liệu huấn luyện nghiệp vụ `training_dataset_7b.jsonl` và chạy script chuyển giao tri thức `train_model_7b.py` để "cố định" tri thức này vào bộ nhớ của mô hình.
-- **Kết quả:** Chatbot phản hồi chuẩn xác: *"Khung giờ đêm muộn (02:00 - 05:00) giá 300.000 VNĐ/giờ nha bạn. Hệ thống vẫn hỗ trợ đặt trước nếu còn chỗ!"*.
-
----
-
-## 8.6 Đóng gói, Vận hành và Giám sát sản phẩm (Packaging, Operations & Monitoring)
-
-1. **Đóng gói đa dịch vụ độc lập (Decoupled Packaging):**
-   - **Backend Web API:** Được biên dịch dưới dạng ứng dụng tự lưu trữ (Self-contained ASP.NET Core Kestrel Application), lắng nghe cổng `5048`.
-   - **AI Microservice:** Được đóng gói chạy trên nền máy chủ WSGI công nghiệp **Waitress Production Multi-threaded Server** với cấu hình 6 luồng xử lý song song (`threads=6`), lắng nghe cổng `5050`.
-   - **Local LLM Engine:** Vận hành trên máy chủ LM Studio Runtime độc lập tại cổng `1234`.
-2. **Cơ chế giám sát sức khỏe dịch vụ (Health Check Endpoint):**
-   - Microservice AI cung cấp endpoint giám sát `/health`, trả về trạng thái hoạt động, địa chỉ kết nối LM Studio và thông tin mô hình đang kích hoạt:
-     ```json
-     {
-       "status": "healthy",
-       "service": "AI Pricing & LM Studio Assistant - ICTU Thai Nguyen",
-       "model": "qwen2.5-coder-7b-instruct",
-       "port": 5050
-     }
-     ```
-3. **Cơ chế giám sát trạng thái bảo trì chủ động (Active Maintenance Polling):**
-   - AI Microservice chủ động kết nối tới API Backend qua endpoint `http://127.0.0.1:5048/api/admin/system-maintenance` bằng kết nối HTTP Keep-Alive để nhận biết ngay khi hệ thống bước vào chế độ bảo trì. Khi phát hiện bảo trì, Chatbot tự động chuyển sang thông báo bảo trì cho khách hàng mà không thực hiện các tác vụ đặt sân.
-
+### Case Study 3: Hiện tượng "ảo giác" của mô hình ngôn ngữ về khung giờ rạng sáng
+- **Lỗi do AI sinh ra:** Khi được hỏi về việc đá bóng lúc 02:00 - 05:00 sáng, mô hình LLM ban đầu tự suy luận theo thói quen sinh hoạt và trả lời sân đóng cửa lúc 2h sáng.
+- **Biện pháp khắc phục của nhóm:** Sinh viên Bùi Thanh Bình đã bổ sung điều kiện nghiệp vụ tường minh vào System Context và chuẩn bị tập dữ liệu đánh giá chuẩn `EVALUATION_DATASET.json`. Chatbot sau đó đã phản hồi chính xác: khung giờ rạng sáng giá 300.000 VNĐ/giờ và hỗ trợ đặt trước trên website ít nhất 2 tiếng nếu còn chỗ.
 
 ---
 
 ## 8.7 Đóng gói, Vận hành và Theo dõi sản phẩm (Tiêu chí 2 Bảng 2 - 1.0 điểm)
 
-Nhằm đáp ứng tiêu chuẩn triển khai phần mềm công nghiệp theo yêu cầu đánh giá của Khoa Công nghệ thông tin, hệ thống PitchAI được trang bị đầy đủ các kịch bản đóng gói container, kịch bản vận hành 1-click và cơ chế giám sát sức khỏe toàn diện:
+Hệ thống PitchAI được trang bị đầy đủ các giải pháp đóng gói công nghiệp, vận hành tự động và theo dõi sức khỏe dịch vụ:
 
-### 8.7.1 Đóng gói Container hóa công nghiệp với Docker & Docker Compose
-Toàn bộ hệ thống được container hóa thành các container độc lập, cho phép triển khai đồng bộ trên bất kỳ máy chủ nào (Windows, Linux, macOS) mà không cần cài đặt môi trường thủ công:
-1. **Dockerfile Backend (`src/Backend/Dockerfile`):** Sử dụng kỹ thuật Multi-stage Build trên nền tảng image chính thức của Microsoft (`mcr.microsoft.com/dotnet/sdk:10.0` và `aspnet:10.0`), tối ưu hóa dung lượng image chỉ còn dưới 180MB.
-2. **Dockerfile AI Service (`src/AIService/Dockerfile`):** Đóng gói môi trường Python 3.11-slim, cấu hình máy chủ sản xuất WSGI Waitress 6 threads phục vụ truy vấn đồng thời.
-3. **File điều phối toàn hệ thống (`docker-compose.yml`):** Định nghĩa liên kết 3 dịch vụ: `sqlserver` (CSDL SQL Server 2022), `aiservice` (Cổng 5050) và `backend` (Cổng 5048) trong cùng một mạng ảo bridge nội bộ `pitchai_network`.
+### 8.7.1 Đóng gói Container hóa với Docker & Docker Compose
+1. **Dockerfile Backend (`src/Backend/Dockerfile`):** Đóng gói ứng dụng ASP.NET Core Web API trên image chính thức của Microsoft (`mcr.microsoft.com/dotnet/aspnet:10.0`), cấu hình cổng lắng nghe `5048`.
+2. **Dockerfile AI Service (`src/AIService/Dockerfile`):** Đóng gói môi trường Python 3.11-slim, cấu hình máy chủ sản xuất WSGI Waitress 6 threads tại cổng `5050`.
+3. **File điều phối toàn hệ thống (`docker-compose.yml`):** Định nghĩa liên kết đồng bộ 3 dịch vụ: `sqlserver` (CSDL SQL Server 2022), `aiservice` (Cổng 5050) và `backend` (Cổng 5048) trong cùng một mạng ảo bridge nội bộ `pitchai_network`.
 
-### 8.7.2 Kịch bản Vận hành Tự động 1-Click (1-Click Multi-service Startup)
-Nhóm cung cấp script tự động hóa [start_all_services.bat](file:///c:/Users/klqdo/Downloads/1websanbongai/start_all_services.bat) đặt tại thư mục gốc. Khi người dùng hoặc Hội đồng chấm thi nhấp đúp chuột vào file:
-- Tự động mở tiến trình AI Microservice Python trên cổng 5050.
-- Tự động mở tiến trình Backend API .NET 10 trên cổng 5048.
-- Chờ 3 giây để các dịch vụ sẵn sàng và tự động mở trình duyệt web hiển thị Giao diện Khách hàng (`index.html`) và Tài liệu Swagger API (`localhost:5048/swagger`).
+### 8.7.2 Kịch bản Vận hành Tự động 1-Click (start_all_services.bat)
+Nhóm cung cấp script tự động hóa [start_all_services.bat](file:///c:/Users/klqdo/Downloads/1websanbongai/start_all_services.bat) đặt tại thư mục gốc. Khi kích hoạt, script tự động mở đồng thời AI Microservice Python (Port 5050), Backend Web API .NET 10 (Port 5048), tự động mở trình duyệt hiển thị Giao diện Khách hàng (`index.html`) và Tài liệu Swagger API (`localhost:5048/swagger`).
 
-### 8.7.3 Cơ chế Giám sát Sức khỏe & Nhật ký Hoạt động (Health Checks & Structured Logging)
-- **Giám sát sức khỏe dịch vụ (Service Health Monitoring):** Endpoint `GET /health` trả về định dạng JSON chuẩn hóa về trạng thái hoạt động của bộ máy AI và kết nối LM Studio.
-- **Giám sát bảo trì thời gian thực (Active Maintenance Polling):** Microservice AI liên tục thăm dò trạng thái từ Backend API để đồng bộ trạng thái bảo trì toàn hệ thống, tự động chặn các đơn đặt sân khi hệ thống nâng cấp.
-- **Nhật ký biến động tài chính (Audit Financial Transactions):** Bảng `Transactions` trong CSDL lưu vết toàn bộ lịch sử nạp ví, trừ tiền đặt sân, hoàn tiền hủy đơn với đầy đủ `UserId`, `Amount`, `Type`, `BookingId` và dấu thời gian `CreatedAt` chính xác đến mili-giây.
-
----
+### 8.7.3 Cơ chế Theo dõi & Giám sát sức khỏe dịch vụ (Health Checks & Monitoring)
+- **Endpoint Giám sát Backend:** Endpoint `GET /health` trên Backend .NET 10 trả về trạng thái `healthy`, dấu thời gian UTC và phiên bản API.
+- **Endpoint Giám sát AI Service:** Endpoint `GET /health` trên Python Flask trả về trạng thái hoạt động của bộ máy AI và kết nối máy chủ LM Studio.
+- **Cơ chế Active Maintenance Polling:** Microservice AI liên tục thăm dò trạng thái từ Backend API để tự động chuyển sang thông báo bảo trì cho khách hàng khi hệ thống nâng cấp.
+- **Tài liệu Hướng dẫn Triển khai & Vận hành:** Toàn bộ hướng dẫn chi tiết từ A-Z được biên soạn trong tệp [README.md](file:///c:/Users/klqdo/Downloads/1websanbongai/README.md) tại thư mục gốc của dự án.
 
 # PHẦN 9: TƯ DUY PHẢN BIỆN, PHÂN CÔNG VẤN ĐÁP & ĐÓNG GÓP RIÊNG TỪNG THÀNH VIÊN
 **Nhóm 02** - Thành viên thực hiện:
@@ -4386,7 +4379,7 @@ Nhóm cung cấp script tự động hóa [start_all_services.bat](file:///c:/Us
 - **Khối lượng công việc và đóng góp cụ thể:**
   1. Khảo sát hiện trạng và thiết lập kiến trúc phần mềm phân tầng Multi-tier kết hợp Microservices.
   2. Thiết kế Cơ sở dữ liệu quan hệ chuẩn 3NF trên SQL Server với 7 bảng thực thể, thiết lập đầy đủ khóa chính, khóa ngoại, ràng buộc kiểm tra (`CHECK`) và các chỉ mục (`INDEX`) tối ưu hóa truy vấn trùng lịch.
-  3. Lập trình toàn bộ tầng dịch vụ cốt lõi Backend: `BookingService` (hiện thực kỹ thuật Thread-safe Concurrency Lock `lock (_lockObj)` triệt tiêu 100% rủi ro đặt trùng sân), `UserService` (mã hóa mật khẩu SHA-256, sinh và xác thực JWT Token).
+  3. Lập trình toàn bộ tầng dịch vụ cốt lõi Backend: `BookingService` (hiện thực kỹ thuật Thread-safe Concurrency Lock `lock (_lockObj)` giảm thiểu tối đa rủi ro đặt trùng sân), `UserService` (mã hóa mật khẩu SHA-256, sinh và xác thực JWT Token).
   4. Xây dựng các Controller API RESTful: `AuthController`, `BookingsController`, `PaymentController`, `AdminController`.
   5. Xây dựng Middleware bảo trì hệ thống toàn cục (Global Maintenance Mode), kiểm soát mã trạng thái HTTP 503 cho khách hàng và miễn trừ đối với tài khoản Quản trị viên.
   6. Phát hiện và xử lý lỗi lệch múi giờ UTC trong hàm kiểm tra thời gian đặt sân (`BookingsController.cs`), sửa lỗi ràng buộc `Cascade Delete` trong EF Core.
@@ -4413,8 +4406,13 @@ Nhóm cung cấp script tự động hóa [start_all_services.bat](file:///c:/Us
 Nhằm chuẩn bị tốt nhất cho phần vấn đáp độc lập từng cá nhân trước Hội đồng chấm thi, nhóm đã xây dựng danh mục các câu hỏi chuyên sâu theo từng mảng phân công:
 
 ### Nhóm câu hỏi dành cho sinh viên Lã Quý Doanh (Backend & CSDL):
-1. **Câu hỏi:** *Tại sao hệ thống lại sử dụng kỹ thuật `lock (_lockObj)` trong `BookingService` mà không dùng Transaction Isolation Level trên SQL Server?*
-   - **Gợi ý trả lời:** Sử dụng `lock (_lockObj)` ở tầng ứng dụng (Application Level) giúp chặn ngay xung đột truy cập đồng thời từ trước khi gửi query xuống database, loại bỏ hoàn toàn hiện tượng Deadlock trên SQL Server và giúp hệ thống phản hồi cực nhanh cho khách hàng thứ hai mà không tốn tài nguyên I/O đĩa của hệ quản trị cơ sở dữ liệu.
+1. **Câu hỏi:** *Tại sao hệ thống lại sử dụng kỹ thuật `lock (_lockObj)` trong `BookingService`? Kỹ thuật này có ưu điểm và giới hạn kỹ thuật gì? Khi mở rộng hệ thống đa máy chủ (Multi-instance / Distributed) thì cần giải pháp gì thay thế?*
+   - **Gợi ý trả lời (Trung thực & Chuyên sâu):**
+     * **Ưu điểm hiện tại:** Sử dụng `lock (_lockObj)` ở tầng ứng dụng (Application-level In-memory Lock) giúp chặn ngay xung đột truy cập đồng thời từ trước khi gửi query xuống database. Điều này loại bỏ hiện tượng đụng độ tài nguyên trên CSDL và phản hồi ngay lập tức cho khách hàng thứ hai mà không tốn tài nguyên I/O đĩa.
+     * **Giới hạn kỹ thuật:** Kỹ thuật `lock (_lockObj)` chỉ an toàn trong môi trường **đơn tiến trình (Single Instance / Monolith)**. Nếu triển khai hệ thống phân tán với nhiều container (Multi-instance chạy sau Load Balancer), bộ nhớ giữa các container không chia sẻ được, do đó `lock` cục bộ sẽ không thể ngăn chặn xung đột giữa 2 khách hàng kết nối vào 2 container khác nhau.
+     * **Giải pháp nâng cấp cho hệ thống phân tán:** Khi mở rộng quy mô lớn, nhóm đề xuất 2 giải pháp chuẩn công nghiệp:
+       1. **Khóa phân tán (Distributed Lock):** Sử dụng **Redis Distributed Lock (RedLock)** thông qua thư viện `RedLock.net` để đồng bộ khóa tập trung giữa các container.
+       2. **Khóa bi quan tại CSDL (Database Pessimistic Locking):** Sử dụng câu lệnh truy vấn SQL với gợi ý khóa `SELECT ... WITH (UPDLOCK, HOLDLOCK)` hoặc thiết lập chỉ mục duy nhất (Unique Constraint) trên cặp `(FieldId, StartTime)` trong CSDL SQL Server để tầng dữ liệu tự động từ chối bản ghi trùng.
 2. **Câu hỏi:** *Giải thích cơ chế bảo vệ giao dịch tài chính khi hủy sân và hoàn tiền tự động?*
    - **Gợi ý trả lời:** Khi Admin bấm hủy đơn, hệ thống thực hiện đồng thời 3 thao tác trong một giao dịch nguyên tử: (1) Cập nhật trạng thái Booking sang `Cancelled`, (2) Cộng trả lại 100% số tiền vào `WalletBalance` của User, và (3) Tạo một bản ghi mới trong bảng `Transactions` với `Type = 'Refund'`. Ràng buộc `CHECK (WalletBalance >= 0)` bảo đảm tính nhất quán tài chính tuyệt đối.
 
@@ -4477,7 +4475,8 @@ Qua 9 tuần nỗ lực nghiên cứu, phân tích và phát triển chuyên sâ
 ---
 > **XÁC NHẬN CỦA NHÓM SINH VIÊN THỰC HIỆN ĐỒ ÁN:**  
 > Toàn bộ nội dung, số liệu, mô hình sơ đồ và mã nguồn trong báo cáo này được nghiên cứu, phát triển và thử nghiệm trung thực bởi nhóm sinh viên.  
-> *Thái Nguyên, ngày 21 tháng 09 năm 2026*  
+> *Thái Nguyên, ngày 28 tháng 10 năm 2026*  
+> *(Giai đoạn phát triển chính khóa theo đề cương: 27/07/2026 - 27/09/2026; Giai đoạn kiểm thử tự động hóa, đóng gói container và nghiệm thu hoàn thiện: Tháng 10/2026)*  
 > 
 > **Trưởng nhóm:** Lã Quý Doanh  
 > **Thành viên:** Bùi Thanh Bình  
