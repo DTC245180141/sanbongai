@@ -5,8 +5,8 @@
 **Khoa:** Công Nghệ Thông Tin  
 **Chuyên ngành:** Kỹ thuật Phần mềm / Hệ thống Thông tin  
 **Nhóm sinh viên thực hiện:** Nhóm 02  
-1. **Lã Quý Doanh** (Trưởng nhóm - Phụ trách Kiến trúc Hệ thống, Backend .NET, CSDL SQL Server & Tích hợp AI)  
-2. **Bùi Thanh Bình** (Thành viên - Phụ trách Microservice AI Python Flask, Trợ lý LLM Studio, Giao diện Frontend UI/UX & Kiểm thử)  
+1. **Lã Quý Doanh** (Trưởng nhóm - Phụ trách Kiến trúc Hệ thống, Backend .NET 10, CSDL SQL Server 3NF, Quản trị Ví điện tử VietQR & Toàn bộ Hệ sinh thái AI Microservice LLM Qwen 2.5)  
+2. **Bùi Thanh Bình** (Thành viên - Phụ trách Giao diện người dùng Frontend UI/UX Responsive, Thiết kế Trải nghiệm, Xây dựng Kịch bản Kiểm thử & Tài liệu Báo cáo Đồ án)  
 **Thời gian thực hiện:** Từ 27/07/2026 đến 27/09/2026 (9 tuần)  
 **Giảng viên hướng dẫn:** TS. Giảng Viên Hướng Dẫn  
 
@@ -4378,28 +4378,32 @@ Nhóm cung cấp script tự động hóa [start_all_services.bat](file:///c:/Us
 
 ## 9.1 Trách nhiệm & Đóng góp chuyên môn của sinh viên LÃ QUÝ DOANH (Trưởng nhóm)
 
-- **Vai trò chính:** Trưởng nhóm phụ trách Kiến trúc Hệ thống, Thiết kế CSDL SQL Server, Lập trình Backend C# .NET 10, Thuật toán Concurrency Control & Bảo mật Giao dịch Ví.
+- **Vai trò chính:** Trưởng nhóm phụ trách Kiến trúc Hệ thống, Thiết kế CSDL SQL Server 3NF, Lập trình Backend C# .NET 10, Thuật toán Concurrency Control, Quản trị Ví điện tử & Tích hợp VietQR, Toàn bộ Hệ sinh thái AI Microservice Python Flask, Huấn luyện & Tích hợp LLM Qwen 2.5 7B qua LM Studio, Smart Fallback NLP Engine & Cấu hình Dịch vụ Email OTP.
 - **Khối lượng công việc và đóng góp cụ thể:**
   1. Khảo sát hiện trạng và thiết lập kiến trúc phần mềm phân tầng Multi-tier kết hợp Microservices.
-  2. Thiết kế Cơ sở dữ liệu quan hệ chuẩn 3NF trên SQL Server với 7 bảng thực thể, thiết lập đầy đủ khóa chính, khóa ngoại, ràng buộc kiểm tra (`CHECK`) và các chỉ mục (`INDEX`) tối ưu hóa truy vấn trùng lịch.
-  3. Lập trình toàn bộ tầng dịch vụ cốt lõi Backend: `BookingService` (hiện thực kỹ thuật Thread-safe Concurrency Lock `lock (_lockObj)` giảm thiểu tối đa rủi ro đặt trùng sân), `UserService` (mã hóa mật khẩu SHA-256, sinh và xác thực JWT Token).
-  4. Xây dựng các Controller API RESTful: `AuthController`, `BookingsController`, `PaymentController`, `AdminController`.
-  5. Xây dựng Middleware bảo trì hệ thống toàn cục (Global Maintenance Mode), kiểm soát mã trạng thái HTTP 503 cho khách hàng và miễn trừ đối với tài khoản Quản trị viên.
-  6. Phát hiện và xử lý lỗi lệch múi giờ UTC trong hàm kiểm tra thời gian đặt sân (`BookingsController.cs`), sửa lỗi ràng buộc `Cascade Delete` trong EF Core.
+  2. Thiết kế Cơ sở dữ liệu quan hệ chuẩn 3NF trên SQL Server với 7 bảng thực thể, thiết lập đầy đủ khóa chính, khóa ngoại, ràng buộc kiểm tra (CHECK) và các chỉ mục (INDEX) tối ưu hóa truy vấn trùng lịch.
+  3. Lập trình toàn bộ tầng dịch vụ cốt lõi Backend: BookingService (hiện thực kỹ thuật Thread-safe Concurrency Lock lock (_lockObj) giảm thiểu tối đa rủi ro đặt trùng sân), UserService (mã hóa mật khẩu SHA-256, sinh và xác thực JWT Token).
+  4. Xây dựng các Controller API RESTful: AuthController, BookingsController, PaymentController, AdminController.
+  5. Xây dựng dịch vụ AI Microservice bằng Python Flask, triển khai máy chủ đa luồng Waitress WSGI phục vụ 6 luồng đồng thời.
+  6. Thiết kế thuật toán định giá linh hoạt (AI Dynamic Pricing) theo giờ cao điểm và cuối tuần.
+  7. Thiết kế kỹ nghệ ngữ cảnh (Context Engineering) và tinh chỉnh bộ Prompt V3 cho mô hình ngôn ngữ lớn Qwen 2.5 7B; xây dựng tập dữ liệu huấn luyện 	raining_dataset_7b.jsonl và script nạp tri thức 	rain_model_7b.py.
+  8. Hiện thực bộ máy **Smart Fallback Engine** kết hợp bộ nhớ đệm RAM lru_cache và Regex NLP tiếng Việt giúp phản hồi tức thì 0ms khi LM Studio ngoại tuyến.
+  9. Xây dựng dịch vụ gửi email tự động EmailService qua giao thức SMTP Gmail để gửi mã xác thực OTP khôi phục tài khoản về email khách hàng và tự động gửi thông báo về lqdoanh2k6@gmail.com.
+  10. Xây dựng Middleware bảo trì hệ thống toàn cục (Global Maintenance Mode), kiểm soát mã trạng thái HTTP 503 cho khách hàng và miễn trừ đối với tài khoản Quản trị viên.
+  11. Phát hiện và xử lý lỗi lệch múi giờ UTC trong hàm kiểm tra thời gian đặt sân (BookingsController.cs), sửa lỗi ràng buộc Cascade Delete trong EF Core.
 - **Tỷ lệ đóng góp vào đồ án:** **50%**.
 
 ---
 
 ## 9.2 Trách nhiệm & Đóng góp chuyên môn của sinh viên BÙI THANH BÌNH (Thành viên)
 
-- **Vai trò chính:** Thành viên phụ trách Microservice AI Python Flask, Tinh chỉnh Prompt & LLM LM Studio, Lập trình Giao diện Khách hàng/Admin (Frontend UI/UX) & Kiểm thử Hệ thống.
+- **Vai trò chính:** Thành viên phụ trách Lập trình Giao diện Khách hàng & Quản trị viên (Frontend UI/UX Responsive), Thiết kế Trải nghiệm Người dùng, Xây dựng Kịch bản Kiểm thử Hệ thống (Unit Test & Integration Test) & Biên soạn Tài liệu Báo cáo Đồ án.
 - **Khối lượng công việc và đóng góp cụ thể:**
-  1. Xây dựng dịch vụ AI Microservice bằng Python Flask, triển khai máy chủ đa luồng Waitress WSGI phục vụ 6 luồng đồng thời.
-  2. Thiết kế thuật toán định giá linh hoạt (AI Dynamic Pricing) theo giờ cao điểm và cuối tuần.
-  3. Thiết kế kỹ nghệ ngữ cảnh (Context Engineering) và tinh chỉnh bộ Prompt V3 cho mô hình ngôn ngữ lớn Qwen 7B; xây dựng tập dữ liệu huấn luyện `training_dataset_7b.jsonl` và script nạp tri thức `train_model_7b.py`.
-  4. Hiện thực bộ máy **Smart Fallback Engine** kết hợp bộ nhớ đệm RAM `lru_cache` và Regex NLP tiếng Việt giúp phản hồi tức thì 0ms khi LM Studio ngoại tuyến.
-  5. Thiết kế và hiện thực toàn bộ giao diện người dùng Modern Glassmorphism trên 2 trang `index.html` và `admin.html`, tích hợp widget Chatbot AI và hiển thị mã thanh toán VietQR ngân hàng MBBank.
-  6. Xây dựng bộ tài liệu 31 Test Cases, trực tiếp thực thi kiểm thử tích hợp và lập biên bản Test Report.
+  1. Thiết kế và hiện thực toàn bộ giao diện người dùng Modern Glassmorphism trên 2 trang index.html và dmin.html, tích hợp widget Chatbot AI và hiển thị mã thanh toán VietQR ngân hàng MBBank.
+  2. Xây dựng hệ thống thông báo nổi Toast Notification, hộp thoại xác nhận hủy đơn/hoàn tiền và hộp thoại nhập liệu nổi ở góc dưới màn hình thay thế hoàn toàn popup mặc định của trình duyệt.
+  3. Xây dựng cơ chế kiểm soát phân quyền (Authorization Guard) trên trang Quản trị viên (dmin.html), tự động chuyển hướng và chặn xem dữ liệu trái phép khi chưa đăng nhập quyền Admin.
+  4. Xây dựng bộ tài liệu 31 Test Cases, trực tiếp thực thi kiểm thử tích hợp và lập biên bản Test Report.
+  5. Biên soạn và hoàn thiện cấu trúc tài liệu Báo cáo chi tiết đồ án tốt nghiệp theo đúng chuẩn tiêu chí đánh giá của nhà trường.
 - **Tỷ lệ đóng góp vào đồ án:** **50%**.
 
 ---
@@ -4408,7 +4412,7 @@ Nhóm cung cấp script tự động hóa [start_all_services.bat](file:///c:/Us
 
 Nhằm chuẩn bị tốt nhất cho phần vấn đáp độc lập từng cá nhân trước Hội đồng chấm thi, nhóm đã xây dựng danh mục các câu hỏi chuyên sâu theo từng mảng phân công:
 
-### Nhóm câu hỏi dành cho sinh viên Lã Quý Doanh (Backend & CSDL):
+### Nhóm câu hỏi dành cho sinh viên Lã Quý Doanh (Backend, CSDL & AI Microservice):
 1. **Câu hỏi:** *Tại sao hệ thống lại sử dụng kỹ thuật `lock (_lockObj)` trong `BookingService`? Kỹ thuật này có ưu điểm và giới hạn kỹ thuật gì? Khi mở rộng hệ thống đa máy chủ (Multi-instance / Distributed) thì cần giải pháp gì thay thế?*
    - **Gợi ý trả lời (Trung thực & Chuyên sâu):**
      * **Ưu điểm hiện tại:** Sử dụng `lock (_lockObj)` ở tầng ứng dụng (Application-level In-memory Lock) giúp chặn ngay xung đột truy cập đồng thời từ trước khi gửi query xuống database. Điều này loại bỏ hiện tượng đụng độ tài nguyên trên CSDL và phản hồi ngay lập tức cho khách hàng thứ hai mà không tốn tài nguyên I/O đĩa.
@@ -4419,7 +4423,7 @@ Nhằm chuẩn bị tốt nhất cho phần vấn đáp độc lập từng cá 
 2. **Câu hỏi:** *Giải thích cơ chế bảo vệ giao dịch tài chính khi hủy sân và hoàn tiền tự động?*
    - **Gợi ý trả lời:** Khi Admin bấm hủy đơn, hệ thống thực hiện đồng thời 3 thao tác trong một giao dịch nguyên tử: (1) Cập nhật trạng thái Booking sang `Cancelled`, (2) Cộng trả lại 100% số tiền vào `WalletBalance` của User, và (3) Tạo một bản ghi mới trong bảng `Transactions` với `Type = 'Refund'`. Ràng buộc `CHECK (WalletBalance >= 0)` bảo đảm tính nhất quán tài chính tuyệt đối.
 
-### Nhóm câu hỏi dành cho sinh viên Bùi Thanh Bình (AI & Frontend):
+### Nhóm câu hỏi dành cho sinh viên Bùi Thanh Bình (Frontend UI/UX & Kiểm thử):
 1. **Câu hỏi:** *Giải thích cơ chế hoạt động của Smart Fallback Engine khi dịch vụ AI LM Studio bị ngắt kết nối đột ngột?*
    - **Gợi ý trả lời:** Khi cuộc gọi HTTP sang cổng 1234 của LM Studio gặp ngoại lệ hoặc timeout quá 3 giây, hàm `query_lm_studio_local_api` bắt lỗi và chuyển giao ngay cho hàm `get_smart_fallback_response`. Hàm này sử dụng bộ đệm RAM `lru_cache` kết hợp bộ phân tích từ khóa Regex tiếng Việt để trả lời chính xác thông tin sân ICTU trong 0ms, người dùng không nhận thấy bất kỳ sự gián đoạn nào.
 2. **Câu hỏi:** *Sự khác biệt cốt lõi giữa Prompt V1, V2 và V3 là gì? Kỹ nghệ ngữ cảnh (Context Engineering) đã giải quyết vấn đề gì?*

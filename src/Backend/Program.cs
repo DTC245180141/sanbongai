@@ -43,6 +43,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     ?? "Server=(localdb)\\mssqllocaldb;Database=FootballBookingDB;Trusted_Connection=True;MultipleActiveResultSets=true"));
 
 // 3. Đăng ký Business Logic Services
+builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<IBookingService, BookingService>();
 builder.Services.AddSingleton<IAIServiceClient, AIServiceClient>();
 builder.Services.AddSingleton<IUserService, UserService>();

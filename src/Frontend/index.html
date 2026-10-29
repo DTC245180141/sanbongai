@@ -22,7 +22,7 @@
             </a>
             <div class="nav-links">
                 <a href="index.html" class="active">Trang Chủ Đặt Sân</a>
-                <a href="admin.html">Dashboard Quản Trị</a>
+                <a href="admin.html" id="nav-admin-link" style="display: none;">Dashboard Quản Trị</a>
             </div>
         </div>
 
@@ -61,7 +61,6 @@
             <div id="auth-error-msg" style="display: none; padding: 0.75rem; background: #fee2e2; color: var(--danger); border-radius: 8px; font-size: 0.85rem; font-weight: bold; margin-bottom: 1rem; text-align: left;"></div>
 
             <button id="auth-btn-submit" class="btn" onclick="submitAuth()">Đăng Nhập</button>
-            <button class="btn" style="background: #0284c7; margin-top: 0.5rem; color: #ffffff;" onclick="loginAsDemo()">⚡ Vào Ngay Trải Nghiệm Demo (1-Click)</button>
             
             <div id="auth-recovery-links" style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.85rem;">
                 <a href="#" onclick="openForgotUsernameModal()" style="color: var(--text-muted); text-decoration: underline;">Quên tên đăng nhập?</a>
@@ -271,34 +270,217 @@
     <script>
         const API_BASE = 'http://localhost:5048/api';
         let isRegister = false;
-        
-        const DEFAULT_DEMO_USER = {
-            id: '88888888-8888-8888-8888-888888888888',
-            fullName: 'Khách Hàng ICTU Demo',
-            phone: '0909123456',
-            email: 'khachhang@ictu.edu.vn',
-            walletBalance: 3000000,
-            avatarUrl: '',
-            role: 'Customer'
-        };
 
-        let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-        if (!currentUser && localStorage.getItem('user_logged_out') !== 'true') {
-            currentUser = DEFAULT_DEMO_USER;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        // Quản lý thông báo nổi góc dưới (Toast Notification)
+        function showToast(title, message = '', type = 'success', duration = 5000) {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            if (!message && title) {
+                message = title;
+                title = type === 'error' ? 'Có lỗi xảy ra' : (type === 'warning' ? 'Cảnh báo' : 'Thông báo');
+            }
+
+            let typeClass = 'toast-success';
+            let iconClass = 'fa-solid fa-circle-check';
+
+            const rawText = (title + ' ' + message).toLowerCase();
+            if (type === 'error' || title.includes('❌') || rawText.includes('lỗi') || rawText.includes('thất bại') || rawText.includes('cảnh báo')) {
+                typeClass = 'toast-error';
+                iconClass = 'fa-solid fa-circle-xmark';
+            } else if (type === 'warning' || title.includes('⚠️') || rawText.includes('vui lòng') || rawText.includes('chú ý')) {
+                typeClass = 'toast-warning';
+                iconClass = 'fa-solid fa-triangle-exclamation';
+            } else if (type === 'info') {
+                typeClass = 'toast-info';
+                iconClass = 'fa-solid fa-circle-info';
+            } else {
+                typeClass = 'toast-success';
+                iconClass = 'fa-solid fa-circle-check';
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast-item ${typeClass}`;
+            toast.innerHTML = `
+                <div class="toast-icon"><i class="${iconClass}"></i></div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" title="Đóng">&times;</button>
+                <div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
+            `;
+
+            const closeBtn = toast.querySelector('.toast-close');
+            let timer = null;
+
+            const dismissToast = () => {
+                if (timer) clearTimeout(timer);
+                toast.style.animation = 'toastFadeOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                setTimeout(() => {
+                    if (toast.parentElement) toast.remove();
+                }, 250);
+            };
+
+            closeBtn.addEventListener('click', dismissToast);
+            timer = setTimeout(dismissToast, duration);
+
+            toast.addEventListener('mouseenter', () => {
+                if (timer) clearTimeout(timer);
+                const progress = toast.querySelector('.toast-progress');
+                if (progress) progress.style.animationPlayState = 'paused';
+            });
+
+            toast.addEventListener('mouseleave', () => {
+                const progress = toast.querySelector('.toast-progress');
+                if (progress) progress.style.animationPlayState = 'running';
+                timer = setTimeout(dismissToast, 2000);
+            });
+
+            container.appendChild(toast);
         }
 
-        function loginAsDemo() {
-            localStorage.removeItem('user_logged_out');
-            currentUser = DEFAULT_DEMO_USER;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            checkAuth();
+        // Thay thế alert mặc định của trình duyệt sang Toast góc dưới màn hình
+        window.alert = function(msg) {
+            if (!msg) return;
+            const str = String(msg);
+            let type = 'info';
+            let title = 'Thông báo';
+            
+            if (str.includes('🎉') || str.toLowerCase().includes('thành công')) {
+                type = 'success';
+                title = '🎉 Thành Công';
+            } else if (str.includes('❌') || str.toLowerCase().includes('lỗi') || str.toLowerCase().includes('thất bại')) {
+                type = 'error';
+                title = '❌ Thông Báo Lỗi';
+            } else if (str.includes('⚠️') || str.toLowerCase().includes('vui lòng') || str.toLowerCase().includes('chú ý')) {
+                type = 'warning';
+                title = '⚠️ Chú Ý';
+            }
+            
+            const formatted = str.split('\n').filter(Boolean).map(line => `<div>${line}</div>`).join('');
+            showToast(title, formatted, type, 5000);
+        };
+
+        // HỘP THOẠI XÁC NHẬN NỔI GÓC DƯỚI (THAY THẾ WINDOW.CONFIRM)
+        function showBottomConfirm(message, title = 'Xác Nhận Hành Động', confirmBtnText = 'Đồng Ý', cancelBtnText = 'Huỷ Bỏ') {
+            return new Promise((resolve) => {
+                let container = document.getElementById('toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'toast-container';
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+
+                const formattedMessage = String(message).split('\n').filter(Boolean).map(l => `<div>${l}</div>`).join('');
+
+                const dialog = document.createElement('div');
+                dialog.className = 'toast-item toast-warning';
+                dialog.style.cssText = 'pointer-events: auto; border-left: 5px solid var(--accent-gold); flex-direction: column; gap: 8px; box-shadow: 0 12px 30px rgba(0,0,0,0.18);';
+                
+                dialog.innerHTML = `
+                    <div style="display: flex; align-items: flex-start; gap: 10px; width: 100%;">
+                        <div class="toast-icon" style="color: var(--accent-gold); font-size: 1.35rem; margin-top: 2px;"><i class="fa-solid fa-circle-question"></i></div>
+                        <div class="toast-content" style="flex: 1;">
+                            <div class="toast-title" style="color: var(--text-main); font-weight: 700; font-size: 0.95rem;">${title}</div>
+                            <div class="toast-message" style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.45; margin-top: 4px;">${formattedMessage}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 8px; width: 100%; margin-top: 6px; padding-top: 8px; border-top: 1px solid rgba(229, 231, 235, 0.8);">
+                        <button class="btn btn-dialog-cancel" style="width: auto; padding: 0.4rem 0.9rem; font-size: 0.85rem; background: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-weight: 600;">${cancelBtnText}</button>
+                        <button class="btn btn-dialog-confirm" style="width: auto; padding: 0.4rem 1rem; font-size: 0.85rem; background: var(--danger); color: #ffffff; border: none; border-radius: 6px; cursor: pointer; font-weight: 700;">${confirmBtnText}</button>
+                    </div>
+                `;
+
+                const cleanup = (result) => {
+                    dialog.style.animation = 'toastFadeOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                    setTimeout(() => {
+                        if (dialog.parentElement) dialog.remove();
+                        resolve(result);
+                    }, 250);
+                };
+
+                dialog.querySelector('.btn-dialog-cancel').addEventListener('click', () => cleanup(false));
+                dialog.querySelector('.btn-dialog-confirm').addEventListener('click', () => cleanup(true));
+
+                container.appendChild(dialog);
+            });
+        }
+
+        // HỘP THOẠI NHẬP LIỆU NỔI GÓC DƯỚI (THAY THẾ WINDOW.PROMPT)
+        function showBottomPrompt(message, defaultValue = '', title = 'Nhập Thông Tin') {
+            return new Promise((resolve) => {
+                let container = document.getElementById('toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'toast-container';
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+
+                const formattedMessage = String(message).split('\n').filter(Boolean).map(l => `<div>${l}</div>`).join('');
+
+                const dialog = document.createElement('div');
+                dialog.className = 'toast-item toast-info';
+                dialog.style.cssText = 'pointer-events: auto; border-left: 5px solid var(--primary); flex-direction: column; gap: 8px; box-shadow: 0 12px 30px rgba(0,0,0,0.18);';
+                
+                dialog.innerHTML = `
+                    <div style="display: flex; align-items: flex-start; gap: 10px; width: 100%;">
+                        <div class="toast-icon" style="color: var(--primary); font-size: 1.35rem; margin-top: 2px;"><i class="fa-solid fa-pen-to-square"></i></div>
+                        <div class="toast-content" style="flex: 1;">
+                            <div class="toast-title" style="color: var(--text-main); font-weight: 700; font-size: 0.95rem;">${title}</div>
+                            <div class="toast-message" style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.45; margin-top: 4px;">${formattedMessage}</div>
+                        </div>
+                    </div>
+                    <input type="text" class="bottom-prompt-input" value="${defaultValue}" style="width: 100%; padding: 0.55rem 0.8rem; border-radius: 8px; border: 1px solid #d1d5db; font-size: 0.9rem; margin-top: 4px; box-sizing: border-box;">
+                    <div style="display: flex; justify-content: flex-end; gap: 8px; width: 100%; margin-top: 6px; padding-top: 8px; border-top: 1px solid rgba(229, 231, 235, 0.8);">
+                        <button class="btn btn-dialog-cancel" style="width: auto; padding: 0.4rem 0.9rem; font-size: 0.85rem; background: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-weight: 600;">Huỷ Bỏ</button>
+                        <button class="btn btn-dialog-confirm" style="width: auto; padding: 0.4rem 1rem; font-size: 0.85rem; background: var(--primary); color: #ffffff; border: none; border-radius: 6px; cursor: pointer; font-weight: 700;">Xác Nhận</button>
+                    </div>
+                `;
+
+                const input = dialog.querySelector('.bottom-prompt-input');
+
+                const cleanup = (result) => {
+                    dialog.style.animation = 'toastFadeOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                    setTimeout(() => {
+                        if (dialog.parentElement) dialog.remove();
+                        resolve(result);
+                    }, 250);
+                };
+
+                dialog.querySelector('.btn-dialog-cancel').addEventListener('click', () => cleanup(null));
+                dialog.querySelector('.btn-dialog-confirm').addEventListener('click', () => cleanup(input.value));
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') cleanup(input.value);
+                    if (e.key === 'Escape') cleanup(null);
+                });
+
+                container.appendChild(dialog);
+                setTimeout(() => input.focus(), 50);
+            });
+        }
+
+        
+        let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        // Tự động xóa tài khoản demo cũ nếu còn lưu trong trình duyệt
+        if (currentUser && (currentUser.id === '88888888-8888-8888-8888-888888888888' || currentUser.fullName?.includes('Demo'))) {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
         }
 
         function logout() {
             localStorage.removeItem('currentUser');
             localStorage.setItem('user_logged_out', 'true');
             currentUser = null;
+            const navAdmin = document.getElementById('nav-admin-link');
+            if (navAdmin) navAdmin.style.display = 'none';
             checkAuth();
         }
 
@@ -371,7 +553,13 @@
                 const btnTopup = document.getElementById('btn-topup-nav');
                 if (btnTopup) btnTopup.style.display = 'inline-block';
 
-                document.getElementById('btn-logout').style.display = 'inline-block';
+                const btnLogout = document.getElementById('btn-logout');
+                if (btnLogout) btnLogout.style.display = 'inline-block';
+
+                const navAdmin = document.getElementById('nav-admin-link');
+                const isAdmin = currentUser && (currentUser.role === 'Admin' || currentUser.role === 1 || currentUser.username === 'admin');
+                if (navAdmin) navAdmin.style.display = isAdmin ? 'inline-block' : 'none';
+
                 loadFields();
             } else {
                 document.getElementById('auth-section').style.display = 'block';
@@ -380,6 +568,8 @@
                 document.getElementById('btn-logout').style.display = 'none';
                 const btnTopup = document.getElementById('btn-topup-nav');
                 if (btnTopup) btnTopup.style.display = 'none';
+                const navAdmin = document.getElementById('nav-admin-link');
+                if (navAdmin) navAdmin.style.display = 'none';
             }
         }
 
@@ -394,11 +584,13 @@
         }
 
         async function generateVietQR() {
+            if (!currentUser) return showToast('⚠️ Chú ý', 'Vui lòng đăng nhập để nạp tiền!', 'warning');
+
             const amount = parseFloat(document.getElementById('topup-amount').value);
             if (!amount || amount <= 0) return alert('Vui lòng nhập số tiền nạp hợp lệ!');
 
             lastTopupAmount = amount;
-            const userId = currentUser ? currentUser.id : '88888888-8888-8888-8888-888888888888';
+            const userId = currentUser.id;
 
             try {
                 const res = await fetch(`${API_BASE}/payment/generate-vietqr`, {
@@ -421,9 +613,10 @@
         }
 
         async function confirmTopup() {
+            if (!currentUser) return showToast('⚠️ Chú ý', 'Vui lòng đăng nhập để nạp tiền!', 'warning');
             if (!lastTopupAmount) return alert('Vui lòng tạo mã QR trước khi xác nhận!');
 
-            const userId = currentUser ? currentUser.id : '88888888-8888-8888-8888-888888888888';
+            const userId = currentUser.id;
 
             try {
                 const res = await fetch(`${API_BASE}/payment/confirm-topup`, {
@@ -668,12 +861,14 @@
 
                 const data = await res.json();
                 if (res.ok) {
-                    alert(`📩 Mô phỏng gửi OTP thành công!\nMã OTP của bạn là: ${data.otp}`);
-                    document.getElementById('fp-otp-hint').innerText = `Mã OTP đã gửi đến tài khoản. (Mã mẫu: ${data.otp})`;
+                    showToast('📩 Đã Tạo Mã OTP Khôi Phục', data.message, 'success', 8000);
+                    document.getElementById('fp-otp-hint').innerText = data.mailSent
+                        ? `✅ Mã OTP đã được gửi về email ${data.email} và lqdoanh2k6@gmail.com!`
+                        : `Mã OTP: ${data.otp} (Đã ghi nhận gửi về email)`;
                     document.getElementById('fp-step-1').style.display = 'none';
                     document.getElementById('fp-step-2').style.display = 'block';
                 } else {
-                    alert('❌ ' + data.message);
+                    showToast('❌ Thông Báo', data.message, 'error');
                 }
             } catch (err) {
                 alert('❌ Lỗi kết nối Server!');
@@ -842,7 +1037,7 @@
             if (!currentField) return;
 
             const selectedTimeVal = document.getElementById('booking-time').value;
-            if (!selectedTimeVal) return alert('Vui lòng chọn thời gian muốn đặt sân!');
+            if (!selectedTimeVal) return showToast('⚠️ Chú ý', 'Vui lòng chọn thời gian muốn đặt sân!', 'warning');
 
             const selectedTime = new Date(selectedTimeVal);
             const now = new Date();
@@ -850,7 +1045,7 @@
             const maxTime = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000 + 60000);
 
             if (selectedTime < minTime || selectedTime > maxTime) {
-                return alert('❌ Vui lòng chọn thời gian đặt từ 2 tiếng sau đến 3 ngày tới!');
+                return showToast('❌ Thời gian không hợp lệ', 'Vui lòng chọn thời gian đặt từ 2 tiếng sau đến 3 ngày tới!', 'error');
             }
 
             const btnPay = document.getElementById('btn-pay');
@@ -864,7 +1059,12 @@
             statusText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý giao dịch...';
 
             try {
-                const userId = currentUser ? currentUser.id : '88888888-8888-8888-8888-888888888888';
+                if (!currentUser) {
+                    closeModal();
+                    showToast('⚠️ Chú ý', 'Vui lòng đăng nhập để thực hiện đặt sân!', 'warning');
+                    return;
+                }
+                const userId = currentUser.id;
                 const localISOString = formatLocalISOString(selectedTime) + ':00';
 
                 const res = await fetch(`${API_BASE}/bookings`, {
@@ -896,24 +1096,29 @@
 
                     statusText.innerHTML = '✅ <span style="color: var(--primary);">Thanh toán & Đặt sân thành công!</span>';
                     setTimeout(() => {
-                        alert('🎉 ĐẶT SÂN THÀNH CÔNG!\nThời gian đặt: ' + selectedTime.toLocaleString('vi-VN') + '\nĐã trừ ' + currentField.price.toLocaleString() + ' VNĐ từ ví ảo.');
                         closeModal();
                         checkAuth();
-                    }, 1200);
+                        showToast(
+                            '🎉 ĐẶT SÂN THÀNH CÔNG!',
+                            `<div>Thời gian đặt: <strong>${selectedTime.toLocaleString('vi-VN')}</strong></div><div style="margin-top: 3px;">Đã trừ <strong>${currentField.price.toLocaleString()} VNĐ</strong> từ ví ảo.</div>`,
+                            'success',
+                            6500
+                        );
+                    }, 800);
                 } else {
                     const errorMsg = data.message || 'Thanh toán thất bại!';
                     statusText.innerHTML = `❌ <span style="color: var(--danger); font-weight: bold;">${errorMsg}</span>`;
                     setTimeout(() => {
-                        alert(`❌ CẢNH BÁO THANH TOÁN:\n${errorMsg}`);
                         closeModal();
-                    }, 1500);
+                        showToast('❌ CẢNH BÁO THANH TOÁN', errorMsg, 'error', 5000);
+                    }, 1200);
                 }
             } catch (err) {
                 statusText.innerHTML = '❌ <span style="color: var(--danger);">Không thể kết nối Backend API!</span>';
                 setTimeout(() => {
-                    alert('❌ Lỗi kết nối Backend API Server!');
                     closeModal();
-                }, 1500);
+                    showToast('❌ Lỗi kết nối', 'Không thể kết nối Backend API Server!', 'error', 5000);
+                }, 1200);
             }
         }
 
@@ -952,7 +1157,12 @@
             const pass = document.getElementById('auth-pass').value;
 
             if (!isRegister && (!username || !pass)) {
-                loginAsDemo();
+                if (errorMsgBox) {
+                    errorMsgBox.innerText = 'Vui lòng nhập đầy đủ Tên đăng nhập và Mật khẩu!';
+                    errorMsgBox.style.display = 'block';
+                } else {
+                    showToast('⚠️ Chú ý', 'Vui lòng nhập đầy đủ Tên đăng nhập và Mật khẩu!', 'warning');
+                }
                 return;
             }
 
@@ -1020,6 +1230,9 @@
             }
         }
     </script>
+
+    <!-- Khung thông báo nổi góc dưới (Toast Container) -->
+    <div id="toast-container" class="toast-container"></div>
 
     <!-- Floating Zalo Button -->
     <a href="https://zalo.me/0364382164" target="_blank" style="position: fixed; bottom: 20px; right: 20px; background: #0284c7; color: white; padding: 10px 18px; border-radius: 30px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4); display: flex; align-items: center; gap: 8px; z-index: 9999; font-size: 0.9rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">

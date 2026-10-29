@@ -8,7 +8,7 @@ echo ===========================================================================
 echo.
 
 echo [1/3] Đang khởi chạy AI Microservice (Python Flask - Port 5050)...
-start "PitchAI - AI Microservice (Port 5050)" cmd /k "cd /d %~dp0src\AIService && python app.py"
+start "PitchAI - AI Microservice (Port 5050)" cmd /k "cd /d %~dp0src\AIService && (if exist venv\Scripts\python.exe (venv\Scripts\python.exe app.py) else (python app.py))"
 
 timeout /t 3 /nobreak > nul
 

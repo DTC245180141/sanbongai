@@ -19,6 +19,16 @@
                 <a href="admin.html" class="active">Dashboard Quản Trị</a>
             </div>
         </div>
+
+        <div class="user-panel">
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(16, 185, 129, 0.12); padding: 0.4rem 0.85rem; border-radius: 20px;">
+                <i class="fa-solid fa-user-shield" style="color: var(--primary);"></i>
+                <span id="admin-user-display" style="font-weight: 700; color: var(--text-main); font-size: 0.9rem;">Admin</span>
+            </div>
+            <button class="btn btn-outline" style="width: auto; padding: 0.45rem 1rem; border: 1px solid var(--danger); color: var(--danger); background: transparent; font-size: 0.88rem; cursor: pointer;" onclick="logoutAdmin()">
+                <i class="fa-solid fa-right-from-bracket"></i> Đăng Xuất
+            </button>
+        </div>
     </header>
 
     <div class="container">
@@ -174,6 +184,253 @@
     <script>
         const API_BASE = 'http://localhost:5048/api';
 
+        // Quản lý thông báo nổi góc dưới (Toast Notification)
+        function showToast(title, message = '', type = 'success', duration = 5000) {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            if (!message && title) {
+                message = title;
+                title = type === 'error' ? 'Có lỗi xảy ra' : (type === 'warning' ? 'Cảnh báo' : 'Thông báo');
+            }
+
+            let typeClass = 'toast-success';
+            let iconClass = 'fa-solid fa-circle-check';
+
+            const rawText = (title + ' ' + message).toLowerCase();
+            if (type === 'error' || title.includes('❌') || rawText.includes('lỗi') || rawText.includes('thất bại') || rawText.includes('cảnh báo')) {
+                typeClass = 'toast-error';
+                iconClass = 'fa-solid fa-circle-xmark';
+            } else if (type === 'warning' || title.includes('⚠️') || rawText.includes('vui lòng') || rawText.includes('chú ý')) {
+                typeClass = 'toast-warning';
+                iconClass = 'fa-solid fa-triangle-exclamation';
+            } else if (type === 'info') {
+                typeClass = 'toast-info';
+                iconClass = 'fa-solid fa-circle-info';
+            } else {
+                typeClass = 'toast-success';
+                iconClass = 'fa-solid fa-circle-check';
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast-item ${typeClass}`;
+            toast.innerHTML = `
+                <div class="toast-icon"><i class="${iconClass}"></i></div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" title="Đóng">&times;</button>
+                <div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
+            `;
+
+            const closeBtn = toast.querySelector('.toast-close');
+            let timer = null;
+
+            const dismissToast = () => {
+                if (timer) clearTimeout(timer);
+                toast.style.animation = 'toastFadeOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                setTimeout(() => {
+                    if (toast.parentElement) toast.remove();
+                }, 250);
+            };
+
+            closeBtn.addEventListener('click', dismissToast);
+            timer = setTimeout(dismissToast, duration);
+
+            toast.addEventListener('mouseenter', () => {
+                if (timer) clearTimeout(timer);
+                const progress = toast.querySelector('.toast-progress');
+                if (progress) progress.style.animationPlayState = 'paused';
+            });
+
+            toast.addEventListener('mouseleave', () => {
+                const progress = toast.querySelector('.toast-progress');
+                if (progress) progress.style.animationPlayState = 'running';
+                timer = setTimeout(dismissToast, 2000);
+            });
+
+            container.appendChild(toast);
+        }
+
+        // Thay thế alert mặc định của trình duyệt sang Toast góc dưới màn hình
+        window.alert = function(msg) {
+            if (!msg) return;
+            const str = String(msg);
+            let type = 'info';
+            let title = 'Thông báo';
+            
+            if (str.includes('🎉') || str.toLowerCase().includes('thành công')) {
+                type = 'success';
+                title = '🎉 Thành Công';
+            } else if (str.includes('❌') || str.toLowerCase().includes('lỗi') || str.toLowerCase().includes('thất bại')) {
+                type = 'error';
+                title = '❌ Thông Báo Lỗi';
+            } else if (str.includes('⚠️') || str.toLowerCase().includes('vui lòng') || str.toLowerCase().includes('chú ý')) {
+                type = 'warning';
+                title = '⚠️ Chú Ý';
+            }
+            
+            const formatted = str.split('\n').filter(Boolean).map(line => `<div>${line}</div>`).join('');
+            showToast(title, formatted, type, 5000);
+        };
+
+        // HỘP THOẠI XÁC NHẬN NỔI GÓC DƯỚI (THAY THẾ WINDOW.CONFIRM)
+        function showBottomConfirm(message, title = 'Xác Nhận Hành Động', confirmBtnText = 'Đồng Ý', cancelBtnText = 'Huỷ Bỏ') {
+            return new Promise((resolve) => {
+                let container = document.getElementById('toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'toast-container';
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+
+                const formattedMessage = String(message).split('\n').filter(Boolean).map(l => `<div>${l}</div>`).join('');
+
+                const dialog = document.createElement('div');
+                dialog.className = 'toast-item toast-warning';
+                dialog.style.cssText = 'pointer-events: auto; border-left: 5px solid var(--accent-gold); flex-direction: column; gap: 8px; box-shadow: 0 12px 30px rgba(0,0,0,0.18);';
+                
+                dialog.innerHTML = `
+                    <div style="display: flex; align-items: flex-start; gap: 10px; width: 100%;">
+                        <div class="toast-icon" style="color: var(--accent-gold); font-size: 1.35rem; margin-top: 2px;"><i class="fa-solid fa-circle-question"></i></div>
+                        <div class="toast-content" style="flex: 1;">
+                            <div class="toast-title" style="color: var(--text-main); font-weight: 700; font-size: 0.95rem;">${title}</div>
+                            <div class="toast-message" style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.45; margin-top: 4px;">${formattedMessage}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 8px; width: 100%; margin-top: 6px; padding-top: 8px; border-top: 1px solid rgba(229, 231, 235, 0.8);">
+                        <button class="btn btn-dialog-cancel" style="width: auto; padding: 0.4rem 0.9rem; font-size: 0.85rem; background: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-weight: 600;">${cancelBtnText}</button>
+                        <button class="btn btn-dialog-confirm" style="width: auto; padding: 0.4rem 1rem; font-size: 0.85rem; background: var(--danger); color: #ffffff; border: none; border-radius: 6px; cursor: pointer; font-weight: 700;">${confirmBtnText}</button>
+                    </div>
+                `;
+
+                const cleanup = (result) => {
+                    dialog.style.animation = 'toastFadeOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                    setTimeout(() => {
+                        if (dialog.parentElement) dialog.remove();
+                        resolve(result);
+                    }, 250);
+                };
+
+                dialog.querySelector('.btn-dialog-cancel').addEventListener('click', () => cleanup(false));
+                dialog.querySelector('.btn-dialog-confirm').addEventListener('click', () => cleanup(true));
+
+                container.appendChild(dialog);
+            });
+        }
+
+        // HỘP THOẠI NHẬP LIỆU NỔI GÓC DƯỚI (THAY THẾ WINDOW.PROMPT)
+        function showBottomPrompt(message, defaultValue = '', title = 'Nhập Thông Tin') {
+            return new Promise((resolve) => {
+                let container = document.getElementById('toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'toast-container';
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+
+                const formattedMessage = String(message).split('\n').filter(Boolean).map(l => `<div>${l}</div>`).join('');
+
+                const dialog = document.createElement('div');
+                dialog.className = 'toast-item toast-info';
+                dialog.style.cssText = 'pointer-events: auto; border-left: 5px solid var(--primary); flex-direction: column; gap: 8px; box-shadow: 0 12px 30px rgba(0,0,0,0.18);';
+                
+                dialog.innerHTML = `
+                    <div style="display: flex; align-items: flex-start; gap: 10px; width: 100%;">
+                        <div class="toast-icon" style="color: var(--primary); font-size: 1.35rem; margin-top: 2px;"><i class="fa-solid fa-pen-to-square"></i></div>
+                        <div class="toast-content" style="flex: 1;">
+                            <div class="toast-title" style="color: var(--text-main); font-weight: 700; font-size: 0.95rem;">${title}</div>
+                            <div class="toast-message" style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.45; margin-top: 4px;">${formattedMessage}</div>
+                        </div>
+                    </div>
+                    <input type="text" class="bottom-prompt-input" value="${defaultValue}" style="width: 100%; padding: 0.55rem 0.8rem; border-radius: 8px; border: 1px solid #d1d5db; font-size: 0.9rem; margin-top: 4px; box-sizing: border-box;">
+                    <div style="display: flex; justify-content: flex-end; gap: 8px; width: 100%; margin-top: 6px; padding-top: 8px; border-top: 1px solid rgba(229, 231, 235, 0.8);">
+                        <button class="btn btn-dialog-cancel" style="width: auto; padding: 0.4rem 0.9rem; font-size: 0.85rem; background: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-weight: 600;">Huỷ Bỏ</button>
+                        <button class="btn btn-dialog-confirm" style="width: auto; padding: 0.4rem 1rem; font-size: 0.85rem; background: var(--primary); color: #ffffff; border: none; border-radius: 6px; cursor: pointer; font-weight: 700;">Xác Nhận</button>
+                    </div>
+                `;
+
+                const input = dialog.querySelector('.bottom-prompt-input');
+
+                const cleanup = (result) => {
+                    dialog.style.animation = 'toastFadeOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                    setTimeout(() => {
+                        if (dialog.parentElement) dialog.remove();
+                        resolve(result);
+                    }, 250);
+                };
+
+                dialog.querySelector('.btn-dialog-cancel').addEventListener('click', () => cleanup(null));
+                dialog.querySelector('.btn-dialog-confirm').addEventListener('click', () => cleanup(input.value));
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') cleanup(input.value);
+                    if (e.key === 'Escape') cleanup(null);
+                });
+
+                container.appendChild(dialog);
+                setTimeout(() => input.focus(), 50);
+            });
+        }
+
+        // KIỂM SOÁT QUYỀN TRUY CẬP ADMIN (AUTHORIZATION GUARD)
+        function checkAdminAuth() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            const isLoggedOut = localStorage.getItem('user_logged_out') === 'true';
+
+            const isAdmin = currentUser && !isLoggedOut && (
+                currentUser.role === 'Admin' || 
+                currentUser.role === 1 || 
+                currentUser.username === 'admin'
+            );
+
+            if (!isAdmin) {
+                // Xóa bỏ nội dung nhạy cảm của trang Admin và hiển thị thẻ chặn quyền
+                document.body.innerHTML = `
+                    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-light); font-family: 'Inter', system-ui, sans-serif; padding: 1.5rem;">
+                        <div class="card" style="max-width: 440px; width: 100%; text-align: center; padding: 2.5rem 2rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-top: 5px solid var(--danger);">
+                            <div style="font-size: 3.5rem; color: var(--danger); margin-bottom: 1rem;"><i class="fa-solid fa-lock"></i></div>
+                            <h2 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 1.4rem;">Yêu Cầu Quyền Quản Trị</h2>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                                Bạn đã đăng xuất hoặc tài khoản không có quyền Admin để truy cập trang quản trị hệ thống. Vui lòng đăng nhập với tài khoản Quản trị viên!
+                            </p>
+                            <a href="index.html" class="btn" style="text-decoration: none; display: inline-block;">
+                                <i class="fa-solid fa-arrow-left"></i> Về Trang Chủ Đăng Nhập
+                            </a>
+                        </div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    window.location.replace('index.html');
+                }, 2000);
+                return false;
+            }
+
+            const adminDisplay = document.getElementById('admin-user-display');
+            if (adminDisplay && currentUser) {
+                adminDisplay.innerText = currentUser.fullName || currentUser.username || 'Admin';
+            }
+            return true;
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('currentUser');
+            localStorage.setItem('user_logged_out', 'true');
+            window.location.replace('index.html');
+        }
+
+        // Chặn thực thi ngay lập tức nếu không phải Admin
+        if (!checkAdminAuth()) {
+            throw new Error("Unauthorized: Quyền Admin là bắt buộc để sử dụng tính năng này.");
+        }
+
         // TỐI ƯU HIỆU NĂNG: Tải đồng thời tất cả các phần dữ liệu của Dashboard quản trị qua Promise.all
         async function loadAdminData() {
             await Promise.all([
@@ -215,7 +472,8 @@
                 ? 'Bạn có chắc chắn muốn BẬT CHẾ ĐỘ BẢO TRÌ HỆ THỐNG?\nTất cả request từ Khách hàng sẽ bị chặn với mã 503.' 
                 : 'Bạn có chắc chắn muốn TẮT BẢO TRÌ HỆ THỐNG và mở lại dịch vụ cho khách hàng?';
 
-            if (!confirm(confirmMsg)) return;
+            const confirmed = await showBottomConfirm(confirmMsg, 'Cảnh Báo Bảo Trì Hệ Thống', nextState ? 'Bật Bảo Trì' : 'Mở Dịch Vụ');
+            if (!confirmed) return;
 
             try {
                 const res = await fetch(`${API_BASE}/admin/system-maintenance`, {
@@ -340,7 +598,8 @@
         }
 
         async function approveDeposit(depositId) {
-            if (!confirm('Bạn có chắc chắn muốn DUYỆT yêu cầu nạp tiền này và cộng tiền vào ví người dùng?')) return;
+            const confirmed = await showBottomConfirm('Bạn có chắc chắn muốn DUYỆT yêu cầu nạp tiền này và cộng tiền vào ví người dùng?', 'Duyệt Nạp Tiền Ví', 'Duyệt Nạp');
+            if (!confirmed) return;
 
             try {
                 const res = await fetch(`${API_BASE}/payment/deposit-requests/${depositId}/approve`, {
@@ -360,7 +619,8 @@
         }
 
         async function rejectDeposit(depositId) {
-            if (!confirm('Bạn có chắc chắn muốn TỪ CHỐI yêu cầu nạp tiền này?')) return;
+            const confirmed = await showBottomConfirm('Bạn có chắc chắn muốn TỪ CHỐI yêu cầu nạp tiền này?', 'Từ Chối Nạp Tiền', 'Từ Chối');
+            if (!confirmed) return;
 
             try {
                 const res = await fetch(`${API_BASE}/payment/deposit-requests/${depositId}/reject`, {
@@ -432,11 +692,11 @@
         }
 
         async function adjustUserBalance(userId) {
-            const amountStr = prompt('Nhập số tiền Admin muốn cấp/điều chỉnh cho Ví người dùng (VD: 500000 hoặc -100000):', '500000');
+            const amountStr = await showBottomPrompt('Nhập số tiền Admin muốn cấp/điều chỉnh cho Ví người dùng (VD: 500000 hoặc -100000):', '500000', 'Điều Chỉnh Số Dư Ví');
             if (!amountStr) return;
 
             const amount = parseFloat(amountStr);
-            if (isNaN(amount)) return alert('Số tiền nhập không hợp lệ!');
+            if (isNaN(amount)) return showToast('❌ Thông Báo Lỗi', 'Số tiền nhập không hợp lệ!', 'error');
 
             try {
                 const res = await fetch(`${API_BASE}/admin/users/${userId}/balance`, {
@@ -523,9 +783,12 @@
         }
 
         async function cancelAndRefundBooking(bookingId) {
-            if (!confirm(`Bạn có chắc chắn muốn XÓA và HOÀN TIỀN đơn đặt sân ${bookingId.substring(0, 8)}... vào Ví của khách hàng?`)) {
-                return;
-            }
+            const confirmed = await showBottomConfirm(
+                `Bạn có chắc chắn muốn XÓA và HOÀN TIỀN đơn đặt sân ${bookingId.substring(0, 8)}... vào Ví của khách hàng?`,
+                'Xác Nhận Hủy & Hoàn Tiền',
+                'Xác Nhận Hoàn Tiền'
+            );
+            if (!confirmed) return;
 
             try {
                 const res = await fetch(`${API_BASE}/admin/bookings/${bookingId}`, {
@@ -546,5 +809,7 @@
 
         window.onload = loadAdminData;
     </script>
+    <!-- Khung thông báo nổi góc dưới (Toast Container) -->
+    <div id="toast-container" class="toast-container"></div>
 </body>
 </html>

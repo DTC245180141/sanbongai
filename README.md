@@ -14,8 +14,8 @@
 
 | STT | Họ và Tên | Vai trò | Trách nhiệm chuyên môn chính |
 |:---:|:---|:---|:---|
-| 1 | **Lã Quý Doanh** | Trưởng nhóm | Kiến trúc Hệ thống, Backend .NET 10 Web API, Thiết kế CSDL SQL Server 3NF, Concurrency Lock chống trùng lịch, Quản trị Ví điện tử & Tích hợp VietQR |
-| 2 | **Bùi Thanh Bình** | Thành viên | AI Microservice Python Flask, Huấn luyện & Tích hợp LLM Qwen 2.5 7B qua LM Studio, Smart Fallback NLP Engine, Giao diện Frontend UI/UX Responsive & Kiểm thử |
+| 1 | **Lã Quý Doanh** | Trưởng nhóm | Kiến trúc Hệ thống, Backend .NET 10 Web API, Thiết kế CSDL SQL Server 3NF, Concurrency Lock chống trùng lặp lịch, Quản trị Ví điện tử & Tích hợp VietQR, AI Microservice Python Flask, Huấn luyện & Tích hợp LLM Qwen 2.5 7B qua LM Studio, Smart Fallback NLP Engine |
+| 2 | **Bùi Thanh Bình** | Thành viên | Giao diện người dùng Frontend UI/UX Responsive, Thiết kế Trải nghiệm Người dùng, Xây dựng Kịch bản Kiểm thử Hệ thống (Unit Test & E2E Testing), Viết Báo cáo Kỹ thuật Đồ án |
 
 ---
 

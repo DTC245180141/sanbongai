@@ -5,8 +5,8 @@
 **Khoa:** Công Nghệ Thông Tin  
 **Chuyên ngành:** Kỹ thuật Phần mềm / Hệ thống Thông tin  
 **Nhóm sinh viên thực hiện:** Nhóm 02  
-1. **Lã Quý Doanh** (Trưởng nhóm - Phụ trách Kiến trúc Hệ thống, Backend .NET, CSDL SQL Server & Tích hợp AI)  
-2. **Bùi Thanh Bình** (Thành viên - Phụ trách Microservice AI Python Flask, Trợ lý LLM Studio, Giao diện Frontend UI/UX & Kiểm thử)  
+1. **Lã Quý Doanh** (Trưởng nhóm - Phụ trách Kiến trúc Hệ thống, Backend .NET 10, CSDL SQL Server 3NF, Quản trị Ví điện tử VietQR & Toàn bộ Hệ sinh thái AI Microservice LLM Qwen 2.5)  
+2. **Bùi Thanh Bình** (Thành viên - Phụ trách Giao diện người dùng Frontend UI/UX Responsive, Thiết kế Trải nghiệm, Xây dựng Kịch bản Kiểm thử & Tài liệu Báo cáo Đồ án)  
 **Thời gian thực hiện:** Từ 27/07/2026 đến 27/09/2026 (9 tuần)  
 **Giảng viên hướng dẫn:** TS. Giảng Viên Hướng Dẫn  
 
@@ -3761,7 +3761,10 @@ deactivate Backend
 An toàn thông tin và bảo mật dữ liệu khách hàng được đặt làm ưu tiên hàng đầu trong thiết kế hệ thống:
 1. **Kiến trúc Local LLM độc lập (Zero Cloud Data Leakage):** Thay vì sử dụng OpenAI API hay Cloud LLM công cộng có nguy cơ rò rỉ thông tin cá nhân và lịch trình sinh hoạt của sinh viên/khách hàng lên máy chủ nước ngoài, toàn bộ mô hình ngôn ngữ lớn Qwen 7B được triển khai nội bộ trên máy trạm thông qua LM Studio (`http://127.0.0.1:1234`). Dữ liệu trò chuyện không bao giờ rời khỏi mạng nội bộ.
 2. **Bảo vệ khóa bí mật & API Keys:** Hệ thống không lưu trữ API Key dạng hardcode trong mã nguồn công khai; các tham số kết nối ngân hàng VietQR MBBank và JWT Secret Key được quản lý tập trung và bảo mật.
-3. **Mã hóa một chiều mật khẩu (SHA-256):** Mật khẩu người dùng được băm an toàn qua thuật toán SHA-256 trước khi lưu trữ vào bảng `Users`. Quản trị viên và kỹ thuật viên hệ thống hoàn toàn không thể xem được mật khẩu gốc của khách hàng.
+3. **Mã hóa một chiều mật khẩu bằng SHA-256 (Phân tích hiện trạng & Hướng nâng cấp):**
+   * *Hiện trạng triển khai:* Mật khẩu người dùng được băm một chiều bằng hàm băm mật mã chuẩn SHA-256 (`System.Security.Cryptography.SHA256`) trước khi lưu trữ vào trường `PasswordHash` trong bảng `Users`. Cơ chế này bảo đảm mật khẩu không bị lưu dưới dạng văn bản rõ (plaintext), ngăn chặn nhân viên quản trị hoặc kỹ thuật viên đọc trộm mật khẩu của người dùng.
+   * *Nhận diện hạn chế kỹ thuật:* Nhóm nghiên cứu thẳng thắn nhìn nhận hạn chế trong phiên bản hiện tại: việc sử dụng SHA-256 thuần chưa kết hợp chuỗi muối ngẫu nhiên (Salt riêng cho từng tài khoản) và SHA-256 vốn là hàm băm tốc độ cao (Fast Hash), nên về mặt lý thuyết bảo mật chuyên sâu vẫn tiềm ẩn nguy cơ nếu kẻ tấn công chiếm được toàn bộ cơ sở dữ liệu và sử dụng kỹ thuật tra cứu bảng cầu vồng (Rainbow Table Attack) hoặc vét cạn bằng dàn GPU đối với các mật khẩu ngắn.
+   * *Giải pháp & Kế hoạch nâng cấp chuẩn hóa:* Trong lộ trình phát triển phiên bản tiếp theo, nhóm đã hoạch định việc chuyển đổi sang các thuật toán băm chuyên dụng cho xác thực danh tính (Slow Hash / Key Derivation Functions) như **BCrypt** (`BCrypt.Net-Next` với work factor $\ge 12$) hoặc **PBKDF2** / **Argon2id** (kết hợp Salt ngẫu nhiên 128-bit sinh độc lập cho từng người dùng). Cơ chế này sẽ vô hiệu hóa hoàn toàn các nguy cơ tấn công dò quét Rainbow Table và Brute-force bằng phần cứng chuyên dụng.
 4. **Bảo mật phiên đăng nhập bằng JSON Web Token (JWT):** Token được ký số bằng thuật toán mã hóa đối xứng `HmacSha256` với thời hạn hết hạn xác định, mang theo thông tin định danh và vai trò (`UserRole.Customer` hoặc `UserRole.Admin`), bảo vệ chống giả mạo quyền truy cập.
 5. **Chống tấn công SQL Injection:** Toàn bộ truy vấn dữ liệu trong tầng Backend được thực hiện thông qua Entity Framework Core (ORM) với kỹ thuật **Parameterized Queries**, vô hiệu hóa mọi nỗ lực chèn mã SQL độc hại qua các trường nhập liệu.
 6. **Kiểm soát tài nguyên chéo CORS (Cross-Origin Resource Sharing):** Cấu hình chính sách CORS nghiêm ngặt tại Backend ASP.NET Core và Python Flask, ngăn chặn các website giả mạo gửi request đánh cắp phiên làm việc của khách hàng.
@@ -4375,28 +4378,32 @@ Nhóm cung cấp script tự động hóa [start_all_services.bat](file:///c:/Us
 
 ## 9.1 Trách nhiệm & Đóng góp chuyên môn của sinh viên LÃ QUÝ DOANH (Trưởng nhóm)
 
-- **Vai trò chính:** Trưởng nhóm phụ trách Kiến trúc Hệ thống, Thiết kế CSDL SQL Server, Lập trình Backend C# .NET 10, Thuật toán Concurrency Control & Bảo mật Giao dịch Ví.
+- **Vai trò chính:** Trưởng nhóm phụ trách Kiến trúc Hệ thống, Thiết kế CSDL SQL Server 3NF, Lập trình Backend C# .NET 10, Thuật toán Concurrency Control, Quản trị Ví điện tử & Tích hợp VietQR, Toàn bộ Hệ sinh thái AI Microservice Python Flask, Huấn luyện & Tích hợp LLM Qwen 2.5 7B qua LM Studio, Smart Fallback NLP Engine & Cấu hình Dịch vụ Email OTP.
 - **Khối lượng công việc và đóng góp cụ thể:**
   1. Khảo sát hiện trạng và thiết lập kiến trúc phần mềm phân tầng Multi-tier kết hợp Microservices.
-  2. Thiết kế Cơ sở dữ liệu quan hệ chuẩn 3NF trên SQL Server với 7 bảng thực thể, thiết lập đầy đủ khóa chính, khóa ngoại, ràng buộc kiểm tra (`CHECK`) và các chỉ mục (`INDEX`) tối ưu hóa truy vấn trùng lịch.
-  3. Lập trình toàn bộ tầng dịch vụ cốt lõi Backend: `BookingService` (hiện thực kỹ thuật Thread-safe Concurrency Lock `lock (_lockObj)` giảm thiểu tối đa rủi ro đặt trùng sân), `UserService` (mã hóa mật khẩu SHA-256, sinh và xác thực JWT Token).
-  4. Xây dựng các Controller API RESTful: `AuthController`, `BookingsController`, `PaymentController`, `AdminController`.
-  5. Xây dựng Middleware bảo trì hệ thống toàn cục (Global Maintenance Mode), kiểm soát mã trạng thái HTTP 503 cho khách hàng và miễn trừ đối với tài khoản Quản trị viên.
-  6. Phát hiện và xử lý lỗi lệch múi giờ UTC trong hàm kiểm tra thời gian đặt sân (`BookingsController.cs`), sửa lỗi ràng buộc `Cascade Delete` trong EF Core.
+  2. Thiết kế Cơ sở dữ liệu quan hệ chuẩn 3NF trên SQL Server với 7 bảng thực thể, thiết lập đầy đủ khóa chính, khóa ngoại, ràng buộc kiểm tra (CHECK) và các chỉ mục (INDEX) tối ưu hóa truy vấn trùng lịch.
+  3. Lập trình toàn bộ tầng dịch vụ cốt lõi Backend: BookingService (hiện thực kỹ thuật Thread-safe Concurrency Lock lock (_lockObj) giảm thiểu tối đa rủi ro đặt trùng sân), UserService (mã hóa mật khẩu SHA-256, sinh và xác thực JWT Token).
+  4. Xây dựng các Controller API RESTful: AuthController, BookingsController, PaymentController, AdminController.
+  5. Xây dựng dịch vụ AI Microservice bằng Python Flask, triển khai máy chủ đa luồng Waitress WSGI phục vụ 6 luồng đồng thời.
+  6. Thiết kế thuật toán định giá linh hoạt (AI Dynamic Pricing) theo giờ cao điểm và cuối tuần.
+  7. Thiết kế kỹ nghệ ngữ cảnh (Context Engineering) và tinh chỉnh bộ Prompt V3 cho mô hình ngôn ngữ lớn Qwen 2.5 7B; xây dựng tập dữ liệu huấn luyện 	raining_dataset_7b.jsonl và script nạp tri thức 	rain_model_7b.py.
+  8. Hiện thực bộ máy **Smart Fallback Engine** kết hợp bộ nhớ đệm RAM lru_cache và Regex NLP tiếng Việt giúp phản hồi tức thì 0ms khi LM Studio ngoại tuyến.
+  9. Xây dựng dịch vụ gửi email tự động EmailService qua giao thức SMTP Gmail để gửi mã xác thực OTP khôi phục tài khoản về email khách hàng và tự động gửi thông báo về lqdoanh2k6@gmail.com.
+  10. Xây dựng Middleware bảo trì hệ thống toàn cục (Global Maintenance Mode), kiểm soát mã trạng thái HTTP 503 cho khách hàng và miễn trừ đối với tài khoản Quản trị viên.
+  11. Phát hiện và xử lý lỗi lệch múi giờ UTC trong hàm kiểm tra thời gian đặt sân (BookingsController.cs), sửa lỗi ràng buộc Cascade Delete trong EF Core.
 - **Tỷ lệ đóng góp vào đồ án:** **50%**.
 
 ---
 
 ## 9.2 Trách nhiệm & Đóng góp chuyên môn của sinh viên BÙI THANH BÌNH (Thành viên)
 
-- **Vai trò chính:** Thành viên phụ trách Microservice AI Python Flask, Tinh chỉnh Prompt & LLM LM Studio, Lập trình Giao diện Khách hàng/Admin (Frontend UI/UX) & Kiểm thử Hệ thống.
+- **Vai trò chính:** Thành viên phụ trách Lập trình Giao diện Khách hàng & Quản trị viên (Frontend UI/UX Responsive), Thiết kế Trải nghiệm Người dùng, Xây dựng Kịch bản Kiểm thử Hệ thống (Unit Test & Integration Test) & Biên soạn Tài liệu Báo cáo Đồ án.
 - **Khối lượng công việc và đóng góp cụ thể:**
-  1. Xây dựng dịch vụ AI Microservice bằng Python Flask, triển khai máy chủ đa luồng Waitress WSGI phục vụ 6 luồng đồng thời.
-  2. Thiết kế thuật toán định giá linh hoạt (AI Dynamic Pricing) theo giờ cao điểm và cuối tuần.
-  3. Thiết kế kỹ nghệ ngữ cảnh (Context Engineering) và tinh chỉnh bộ Prompt V3 cho mô hình ngôn ngữ lớn Qwen 7B; xây dựng tập dữ liệu huấn luyện `training_dataset_7b.jsonl` và script nạp tri thức `train_model_7b.py`.
-  4. Hiện thực bộ máy **Smart Fallback Engine** kết hợp bộ nhớ đệm RAM `lru_cache` và Regex NLP tiếng Việt giúp phản hồi tức thì 0ms khi LM Studio ngoại tuyến.
-  5. Thiết kế và hiện thực toàn bộ giao diện người dùng Modern Glassmorphism trên 2 trang `index.html` và `admin.html`, tích hợp widget Chatbot AI và hiển thị mã thanh toán VietQR ngân hàng MBBank.
-  6. Xây dựng bộ tài liệu 31 Test Cases, trực tiếp thực thi kiểm thử tích hợp và lập biên bản Test Report.
+  1. Thiết kế và hiện thực toàn bộ giao diện người dùng Modern Glassmorphism trên 2 trang index.html và dmin.html, tích hợp widget Chatbot AI và hiển thị mã thanh toán VietQR ngân hàng MBBank.
+  2. Xây dựng hệ thống thông báo nổi Toast Notification, hộp thoại xác nhận hủy đơn/hoàn tiền và hộp thoại nhập liệu nổi ở góc dưới màn hình thay thế hoàn toàn popup mặc định của trình duyệt.
+  3. Xây dựng cơ chế kiểm soát phân quyền (Authorization Guard) trên trang Quản trị viên (dmin.html), tự động chuyển hướng và chặn xem dữ liệu trái phép khi chưa đăng nhập quyền Admin.
+  4. Xây dựng bộ tài liệu 31 Test Cases, trực tiếp thực thi kiểm thử tích hợp và lập biên bản Test Report.
+  5. Biên soạn và hoàn thiện cấu trúc tài liệu Báo cáo chi tiết đồ án tốt nghiệp theo đúng chuẩn tiêu chí đánh giá của nhà trường.
 - **Tỷ lệ đóng góp vào đồ án:** **50%**.
 
 ---
@@ -4405,7 +4412,7 @@ Nhóm cung cấp script tự động hóa [start_all_services.bat](file:///c:/Us
 
 Nhằm chuẩn bị tốt nhất cho phần vấn đáp độc lập từng cá nhân trước Hội đồng chấm thi, nhóm đã xây dựng danh mục các câu hỏi chuyên sâu theo từng mảng phân công:
 
-### Nhóm câu hỏi dành cho sinh viên Lã Quý Doanh (Backend & CSDL):
+### Nhóm câu hỏi dành cho sinh viên Lã Quý Doanh (Backend, CSDL & AI Microservice):
 1. **Câu hỏi:** *Tại sao hệ thống lại sử dụng kỹ thuật `lock (_lockObj)` trong `BookingService`? Kỹ thuật này có ưu điểm và giới hạn kỹ thuật gì? Khi mở rộng hệ thống đa máy chủ (Multi-instance / Distributed) thì cần giải pháp gì thay thế?*
    - **Gợi ý trả lời (Trung thực & Chuyên sâu):**
      * **Ưu điểm hiện tại:** Sử dụng `lock (_lockObj)` ở tầng ứng dụng (Application-level In-memory Lock) giúp chặn ngay xung đột truy cập đồng thời từ trước khi gửi query xuống database. Điều này loại bỏ hiện tượng đụng độ tài nguyên trên CSDL và phản hồi ngay lập tức cho khách hàng thứ hai mà không tốn tài nguyên I/O đĩa.
@@ -4416,7 +4423,7 @@ Nhằm chuẩn bị tốt nhất cho phần vấn đáp độc lập từng cá 
 2. **Câu hỏi:** *Giải thích cơ chế bảo vệ giao dịch tài chính khi hủy sân và hoàn tiền tự động?*
    - **Gợi ý trả lời:** Khi Admin bấm hủy đơn, hệ thống thực hiện đồng thời 3 thao tác trong một giao dịch nguyên tử: (1) Cập nhật trạng thái Booking sang `Cancelled`, (2) Cộng trả lại 100% số tiền vào `WalletBalance` của User, và (3) Tạo một bản ghi mới trong bảng `Transactions` với `Type = 'Refund'`. Ràng buộc `CHECK (WalletBalance >= 0)` bảo đảm tính nhất quán tài chính tuyệt đối.
 
-### Nhóm câu hỏi dành cho sinh viên Bùi Thanh Bình (AI & Frontend):
+### Nhóm câu hỏi dành cho sinh viên Bùi Thanh Bình (Frontend UI/UX & Kiểm thử):
 1. **Câu hỏi:** *Giải thích cơ chế hoạt động của Smart Fallback Engine khi dịch vụ AI LM Studio bị ngắt kết nối đột ngột?*
    - **Gợi ý trả lời:** Khi cuộc gọi HTTP sang cổng 1234 của LM Studio gặp ngoại lệ hoặc timeout quá 3 giây, hàm `query_lm_studio_local_api` bắt lỗi và chuyển giao ngay cho hàm `get_smart_fallback_response`. Hàm này sử dụng bộ đệm RAM `lru_cache` kết hợp bộ phân tích từ khóa Regex tiếng Việt để trả lời chính xác thông tin sân ICTU trong 0ms, người dùng không nhận thấy bất kỳ sự gián đoạn nào.
 2. **Câu hỏi:** *Sự khác biệt cốt lõi giữa Prompt V1, V2 và V3 là gì? Kỹ nghệ ngữ cảnh (Context Engineering) đã giải quyết vấn đề gì?*
@@ -4460,16 +4467,19 @@ Qua 9 tuần nỗ lực nghiên cứu, phân tích và phát triển chuyên sâ
 ### Hạn chế còn tồn tại:
 * Việc phê duyệt nạp tiền ví hiện tại vẫn cần một bước bấm "Xác nhận" thủ công từ Quản trị viên trên trang Admin (chưa tích hợp Webhook tự động lắng nghe biến động số dư ngân hàng qua Open Banking).
 * Mô hình Chatbot LLM chạy Local trên máy tính cá nhân nên phụ thuộc vào cấu hình phần cứng (RAM, GPU) của máy chủ triển khai.
+* Cơ chế lưu trữ mật khẩu hiện tại áp dụng thuật toán băm SHA-256 thuần (chưa tích hợp chuỗi Salt ngẫu nhiên riêng cho từng tài khoản), dù đảm bảo không lưu trữ plaintext nhưng chưa đạt chuẩn kháng Rainbow Table so với các thuật toán chuyên dụng như BCrypt hay PBKDF2.
 
 ## 3. Hướng phát triển và mở rộng trong tương lai
 Để phát triển hệ thống thành một nền tảng thương mại toàn diện cung cấp cho các chuỗi thể thao chuyên nghiệp, nhóm đề xuất các hướng nâng cấp tiếp theo:
-1. **Tự động hóa hoàn toàn cổng nạp tiền qua Webhook ngân hàng:**
+1. **Nâng cấp cơ chế băm mật khẩu từ SHA-256 thuần lên BCrypt / PBKDF2:**
+   * Thay thế hàm băm SHA-256 bằng thuật toán **BCrypt** hoặc **PBKDF2** kèm chuỗi Salt ngẫu nhiên (tối thiểu 128-bit) sinh riêng cho từng người dùng và hệ số độ khó (Cost Factor >= 12) có thể điều chỉnh linh hoạt, bảo vệ tuyệt đối thông tin xác thực của khách hàng trước các nguy cơ tấn công từ điển và Rainbow Table.
+2. **Tự động hóa hoàn toàn cổng nạp tiền qua Webhook ngân hàng:**
    * Tích hợp các cổng thanh toán Open Banking (như Casso hoặc SePAY) để tự động lắng nghe biến động tài khoản ngân hàng và cộng tiền ví cho khách ngay trong **3 giây** mà không cần Admin bấm duyệt thủ công.
-2. **Tích hợp phần cứng IoT thông minh tại sân:**
+3. **Tích hợp phần cứng IoT thông minh tại sân:**
    * Kết nối hệ thống phần mềm với các rơ-le thông minh (Smart Relays): Khi đến giờ đặt sân của khách, hệ thống tự động bật dàn đèn chiếu sáng sân bóng và tự động ngắt điện khi hết giờ thi đấu.
-3. **Nhận diện khuôn mặt và Biển số xe bằng AI Camera:**
+4. **Nhận diện khuôn mặt và Biển số xe bằng AI Camera:**
    * Triển khai Camera AI tại cổng ra vào cụm sân để nhận diện cầu thủ đã đặt chỗ và tự động mở barie cho xe vào bãi đỗ.
-4. **Tính năng Ghép đội thi đấu & Bắt đối (Matchmaking AI):**
+5. **Tính năng Ghép đội thi đấu & Bắt đối (Matchmaking AI):**
    * Phát triển tính năng mạng xã hội thể thao: AI tự động phân tích trình độ, vị trí địa lý và độ tuổi của các đội bóng để gợi ý bắt đối, ghép kèo giao hữu đá bóng cuối tuần.
 
 ---

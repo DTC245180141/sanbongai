@@ -9,10 +9,12 @@ namespace FootballBookingApi.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
 
-        public AuthController(IUserService userService)
+        public AuthController(IUserService userService, IEmailService emailService)
         {
             _userService = userService;
+            _emailService = emailService;
         }
 
         [HttpPost("register")]
@@ -86,7 +88,7 @@ namespace FootballBookingApi.Controllers
         }
 
         [HttpPost("forgot-username")]
-        public IActionResult ForgotUsername([FromBody] ForgotUsernameRequest? req)
+        public async Task<IActionResult> ForgotUsername([FromBody] ForgotUsernameRequest? req)
         {
             try
             {
@@ -95,13 +97,23 @@ namespace FootballBookingApi.Controllers
                     return BadRequest(new { message = "Vui lòng nhập Số điện thoại hoặc Email để tìm kiếm tài khoản!" });
                 }
 
-                var (success, username, message) = _userService.ForgotUsername(req.PhoneOrEmail.Trim());
-                if (!success)
+                var (success, user, username, message) = _userService.ForgotUsername(req.PhoneOrEmail.Trim());
+                if (!success || user == null)
                 {
                     return BadRequest(new { message });
                 }
 
-                return Ok(new { status = "success", username, message });
+                // Gửi thông tin tài khoản tự động về email của khách và lqdoanh2k6@gmail.com
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await _emailService.SendForgotUsernameAsync(user.Email, user.Username, user.FullName);
+                    }
+                    catch { }
+                });
+
+                return Ok(new { status = "success", username, message = $"{message}. Thông tin cũng đã được gửi về email {user.Email} (và lqdoanh2k6@gmail.com)." });
             }
             catch (Exception ex)
             {
@@ -138,7 +150,7 @@ namespace FootballBookingApi.Controllers
         }
 
         [HttpPost("forgot-password/request")]
-        public IActionResult RequestPasswordReset([FromBody] ForgotPasswordRequest? req)
+        public async Task<IActionResult> RequestPasswordReset([FromBody] ForgotPasswordRequest? req)
         {
             try
             {
@@ -147,13 +159,25 @@ namespace FootballBookingApi.Controllers
                     return BadRequest(new { message = "Vui lòng nhập Tên đăng nhập hoặc Email!" });
                 }
 
-                var (success, otp, message) = _userService.RequestPasswordReset(req.UsernameOrEmail.Trim());
-                if (!success)
+                var (success, user, otp, message) = _userService.RequestPasswordReset(req.UsernameOrEmail.Trim());
+                if (!success || user == null)
                 {
                     return BadRequest(new { message });
                 }
 
-                return Ok(new { status = "success", otp, message });
+                // Gửi mã OTP về email của tài khoản và tự động gửi về lqdoanh2k6@gmail.com
+                var (mailSuccess, mailMsg) = await _emailService.SendPasswordResetOtpAsync(user.Email, user.Username, otp);
+
+                return Ok(new 
+                { 
+                    status = "success", 
+                    otp, // Trả về kèm OTP để khách dùng được ngay cả khi chưa nhập AppPassword vào file cấu hình
+                    email = user.Email,
+                    mailSent = mailSuccess,
+                    message = mailSuccess 
+                        ? $"Mã OTP đã được gửi về email {user.Email} (và tự động gửi về lqdoanh2k6@gmail.com). Vui lòng kiểm tra hộp thư!" 
+                        : $"Mã OTP của bạn là: {otp}. ({mailMsg})"
+                });
             }
             catch (Exception ex)
             {

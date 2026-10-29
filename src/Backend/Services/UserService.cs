@@ -19,8 +19,8 @@ namespace FootballBookingApi.Services
         bool RefundBookingTransaction(Guid userId, decimal amount, Guid bookingId);
         User? UpdateProfile(Guid userId, string fullName, string phone, string email);
         User? UpdateAvatar(Guid userId, string avatarUrl);
-        (bool success, string username, string message) ForgotUsername(string phoneOrEmail);
-        (bool success, string otp, string message) RequestPasswordReset(string usernameOrEmail);
+        (bool success, User? user, string username, string message) ForgotUsername(string phoneOrEmail);
+        (bool success, User? user, string otp, string message) RequestPasswordReset(string usernameOrEmail);
         (bool success, string message) ResetPassword(string usernameOrEmail, string otp, string newPassword);
         (bool success, string message) ResetPasswordDirect(string usernameOrEmail, string newPassword);
         (bool success, string message) ChangePassword(Guid userId, string oldPassword, string newPassword);
@@ -160,50 +160,59 @@ namespace FootballBookingApi.Services
             return user;
         }
 
-        public (bool success, string username, string message) ForgotUsername(string phoneOrEmail)
+        public (bool success, User? user, string username, string message) ForgotUsername(string phoneOrEmail)
         {
-            var user = _users.FirstOrDefault(u => u.Phone == phoneOrEmail || u.Email == phoneOrEmail);
+            var user = _users.FirstOrDefault(u => u.Phone == phoneOrEmail || u.Email.Equals(phoneOrEmail, StringComparison.OrdinalIgnoreCase));
             if (user == null)
             {
-                return (false, string.Empty, "Không tìm thấy tài khoản liên kết với Số điện thoại hoặc Email này!");
+                return (false, null, string.Empty, "Không tìm thấy tài khoản liên kết với Số điện thoại hoặc Email này!");
             }
 
-            return (true, user.Username, $"🎉 Tên đăng nhập của bạn là: {user.Username} (Họ tên: {user.FullName})");
+            return (true, user, user.Username, $"🎉 Tên đăng nhập của bạn là: {user.Username} (Họ tên: {user.FullName})");
         }
 
-        public (bool success, string otp, string message) RequestPasswordReset(string usernameOrEmail)
+        public (bool success, User? user, string otp, string message) RequestPasswordReset(string usernameOrEmail)
         {
-            var user = _users.FirstOrDefault(u => u.Phone == usernameOrEmail || u.Email == usernameOrEmail);
+            var user = _users.FirstOrDefault(u => u.Username.Equals(usernameOrEmail, StringComparison.OrdinalIgnoreCase)
+                                               || u.Phone == usernameOrEmail 
+                                               || u.Email.Equals(usernameOrEmail, StringComparison.OrdinalIgnoreCase));
             if (user == null)
             {
-                return (false, string.Empty, "Tài khoản hoặc Email không tồn tại!");
+                return (false, null, string.Empty, "Tài khoản hoặc Email không tồn tại!");
             }
 
             string otp = new Random().Next(100000, 999999).ToString();
             _otpStore[user.Email] = otp;
             _otpStore[user.Phone] = otp;
+            _otpStore[user.Username] = otp;
 
-            return (true, otp, $"Mã OTP khôi phục mật khẩu đã gửi: {otp}");
+            return (true, user, otp, $"Mã OTP khôi phục mật khẩu đã được tạo: {otp}");
         }
 
         public (bool success, string message) ResetPassword(string usernameOrEmail, string otp, string newPassword)
         {
-            var user = _users.FirstOrDefault(u => u.Phone == usernameOrEmail || u.Email == usernameOrEmail);
+            var user = _users.FirstOrDefault(u => u.Username.Equals(usernameOrEmail, StringComparison.OrdinalIgnoreCase)
+                                               || u.Phone == usernameOrEmail 
+                                               || u.Email.Equals(usernameOrEmail, StringComparison.OrdinalIgnoreCase));
             if (user == null)
             {
                 return (false, "Tài khoản không tồn tại!");
             }
 
-            if (!_otpStore.TryGetValue(usernameOrEmail, out var validOtp) || validOtp != otp)
+            bool otpValid = (_otpStore.TryGetValue(user.Email, out var validOtp1) && validOtp1 == otp)
+                         || (_otpStore.TryGetValue(user.Phone, out var validOtp2) && validOtp2 == otp)
+                         || (_otpStore.TryGetValue(user.Username, out var validOtp3) && validOtp3 == otp)
+                         || (_otpStore.TryGetValue(usernameOrEmail, out var validOtp4) && validOtp4 == otp);
+
+            if (!otpValid)
             {
-                // Cho phép demo giả lập OTP luôn hợp lệ nếu nhập "123456"
-                if (otp != "123456")
-                {
-                    return (false, "Mã OTP không chính xác hoặc đã hết hạn!");
-                }
+                return (false, "Mã OTP không chính xác hoặc đã hết hạn!");
             }
 
             user.PasswordHash = HashPassword(newPassword);
+            _otpStore.Remove(user.Email);
+            _otpStore.Remove(user.Phone);
+            _otpStore.Remove(user.Username);
             _otpStore.Remove(usernameOrEmail);
 
             return (true, "Đổi mật khẩu mới thành công! Vui lòng đăng nhập lại.");
@@ -211,7 +220,9 @@ namespace FootballBookingApi.Services
 
         public (bool success, string message) ResetPasswordDirect(string usernameOrEmail, string newPassword)
         {
-            var user = _users.FirstOrDefault(u => u.Phone == usernameOrEmail || u.Email == usernameOrEmail);
+            var user = _users.FirstOrDefault(u => u.Username.Equals(usernameOrEmail, StringComparison.OrdinalIgnoreCase)
+                                               || u.Phone == usernameOrEmail 
+                                               || u.Email.Equals(usernameOrEmail, StringComparison.OrdinalIgnoreCase));
             if (user == null)
             {
                 return (false, "Không tìm thấy tài khoản tương ứng với thông tin đã nhập!");
