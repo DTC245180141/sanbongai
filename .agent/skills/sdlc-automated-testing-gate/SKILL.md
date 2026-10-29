@@ -45,3 +45,4 @@ Passed! - Failed: 0, Passed: 11 (hoặc cao hơn), Skipped: 0, Total: 11
 ```
 
 Nếu phát hiện bất kỳ lỗi nào, Agent phải dừng quy trình phát hành, phân tích stack trace và khắc phục triệt để trước khi báo cáo hoàn thành.
+

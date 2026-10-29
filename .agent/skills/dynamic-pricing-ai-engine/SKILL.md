@@ -59,3 +59,4 @@ Mọi yêu cầu dự đoán giá và trò chuyện AI đều phải tuân thủ
 
 - **Zero Cloud Leakage:** Toàn bộ quá trình suy luận (Inference) của mô hình Qwen 2.5 7B Instruct phải thực thi tại máy chủ cục bộ (LM Studio `http://127.0.0.1:1234/v1`), tuyệt đối không gửi API Key hoặc dữ liệu người dùng ra dịch vụ đám mây công cộng.
 - **Circuit Breaker:** Client phía Backend .NET (`AIServiceClient.cs`) phải đặt thời gian chờ tối đa (Timeout $\le 5$ giây). Nếu quá 3 lần lỗi liên tiếp, tự động chuyển trạng thái Circuit Breaker sang OPEN để không chặn luồng đặt sân của khách.
+

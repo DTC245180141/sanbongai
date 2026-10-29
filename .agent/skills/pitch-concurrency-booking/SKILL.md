@@ -63,3 +63,4 @@ Kỹ năng này định nghĩa các quy tắc bắt buộc và quy trình chuẩ
 - Chạy kiểm thử tự động với ít nhất 10 luồng đặt sân đồng thời (Parallel Tasks).
 - Kết quả bắt buộc: Duy nhất **1 yêu cầu thành công**, các yêu cầu còn lại nhận thông báo lỗi lịch đã được đặt.
 - Số dư ví tiền của người dùng chỉ bị trừ đúng một lần tương ứng với lịch thành công.
+

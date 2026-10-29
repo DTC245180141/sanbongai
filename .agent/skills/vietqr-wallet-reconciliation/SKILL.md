@@ -40,3 +40,4 @@ Kỹ năng này chuẩn hóa toàn bộ vòng đời dòng tiền trong hệ th�
      - Số dư ví `WalletBalance` được cộng lại đúng 100% số tiền đã thanh toán (`TotalPrice`).
      - Ghi nhận `Transaction` mới với mô tả: `Hoàn tiền hủy sân [Mã Đơn: #{BookingId}]`.
    - **Từ chối hoàn tiền:** Nếu khách hàng yêu cầu hủy khi thời gian còn lại $< 02$ giờ $\rightarrow$ Từ chối thao tác, giữ nguyên trạng thái đơn.
+
